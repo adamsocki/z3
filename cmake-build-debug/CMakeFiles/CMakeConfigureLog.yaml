@@ -411,3 +411,166 @@ events:
       
       
 ...
+
+---
+events:
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "D:/applications/CLion 2023.2.2/bin/cmake/win/x64/share/cmake-3.26/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "D:/applications/CLion 2023.2.2/bin/cmake/win/x64/share/cmake-3.26/Modules/CheckCSourceCompiles.cmake:76 (cmake_check_source_compiles)"
+      - "D:/applications/CLion 2023.2.2/bin/cmake/win/x64/share/cmake-3.26/Modules/FindThreads.cmake:97 (CHECK_C_SOURCE_COMPILES)"
+      - "D:/applications/CLion 2023.2.2/bin/cmake/win/x64/share/cmake-3.26/Modules/FindThreads.cmake:163 (_threads_check_libc)"
+      - "cmake-build-debug/_deps/glfw-src/CMakeLists.txt:62 (find_package)"
+    checks:
+      - "Performing Test CMAKE_HAVE_LIBC_PTHREAD"
+    directories:
+      source: "D:/dev_d/Z3/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-nf38ec"
+      binary: "D:/dev_d/Z3/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-nf38ec"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "D:/dev_d/Z3/cmake-build-debug/_deps/glfw-src/CMake/modules"
+    buildResult:
+      variable: "CMAKE_HAVE_LIBC_PTHREAD"
+      cached: true
+      stdout: |
+        Change Dir: D:/dev_d/Z3/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-nf38ec
+        
+        Run Build Command(s):D:/applications/CLion 2023.2.2/bin/ninja/win/x64/ninja.exe -v cmTC_56601 && [1/2] "D:\\applications\\CLion 2023.2.2\\bin\\mingw\\bin\\gcc.exe" -DCMAKE_HAVE_LIBC_PTHREAD  -fdiagnostics-color=always -o CMakeFiles/cmTC_56601.dir/src.c.obj -c D:/dev_d/Z3/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-nf38ec/src.c
+        [2/2] cmd.exe /C "cd . && "D:\\applications\\CLion 2023.2.2\\bin\\mingw\\bin\\gcc.exe"   CMakeFiles/cmTC_56601.dir/src.c.obj -o cmTC_56601.exe -Wl,--out-implib,libcmTC_56601.dll.a -Wl,--major-image-version,0,--minor-image-version,0  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 && cd ."
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "D:/applications/CLion 2023.2.2/bin/cmake/win/x64/share/cmake-3.26/Modules/CheckIncludeFile.cmake:95 (try_compile)"
+      - "cmake-build-debug/_deps/glfw-src/CMakeLists.txt:111 (check_include_file)"
+    checks:
+      - "Looking for dinput.h"
+    directories:
+      source: "D:/dev_d/Z3/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-gvdzf5"
+      binary: "D:/dev_d/Z3/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-gvdzf5"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "D:/dev_d/Z3/cmake-build-debug/_deps/glfw-src/CMake/modules"
+    buildResult:
+      variable: "DINPUT_H_FOUND"
+      cached: true
+      stdout: |
+        Change Dir: D:/dev_d/Z3/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-gvdzf5
+        
+        Run Build Command(s):D:/applications/CLion 2023.2.2/bin/ninja/win/x64/ninja.exe -v cmTC_ab90b && [1/2] "D:\\applications\\CLion 2023.2.2\\bin\\mingw\\bin\\gcc.exe"   -fdiagnostics-color=always -o CMakeFiles/cmTC_ab90b.dir/CheckIncludeFile.c.obj -c D:/dev_d/Z3/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-gvdzf5/CheckIncludeFile.c
+        [2/2] cmd.exe /C "cd . && "D:\\applications\\CLion 2023.2.2\\bin\\mingw\\bin\\gcc.exe"   CMakeFiles/cmTC_ab90b.dir/CheckIncludeFile.c.obj -o cmTC_ab90b.exe -Wl,--out-implib,libcmTC_ab90b.dll.a -Wl,--major-image-version,0,--minor-image-version,0  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 && cd ."
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "D:/applications/CLion 2023.2.2/bin/cmake/win/x64/share/cmake-3.26/Modules/CheckIncludeFile.cmake:95 (try_compile)"
+      - "cmake-build-debug/_deps/glfw-src/CMakeLists.txt:112 (check_include_file)"
+    checks:
+      - "Looking for xinput.h"
+    directories:
+      source: "D:/dev_d/Z3/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-aeelyv"
+      binary: "D:/dev_d/Z3/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-aeelyv"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "D:/dev_d/Z3/cmake-build-debug/_deps/glfw-src/CMake/modules"
+    buildResult:
+      variable: "XINPUT_H_FOUND"
+      cached: true
+      stdout: |
+        Change Dir: D:/dev_d/Z3/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-aeelyv
+        
+        Run Build Command(s):D:/applications/CLion 2023.2.2/bin/ninja/win/x64/ninja.exe -v cmTC_f209d && [1/2] "D:\\applications\\CLion 2023.2.2\\bin\\mingw\\bin\\gcc.exe"   -fdiagnostics-color=always -o CMakeFiles/cmTC_f209d.dir/CheckIncludeFile.c.obj -c D:/dev_d/Z3/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-aeelyv/CheckIncludeFile.c
+        [2/2] cmd.exe /C "cd . && "D:\\applications\\CLion 2023.2.2\\bin\\mingw\\bin\\gcc.exe"   CMakeFiles/cmTC_f209d.dir/CheckIncludeFile.c.obj -o cmTC_f209d.exe -Wl,--out-implib,libcmTC_f209d.dll.a -Wl,--major-image-version,0,--minor-image-version,0  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 && cd ."
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "D:/applications/CLion 2023.2.2/bin/cmake/win/x64/share/cmake-3.26/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "D:/applications/CLion 2023.2.2/bin/cmake/win/x64/share/cmake-3.26/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "D:/applications/CLion 2023.2.2/bin/cmake/win/x64/share/cmake-3.26/Modules/CheckCCompilerFlag.cmake:40 (cmake_check_compiler_flag)"
+      - "cmake-build-debug/_deps/glfw-src/CMakeLists.txt:122 (check_c_compiler_flag)"
+    checks:
+      - "Performing Test _GLFW_HAS_DEP"
+    directories:
+      source: "D:/dev_d/Z3/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-02zf56"
+      binary: "D:/dev_d/Z3/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-02zf56"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "D:/dev_d/Z3/cmake-build-debug/_deps/glfw-src/CMake/modules"
+    buildResult:
+      variable: "_GLFW_HAS_DEP"
+      cached: true
+      stdout: |
+        Change Dir: D:/dev_d/Z3/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-02zf56
+        
+        Run Build Command(s):D:/applications/CLion 2023.2.2/bin/ninja/win/x64/ninja.exe -v cmTC_edadd && [1/2] "D:\\applications\\CLion 2023.2.2\\bin\\mingw\\bin\\gcc.exe" -D_GLFW_HAS_DEP  -Wl,--nxcompat -fdiagnostics-color=always -o CMakeFiles/cmTC_edadd.dir/src.c.obj -c D:/dev_d/Z3/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-02zf56/src.c
+        [2/2] cmd.exe /C "cd . && "D:\\applications\\CLion 2023.2.2\\bin\\mingw\\bin\\gcc.exe" -Wl,--nxcompat  CMakeFiles/cmTC_edadd.dir/src.c.obj -o cmTC_edadd.exe -Wl,--out-implib,libcmTC_edadd.dll.a -Wl,--major-image-version,0,--minor-image-version,0  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 && cd ."
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "D:/applications/CLion 2023.2.2/bin/cmake/win/x64/share/cmake-3.26/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "D:/applications/CLion 2023.2.2/bin/cmake/win/x64/share/cmake-3.26/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "D:/applications/CLion 2023.2.2/bin/cmake/win/x64/share/cmake-3.26/Modules/CheckCCompilerFlag.cmake:40 (cmake_check_compiler_flag)"
+      - "cmake-build-debug/_deps/glfw-src/CMakeLists.txt:129 (check_c_compiler_flag)"
+    checks:
+      - "Performing Test _GLFW_HAS_ASLR"
+    directories:
+      source: "D:/dev_d/Z3/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-zzqzjz"
+      binary: "D:/dev_d/Z3/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-zzqzjz"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "D:/dev_d/Z3/cmake-build-debug/_deps/glfw-src/CMake/modules"
+    buildResult:
+      variable: "_GLFW_HAS_ASLR"
+      cached: true
+      stdout: |
+        Change Dir: D:/dev_d/Z3/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-zzqzjz
+        
+        Run Build Command(s):D:/applications/CLion 2023.2.2/bin/ninja/win/x64/ninja.exe -v cmTC_eead0 && [1/2] "D:\\applications\\CLion 2023.2.2\\bin\\mingw\\bin\\gcc.exe" -D_GLFW_HAS_ASLR  -Wl,--dynamicbase -fdiagnostics-color=always -o CMakeFiles/cmTC_eead0.dir/src.c.obj -c D:/dev_d/Z3/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-zzqzjz/src.c
+        [2/2] cmd.exe /C "cd . && "D:\\applications\\CLion 2023.2.2\\bin\\mingw\\bin\\gcc.exe" -Wl,--dynamicbase  CMakeFiles/cmTC_eead0.dir/src.c.obj -o cmTC_eead0.exe -Wl,--out-implib,libcmTC_eead0.dll.a -Wl,--major-image-version,0,--minor-image-version,0  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 && cd ."
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "D:/applications/CLion 2023.2.2/bin/cmake/win/x64/share/cmake-3.26/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "D:/applications/CLion 2023.2.2/bin/cmake/win/x64/share/cmake-3.26/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "D:/applications/CLion 2023.2.2/bin/cmake/win/x64/share/cmake-3.26/Modules/CheckCCompilerFlag.cmake:40 (cmake_check_compiler_flag)"
+      - "cmake-build-debug/_deps/glfw-src/CMakeLists.txt:136 (check_c_compiler_flag)"
+    checks:
+      - "Performing Test _GLFW_HAS_64ASLR"
+    directories:
+      source: "D:/dev_d/Z3/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-s1zqiz"
+      binary: "D:/dev_d/Z3/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-s1zqiz"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "D:/dev_d/Z3/cmake-build-debug/_deps/glfw-src/CMake/modules"
+    buildResult:
+      variable: "_GLFW_HAS_64ASLR"
+      cached: true
+      stdout: |
+        Change Dir: D:/dev_d/Z3/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-s1zqiz
+        
+        Run Build Command(s):D:/applications/CLion 2023.2.2/bin/ninja/win/x64/ninja.exe -v cmTC_5f231 && [1/2] "D:\\applications\\CLion 2023.2.2\\bin\\mingw\\bin\\gcc.exe" -D_GLFW_HAS_64ASLR  -Wl,--high-entropy-va -fdiagnostics-color=always -o CMakeFiles/cmTC_5f231.dir/src.c.obj -c D:/dev_d/Z3/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-s1zqiz/src.c
+        [2/2] cmd.exe /C "cd . && "D:\\applications\\CLion 2023.2.2\\bin\\mingw\\bin\\gcc.exe" -Wl,--high-entropy-va  CMakeFiles/cmTC_5f231.dir/src.c.obj -o cmTC_5f231.exe -Wl,--out-implib,libcmTC_5f231.dll.a -Wl,--major-image-version,0,--minor-image-version,0  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 && cd ."
+        
+      exitCode: 0
+...
