@@ -28,6 +28,9 @@ add_executable(Z3 src/main.cpp
         src/DynamicArray.cpp
         src/MaterialManager.cpp
         src/MaterialManager.h
+        src/TextureManager.cpp
+        src/TextureManager.h
+
 )
 
 if (DEFINED VULKAN_SDK_PATH)

@@ -8,23 +8,12 @@
 #include <string>
 #include <vector>
 #include <vulkan/vulkan.h>
+#include "TextureManager.h"
 
 namespace Zayn {
 
+    struct Engine;
 
-    struct Texture
-    {
-        std::string name;
-        VkImage image;
-        VkDeviceMemory memory;
-        VkImageView view;
-        VkSampler sampler;
-        uint32_t width;
-        uint32_t height;
-        uint32_t mipLevels = 1;
-
-        bool isInitialized = false;
-    };
 
     enum MaterialType
     {
@@ -53,6 +42,8 @@ namespace Zayn {
 
     };
 
+
+    void InitMaterialManager(Engine* engine);
 } // Zayn
 
 #endif //Z2_MATERIALMANAGER_H

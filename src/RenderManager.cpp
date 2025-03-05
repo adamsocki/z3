@@ -2,6 +2,7 @@
 
 
 #include "RenderManager.h"
+#include "MaterialManager.h"
 
 
 #include <iostream>
@@ -9,6 +10,9 @@
 #include <GLFW/glfw3.h>
 #include <vulkan/vulkan.h>
 #include <algorithm>
+
+//#include "include/stb_image.h"
+
 
 
 #ifdef NDEBUG
@@ -761,7 +765,7 @@ uint32_t FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties, Z
     throw std::runtime_error("failed to find suitable memory type!");
 }
 
-void CreateImage(uint32_t width,
+void Zayn::CreateImage(uint32_t width,
                  uint32_t height,
                  uint32_t mipLevels,
                  VkFormat format,
@@ -807,6 +811,235 @@ void CreateImage(uint32_t width,
 
     vkBindImageMemory(renderManager->vulkanData.vkDevice, image, imageMemory, 0);
 }
+
+
+VkCommandBuffer BeginSingleTimeCommands(Zayn::RenderManager* renderManager)
+{
+    VkCommandBufferAllocateInfo allocInfo{};
+    allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+    allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+    allocInfo.commandPool = renderManager->vulkanData.vkCommandPool;
+    allocInfo.commandBufferCount = 1;
+
+    VkCommandBuffer commandBuffer;
+    vkAllocateCommandBuffers(renderManager->vulkanData.vkDevice, &allocInfo, &commandBuffer);
+
+#if IMGUI
+//    Zayn->myIMGUI.imGuiCommandBuffers.resize(
+//    renderManager->vulkanData.vkSwapChainImageViews.size());
+//
+//    allocInfo = {};
+//    allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+//    allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+//    allocInfo.commandPool = Zayn->myIMGUI.imGuiCommandPool;
+//    allocInfo.commandBufferCount =
+//    static_cast<uint32_t>(Zayn->myIMGUI.imGuiCommandBuffers.size());
+//    vkAllocateCommandBuffers(renderManager->vulkanData.vkDevice, &allocInfo, Zayn->myIMGUI.imGuiCommandBuffers.data());
+
+#endif
+
+    VkCommandBufferBeginInfo beginInfo{};
+    beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+    beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+
+    vkBeginCommandBuffer(commandBuffer, &beginInfo);
+
+    return commandBuffer;
+}
+
+void EndSingleTimeCommands(Zayn::RenderManager* renderManager, VkCommandBuffer commandBuffer)
+{
+    vkEndCommandBuffer(commandBuffer);
+
+    VkSubmitInfo submitInfo{};
+    submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+    submitInfo.commandBufferCount = 1;
+    submitInfo.pCommandBuffers = &commandBuffer;
+
+    vkQueueSubmit(renderManager->vulkanData.vkGraphicsQueue, 1, &submitInfo, VK_NULL_HANDLE);
+    vkQueueWaitIdle(renderManager->vulkanData.vkGraphicsQueue);
+
+    vkFreeCommandBuffers(renderManager->vulkanData.vkDevice, renderManager->vulkanData.vkCommandPool, 1, &commandBuffer);
+}
+
+void Zayn::TransitionImageLayout(Zayn::RenderManager* renderManager, VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout, uint32_t mipLevels)
+{
+    VkCommandBuffer commandBuffer = BeginSingleTimeCommands(renderManager);
+
+    VkImageMemoryBarrier barrier = {};
+    barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+    barrier.oldLayout = oldLayout;
+    barrier.newLayout = newLayout;
+    barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+    barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+
+    barrier.image = image;
+    barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+    barrier.subresourceRange.baseMipLevel = 0;
+    barrier.subresourceRange.levelCount = mipLevels;
+    barrier.subresourceRange.baseArrayLayer = 0;
+    barrier.subresourceRange.layerCount = 1;
+
+    VkPipelineStageFlags sourceStage;
+    VkPipelineStageFlags destinationStage;
+
+    if (oldLayout == VK_IMAGE_LAYOUT_UNDEFINED && newLayout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL)
+    {
+        barrier.srcAccessMask = 0;
+        barrier.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+
+        sourceStage = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
+        //destinationStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
+        destinationStage = (renderManager->vulkanData.vkGraphicsQueue) ? VK_PIPELINE_STAGE_TRANSFER_BIT : VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
+    }
+    else if (oldLayout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL && newLayout == VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL)
+    {
+        barrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+        barrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
+
+        sourceStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
+        destinationStage = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
+    }
+    else
+    {
+        throw std::invalid_argument("unsupported layout transition!");
+    }
+
+    vkCmdPipelineBarrier(
+            commandBuffer,
+            sourceStage, destinationStage,
+            0,
+            0, nullptr,
+            0, nullptr,
+            1, &barrier);
+
+    EndSingleTimeCommands(renderManager, commandBuffer);
+}
+
+void Zayn::GenerateMipmaps(Zayn::RenderManager* renderManager, VkImage image, VkFormat imageFormat, int32_t texWidth, int32_t texHeight, uint32_t mipLevels)
+{
+    // Check if image format supports linear blitting
+    VkFormatProperties formatProperties;
+    vkGetPhysicalDeviceFormatProperties(renderManager->vulkanData.vkPhysicalDevice, imageFormat, &formatProperties);
+
+    if (!(formatProperties.optimalTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT))
+    {
+        throw std::runtime_error("texture image format does not support linear blitting!");
+    }
+
+    VkCommandBuffer commandBuffer = BeginSingleTimeCommands(renderManager);
+
+    VkImageMemoryBarrier barrier{};
+    barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+    barrier.image = image;
+    barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+    barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+    barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+    barrier.subresourceRange.baseArrayLayer = 0;
+    barrier.subresourceRange.layerCount = 1;
+    barrier.subresourceRange.levelCount = 1;
+
+    int32_t mipWidth = texWidth;
+    int32_t mipHeight = texHeight;
+
+    for (uint32_t i = 1; i < mipLevels; i++)
+    {
+        barrier.subresourceRange.baseMipLevel = i - 1;
+        barrier.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+        barrier.newLayout = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
+        barrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+        barrier.dstAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
+
+        vkCmdPipelineBarrier(commandBuffer,
+                             VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT, 0,
+                             0, nullptr,
+                             0, nullptr,
+                             1, &barrier);
+
+        VkImageBlit blit{};
+        blit.srcOffsets[0] = { 0, 0, 0 };
+        blit.srcOffsets[1] = { mipWidth, mipHeight, 1 };
+        blit.srcSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        blit.srcSubresource.mipLevel = i - 1;
+        blit.srcSubresource.baseArrayLayer = 0;
+        blit.srcSubresource.layerCount = 1;
+        blit.dstOffsets[0] = { 0, 0, 0 };
+        blit.dstOffsets[1] = { mipWidth > 1 ? mipWidth / 2 : 1, mipHeight > 1 ? mipHeight / 2 : 1, 1 };
+        blit.dstSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        blit.dstSubresource.mipLevel = i;
+        blit.dstSubresource.baseArrayLayer = 0;
+        blit.dstSubresource.layerCount = 1;
+
+        vkCmdBlitImage(commandBuffer,
+                       image, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
+                       image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+                       1, &blit,
+                       VK_FILTER_LINEAR);
+
+        barrier.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
+        barrier.newLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+        barrier.srcAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
+        barrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
+
+        vkCmdPipelineBarrier(commandBuffer,
+                             VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, 0,
+                             0, nullptr,
+                             0, nullptr,
+                             1, &barrier);
+
+        if (mipWidth > 1)
+            mipWidth /= 2;
+        if (mipHeight > 1)
+            mipHeight /= 2;
+    }
+
+    barrier.subresourceRange.baseMipLevel = mipLevels - 1;
+    barrier.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+    barrier.newLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    barrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+    barrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
+
+    vkCmdPipelineBarrier(commandBuffer,
+                         VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, 0,
+                         0, nullptr,
+                         0, nullptr,
+                         1, &barrier);
+
+    EndSingleTimeCommands(renderManager, commandBuffer);
+}
+
+void Zayn::CopyBufferToImage(Zayn::RenderManager* renderManager, VkBuffer buffer, VkImage image, uint32_t width, uint32_t height)
+{
+    VkCommandBuffer commandBuffer = BeginSingleTimeCommands(renderManager);
+
+    VkBufferImageCopy region = {};
+    region.bufferOffset = 0;
+    region.bufferRowLength = 0;
+    region.bufferImageHeight = 0;
+
+    region.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+    region.imageSubresource.mipLevel = 0;
+    region.imageSubresource.baseArrayLayer = 0;
+    region.imageSubresource.layerCount = 1;
+
+    region.imageOffset = { 0, 0, 0 };
+    region.imageExtent = {
+            width,
+            height,
+            1 };
+
+    vkCmdCopyBufferToImage(
+            commandBuffer,
+            buffer,
+            image,
+            VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+            1,
+            &region);
+
+    EndSingleTimeCommands(renderManager, commandBuffer);
+}
+
+
 
 VkImageView CreateImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags, uint32_t mipLevels, Zayn::RenderManager* renderManager)
 {
@@ -913,6 +1146,45 @@ void StartRender_Init(Zayn::RenderManager* renderManager, Zayn::WindowManager* w
 }
 
 
+
+
+
+
+
+
+
+void Zayn::CreateBuffer(Zayn::RenderManager* renderManager, VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory)
+{
+    VkBufferCreateInfo bufferInfo = {};
+    bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+    bufferInfo.size = size;
+    bufferInfo.usage = usage | VK_BUFFER_CREATE_SPARSE_BINDING_BIT;
+    bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+
+    if (vkCreateBuffer(renderManager->vulkanData.vkDevice, &bufferInfo, nullptr, &buffer) != VK_SUCCESS)
+    {
+        throw std::runtime_error("failed to create buffer!");
+    }
+
+    VkMemoryRequirements memRequirements;
+    vkGetBufferMemoryRequirements(renderManager->vulkanData.vkDevice, buffer, &memRequirements);
+
+    VkMemoryAllocateInfo allocInfo{};
+    allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+    allocInfo.allocationSize = memRequirements.size;
+    allocInfo.memoryTypeIndex = FindMemoryType(memRequirements.memoryTypeBits, properties, renderManager);
+
+    if (vkAllocateMemory(renderManager->vulkanData.vkDevice, &allocInfo, nullptr, &bufferMemory) != VK_SUCCESS)
+    {
+        throw std::runtime_error("failed to allocate buffer memory!");
+    }
+
+    vkBindBufferMemory(renderManager->vulkanData.vkDevice, buffer, bufferMemory, 0);
+}
+
+
+
+
 void Zayn::InitRenderManager(Zayn::RenderManager* renderManager, Zayn::WindowManager* window)
 {
     std::cout << "InitRender_Vulkan()" << std::endl;
@@ -921,8 +1193,16 @@ void Zayn::InitRenderManager(Zayn::RenderManager* renderManager, Zayn::WindowMan
     std::cout << "after InitRender_Vulkan()" << std::endl;
 
 // INIT MATERIAL SYSTEM
-    //zaynMem->materialSystem = new MaterialSystem(&zaynMem->vulkan.vkDevice);
 
+    //zaynMem->materialSystem = new MaterialSystem(&zaynMem->vulkan.vkDevice);
+    Zayn::TextureCreateInfo textureInfo1;
+    textureInfo1.path = "viking_room.png";
+
+    TextureCreateInfo textureInfo3;
+    textureInfo3.path = "soil_001.png";
+
+ //   CreateTexture(zaynMem, &textureInfo1, &zaynMem->texture_002);
+ //   CreateTexture(zaynMem, &textureInfo3, &zaynMem->texture_003);
 }
 
 /*

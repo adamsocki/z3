@@ -112,6 +112,13 @@ build CMakeFiles/Z3.dir/src/MaterialManager.cpp.obj: CXX_COMPILER__Z3_unscanned_
   OBJECT_DIR = CMakeFiles\Z3.dir
   OBJECT_FILE_DIR = CMakeFiles\Z3.dir\src
 
+build CMakeFiles/Z3.dir/src/TextureManager.cpp.obj: CXX_COMPILER__Z3_unscanned_Debug D$:/dev_d/Z3/src/TextureManager.cpp || cmake_object_order_depends_target_Z3
+  DEP_FILE = CMakeFiles\Z3.dir\src\TextureManager.cpp.obj.d
+  FLAGS = -g -fdiagnostics-color=always
+  INCLUDES = -ID:/dev_d/Z3/cmake-build-debug/_deps/glfw-src/include -ID:/VulkanSDK/1.3.296.0/Include
+  OBJECT_DIR = CMakeFiles\Z3.dir
+  OBJECT_FILE_DIR = CMakeFiles\Z3.dir\src
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target Z3
@@ -120,7 +127,7 @@ build CMakeFiles/Z3.dir/src/MaterialManager.cpp.obj: CXX_COMPILER__Z3_unscanned_
 #############################################
 # Link the executable Z3.exe
 
-build Z3.exe: CXX_EXECUTABLE_LINKER__Z3_Debug CMakeFiles/Z3.dir/src/main.cpp.obj CMakeFiles/Z3.dir/src/Engine.cpp.obj CMakeFiles/Z3.dir/src/MemoryManager.cpp.obj CMakeFiles/Z3.dir/src/WindowManager.cpp.obj CMakeFiles/Z3.dir/src/TimeManager.cpp.obj CMakeFiles/Z3.dir/src/InputManager.cpp.obj CMakeFiles/Z3.dir/src/RenderManager.cpp.obj CMakeFiles/Z3.dir/src/DynamicArray.cpp.obj CMakeFiles/Z3.dir/src/MaterialManager.cpp.obj | _deps/glfw-build/src/libglfw3.a D$:/VulkanSDK/1.3.296.0/Lib/vulkan-1.lib || _deps/glfw-build/src/libglfw3.a
+build Z3.exe: CXX_EXECUTABLE_LINKER__Z3_Debug CMakeFiles/Z3.dir/src/main.cpp.obj CMakeFiles/Z3.dir/src/Engine.cpp.obj CMakeFiles/Z3.dir/src/MemoryManager.cpp.obj CMakeFiles/Z3.dir/src/WindowManager.cpp.obj CMakeFiles/Z3.dir/src/TimeManager.cpp.obj CMakeFiles/Z3.dir/src/InputManager.cpp.obj CMakeFiles/Z3.dir/src/RenderManager.cpp.obj CMakeFiles/Z3.dir/src/DynamicArray.cpp.obj CMakeFiles/Z3.dir/src/MaterialManager.cpp.obj CMakeFiles/Z3.dir/src/TextureManager.cpp.obj | _deps/glfw-build/src/libglfw3.a D$:/VulkanSDK/1.3.296.0/Lib/vulkan-1.lib || _deps/glfw-build/src/libglfw3.a
   FLAGS = -g
   LINK_LIBRARIES = _deps/glfw-build/src/libglfw3.a  D:/VulkanSDK/1.3.296.0/Lib/vulkan-1.lib  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\Z3.dir

@@ -6,6 +6,8 @@
 #include "WindowManager.h"
 #include "InputManager.h"
 #include "RenderManager.h"
+#include "MaterialManager.h"
+#include "TextureManager.h"
 
 
 namespace Zayn {
@@ -17,6 +19,9 @@ namespace Zayn {
         InitWindowManager(engine, V2(100,133), "spanglish");
         InitTimeManager(engine);
         InitInputManager(engine);
+
+        InitTextureManager(engine);
+        InitMaterialManager(engine);
 
         InitRenderManager(&engine->renderManager, &engine->windowManager);
     }

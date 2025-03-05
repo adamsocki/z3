@@ -23,13 +23,11 @@ namespace Zayn {
     struct Engine;
 
 
-    struct InstancedData
-    {
+    struct InstancedData {
         mat4 modelMatrix;
     };
 
-    struct Vertex
-    {
+    struct Vertex {
         glm::vec3 pos;
         glm::vec3 color;
         glm::vec2 texCoord;
@@ -37,8 +35,7 @@ namespace Zayn {
 
         mat4 modelMatrix;
 
-        static VkVertexInputBindingDescription getBindingDescription()
-        {
+        static VkVertexInputBindingDescription getBindingDescription() {
             VkVertexInputBindingDescription bindingDescription{};
             bindingDescription.binding = 0;
             bindingDescription.stride = sizeof(Vertex);
@@ -47,8 +44,7 @@ namespace Zayn {
             return bindingDescription;
         }
 
-        static std::array<VkVertexInputBindingDescription, 2>  getBindingDescriptions_instanced()
-        {
+        static std::array<VkVertexInputBindingDescription, 2> getBindingDescriptions_instanced() {
             std::array<VkVertexInputBindingDescription, 2> bindingDescriptions{};
             bindingDescriptions[0].binding = 0;
             bindingDescriptions[0].stride = sizeof(Vertex);
@@ -61,8 +57,7 @@ namespace Zayn {
             return bindingDescriptions;
         }
 
-        static std::array<VkVertexInputAttributeDescription, 4> getAttributeDescriptions()
-        {
+        static std::array<VkVertexInputAttributeDescription, 4> getAttributeDescriptions() {
             std::array<VkVertexInputAttributeDescription, 4> attributeDescriptions{};
 
             attributeDescriptions[0].binding = 0;
@@ -88,8 +83,7 @@ namespace Zayn {
             return attributeDescriptions;
         }
 
-        static std::array<VkVertexInputAttributeDescription, 8> getAttributeDescriptions_instanced()
-        {
+        static std::array<VkVertexInputAttributeDescription, 8> getAttributeDescriptions_instanced() {
             std::array<VkVertexInputAttributeDescription, 8> attributeDescriptions{};
 
             attributeDescriptions[0].binding = 0;
@@ -135,25 +129,22 @@ namespace Zayn {
             return attributeDescriptions;
         }
 
-        bool operator==(const Vertex& other) const {
+        bool operator==(const Vertex &other) const {
             return pos == other.pos && color == other.color && texCoord == other.texCoord;
         }
     };
 
-    struct QueueFamilyIndices
-    {
+    struct QueueFamilyIndices {
         std::optional<uint32_t> graphicsFamily;
         std::optional<uint32_t> presentFamily;
 
-        bool isComplete()
-        {
+        bool isComplete() {
             return graphicsFamily.has_value() && presentFamily.has_value();
         }
     };
 
 
-    struct SwapChainSupportDetails
-    {
+    struct SwapChainSupportDetails {
         VkSurfaceCapabilitiesKHR capabilities;
         std::vector<VkSurfaceFormatKHR> formats;
         std::vector<VkPresentModeKHR> presentModes;
@@ -229,7 +220,7 @@ namespace Zayn {
         VkDeviceMemory vkIndexBufferMemory;
         std::vector<VkBuffer> vkUniformBuffers;
         std::vector<VkDeviceMemory> vkUniformBuffersMemory;
-        std::vector<void*> vkUniformBuffersMapped;
+        std::vector<void *> vkUniformBuffersMapped;
         VkDescriptorPool vkDescriptorPool;
         VkDescriptorPool vkDescriptorPool_blank;
         std::vector<VkDescriptorSet> vkDescriptorSets;
@@ -243,8 +234,25 @@ namespace Zayn {
         VulkanData vulkanData;
     };
 
-    void InitRenderManager(RenderManager* renderManager, WindowManager* window);
+    void CreateBuffer(Zayn::RenderManager *renderManager, VkDeviceSize size, VkBufferUsageFlags usage,
+                      VkMemoryPropertyFlags properties, VkBuffer &buffer, VkDeviceMemory &bufferMemory);
 
-} // Zayn
+    void InitRenderManager(RenderManager *renderManager, WindowManager *window);
 
+    void CreateImage(uint32_t width, uint32_t height, uint32_t mipLevels, VkFormat format, VkImageTiling tiling,
+                     VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage &image,
+                     VkDeviceMemory &imageMemory, Zayn::RenderManager *renderManager);
+
+    void
+    TransitionImageLayout(Zayn::RenderManager *renderManager, VkImage image, VkFormat format, VkImageLayout oldLayout,
+                          VkImageLayout newLayout, uint32_t mipLevels);
+
+    void CopyBufferToImage(Zayn::RenderManager *renderManager, VkBuffer buffer, VkImage image, uint32_t width,
+                           uint32_t height);
+
+    void GenerateMipmaps(Zayn::RenderManager *renderManager, VkImage image, VkFormat imageFormat, int32_t texWidth,
+                         int32_t texHeight, uint32_t mipLevels);
+
+}
 #endif //Z2_RENDERMANAGER_H
+

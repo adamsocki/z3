@@ -43,7 +43,7 @@ namespace Zayn {
         time->fpsTimer += time->deltaTime;
 
 
-        if (time->fpsTimer > 0.5f)
+        if (time->fpsTimer > 0.1f)
         {
 
             real64 avgFPS = time->frameCount / time->fpsTimer;

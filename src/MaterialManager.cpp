@@ -5,4 +5,10 @@
 #include "MaterialManager.h"
 
 namespace Zayn {
+
+
+    void InitMaterialManager(Engine* engine){
+
+    }
+
 } // Zayn
