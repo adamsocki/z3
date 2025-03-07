@@ -7,6 +7,8 @@
 #include "Engine.h"
 
 
+#define MAX_FRAMES_IN_FLIGHT 2
+
 int main() {
 
 

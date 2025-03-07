@@ -6,22 +6,22 @@
 #define Z3_TEXTURE_H
 
 #include <string>
+#include <vulkan/vulkan_core.h>
 
 namespace Game {
 
     struct Texture {
 
+        std::string name;
+        VkImage image;
+        VkDeviceMemory memory;
+        VkImageView view;
+        VkSampler sampler;
+        uint32_t width;
+        uint32_t height;
+        uint32_t mipLevels = 1;
 
-        std::string path;
-
-
-        Texture(std::string& p)
-        : path(p) {
-        }
-
-        Texture()
-        : path(nullptr) {
-        }
+        bool isInitialized = false;
 
 
     };

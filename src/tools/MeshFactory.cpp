@@ -14,4 +14,11 @@ namespace Zayn {
     {
 
     }
+
+
+    void InitMeshFactory(Engine* engine)
+    {
+        DynamicArray<Game::Mesh> meshes = MakeDynamicArray<Game::Mesh>(&engine->permanentMemory, 100);
+    }
+
 } // Zayn

@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include "GameObjectFactory.h"
+#include "../Engine.h"
 
 namespace Zayn {
 
@@ -13,5 +14,11 @@ namespace Zayn {
     {
         std::cout << "game object Make" << std::endl;
     }
+
+    void InitGameObjectFactory(Engine* engine)
+    {
+        engine->gameObjectFactory.gameObjects = MakeDynamicArray<Game::GameObject>(&engine->permanentMemory, 100);
+    }
+
 
 } // Zayn

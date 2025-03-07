@@ -253,6 +253,8 @@ namespace Zayn {
     void GenerateMipmaps(Zayn::RenderManager *renderManager, VkImage image, VkFormat imageFormat, int32_t texWidth,
                          int32_t texHeight, uint32_t mipLevels);
 
+    VkImageView CreateImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags, uint32_t mipLevels, Zayn::RenderManager* renderManager);
+
 }
 #endif //Z2_RENDERMANAGER_H
 

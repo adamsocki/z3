@@ -3,6 +3,7 @@
 
 #include "RenderManager.h"
 #include "MaterialManager.h"
+//#include "tools/TextureFactory.h"
 
 
 #include <iostream>
@@ -1041,7 +1042,7 @@ void Zayn::CopyBufferToImage(Zayn::RenderManager* renderManager, VkBuffer buffer
 
 
 
-VkImageView CreateImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags, uint32_t mipLevels, Zayn::RenderManager* renderManager)
+VkImageView Zayn::CreateImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags, uint32_t mipLevels, Zayn::RenderManager* renderManager)
 {
     VkImageViewCreateInfo viewInfo{};
     viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
@@ -1195,14 +1196,7 @@ void Zayn::InitRenderManager(Zayn::RenderManager* renderManager, Zayn::WindowMan
 // INIT MATERIAL SYSTEM
 
     //zaynMem->materialSystem = new MaterialSystem(&zaynMem->vulkan.vkDevice);
-    Zayn::TextureCreateInfo textureInfo1;
-    textureInfo1.path = "viking_room.png";
-
-    TextureCreateInfo textureInfo3;
-    textureInfo3.path = "soil_001.png";
-
- //   CreateTexture(zaynMem, &textureInfo1, &zaynMem->texture_002);
- //   CreateTexture(zaynMem, &textureInfo3, &zaynMem->texture_003);
+    
 }
 
 /*

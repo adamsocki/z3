@@ -6,15 +6,29 @@
 #define Z3_MATERIALFACTORY_H
 
 #include "../game/Material.h"
+#include "../RenderManager.h"
+#include "../DynamicArray.h"
+
 
 namespace Zayn {
 
-    struct Engine;
-    struct MaterialFactory {
 
+    struct MaterialCreateInfo
+    {
+        Game::MaterialType type = Game::MATERIAL_PBR;
+        Game::Texture* texture;
+        std::string name;
+        float color[4];
+        float roughness;
+        float metallic;
     };
 
-    void MakeMaterialObject(Engine* engine, Game::Material* material);
+    struct MaterialFactory {
+        DynamicArray<Game::Material> materials;
+    };
+
+    void MakeMaterial(Engine* engine, MaterialCreateInfo* info);
+    void InitMaterialFactory(Engine* engine);
 
 } // Zayn
 

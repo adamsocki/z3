@@ -6,9 +6,11 @@
 #include "WindowManager.h"
 #include "InputManager.h"
 #include "RenderManager.h"
-#include "MaterialManager.h"
-#include "TextureManager.h"
+//#include "MaterialManager.h"
+//#include "TextureManager.h"
 #include "GameManager.h"
+#include "tools/MaterialFactory.h"
+#include "tools/GameObjectFactory.h"
 
 
 namespace Zayn {
@@ -21,16 +23,21 @@ namespace Zayn {
         InitTimeManager(engine);
         InitInputManager(engine);
 
-        InitTextureManager(engine);
+        InitTextureFactory(engine);
+        InitMaterialFactory(engine);
+        InitGameObjectFactory(engine);
 
 
 
 
-        InitMaterialManager(engine);
+//        InitMaterialManager(engine);
 
-        InitGameManager(engine);
 
         InitRenderManager(&engine->renderManager, &engine->windowManager);
+
+
+
+        InitGameManager(engine);
 
 
     }

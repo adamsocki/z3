@@ -4,36 +4,38 @@
 
 #include "GameManager.h"
 #include "game/GameObject.h"
-#include "tools/GameObjectFactory.h"
+#include "Engine.h"
+//#include "tools/TextureFactory.h"
 
 namespace Zayn {
 
-    struct Engine;
-
-    void MakeTextures()
+    void MakeTextures(Engine* engine)
     {
-
+        // Texture - DynamicArray
+        TextureCreateInfo texture1;
+        texture1.path = "viking_room.png";
+        texture1.name = "hi";
+        MakeTexture(engine, &texture1);
     }
 
-    void MakeMaterials()
+    void MakeMaterials(Engine* engine)
     {
-
+        // Material - DynamicArray
     }
 
     void GameObjects(Engine* engine)
     {
-
-        Game::Texture texture;
-        Game::Material material;
-        Game::GameObject gameObject;
+        // GameObject - DynamicArray
 
 
 
 
+//        Game::Texture texture;
+//        Game::Material material;
+//        Game::GameObject gameObject;
 
 
-        MakeGameObject(engine, &gameObject);
-
+//        MakeGameObject(engine, gameObjects, &gameObject);
     }
 
 
@@ -42,17 +44,8 @@ namespace Zayn {
 
     void InitGameManager(Engine* engine)
     {
-
-       // Game::MakeTextures()
-
-       MakeTextures();
-
-       MakeMaterials();
-
+       MakeTextures(engine);
+       MakeMaterials(engine);
        GameObjects(engine);
-
-
-
-
     }
 } // Zayn

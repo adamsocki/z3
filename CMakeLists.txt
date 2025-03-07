@@ -48,6 +48,7 @@ add_executable(Z3 src/main.cpp
         src/tools/TextureFactory.h
         src/tools/MeshFactory.cpp
         src/tools/MeshFactory.h
+        src/game/UniformBufferObject.h
 
 )
 

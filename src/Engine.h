@@ -11,6 +11,12 @@
 #include "InputManager.h"
 #include "RenderManager.h"
 
+#include "tools/TextureFactory.h"
+#include "tools/MaterialFactory.h"
+#include "tools/GameObjectFactory.h"
+
+#define MAX_FRAMES_IN_FLIGHT 2
+
 
 namespace Zayn {
 
@@ -24,6 +30,11 @@ namespace Zayn {
         TimeManager timeManager;
         InputManager inputManager;
         RenderManager renderManager;
+
+
+        TextureFactory textureFactory;
+        MaterialFactory materialFactory;
+        GameObjectFactory gameObjectFactory;
     };
 
 

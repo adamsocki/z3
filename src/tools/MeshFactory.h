@@ -6,15 +6,17 @@
 #define Z3_MESHFACTORY_H
 
 #include "../game/Mesh.h"
+#include "../Engine.h"
+
 
 namespace Zayn {
 
-    struct Engine;
     struct MeshFactory {
 
     };
 
     void MakeMesh(Engine* engine, Game::Mesh* mesh);
+    void InitMeshFactory(Engine* engine);
 
 } // Zayn
 

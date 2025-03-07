@@ -6,21 +6,29 @@
 #define Z3_MATERIAL_H
 
 
+#include <vector>
 #include "Texture.h"
 
 namespace Game {
 
-    struct Material {
+    enum MaterialType
+    {
+        MATERIAL_PBR,
+        MATERIAL_UNLIT
+    };
+
+    struct Material{
+
+        std::string name;
+        MaterialType type;
+        std::vector<VkDescriptorSet> descriptorSets;
         Texture* texture;
+        float color[4];
+        float metallic;
+        float roughness;
+        bool isInitialized = false;
 
 
-        Material(Texture* t)
-        : texture(t) {
-        }
-
-        Material()
-                : texture(nullptr) {
-        }
     };
 
 } // Game
