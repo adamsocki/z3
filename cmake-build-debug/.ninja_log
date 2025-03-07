@@ -38,3 +38,9 @@
 11	3146	7630249657378822	CMakeFiles/Z3.dir/src/tools/MeshFactory.cpp.obj	857109cad858d7f0
 3	1827	7630251784906219	CMakeFiles/Z3.dir/src/tools/MaterialFactory.cpp.obj	aee5b18769f90d3e
 1827	2563	7630251792207172	Z3.exe	b6cafb3c4a9acdff
+3	1928	7630647193022635	CMakeFiles/Z3.dir/src/GameManager.cpp.obj	2d2b2247ffc64917
+6	1974	7630647193473981	CMakeFiles/Z3.dir/src/tools/MaterialFactory.cpp.obj	aee5b18769f90d3e
+1974	2868	7630647202360421	Z3.exe	b6cafb3c4a9acdff
+6	1951	7630708194024931	CMakeFiles/Z3.dir/src/GameManager.cpp.obj	2d2b2247ffc64917
+2	2146	7630708594761661	CMakeFiles/Z3.dir/src/RenderManager.cpp.obj	d8cf43a5ff247182
+2146	3059	7630708603872737	Z3.exe	b6cafb3c4a9acdff

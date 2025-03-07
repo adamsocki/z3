@@ -21,6 +21,12 @@ namespace Zayn {
     void MakeMaterials(Engine* engine)
     {
         // Material - DynamicArray
+        MaterialCreateInfo material1;
+        material1.type = Game::MATERIAL_PBR;
+        material1.texture = &engine->textureFactory.textures[0];
+        material1.name = "mat1";
+        // @TODO: We need to set the proper descriptor set here.
+        MakeMaterial(engine, &material1);
     }
 
     void GameObjects(Engine* engine)

@@ -3,6 +3,7 @@
 
 #include "RenderManager.h"
 #include "MaterialManager.h"
+#include "Engine.h"
 //#include "tools/TextureFactory.h"
 
 
@@ -1184,7 +1185,64 @@ void Zayn::CreateBuffer(Zayn::RenderManager* renderManager, VkDeviceSize size, V
 }
 
 
+void CreateDescriptorSetLayout(Zayn::RenderManager* renderManager, VkDescriptorSetLayout* descriptorSetLayout, bool hasImage)
+{
+    std::vector<VkDescriptorSetLayoutBinding> bindings = {};
+    VkDescriptorSetLayoutBinding uboLayoutBinding{};
+    uboLayoutBinding.binding = 0;
+    uboLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    uboLayoutBinding.descriptorCount = 1;
+    uboLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    bindings.push_back(uboLayoutBinding);
 
+    if (hasImage)
+    {
+        VkDescriptorSetLayoutBinding samplerLayoutBinding{};
+        samplerLayoutBinding.binding = 1;
+        samplerLayoutBinding.descriptorCount = 1;
+        samplerLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        samplerLayoutBinding.pImmutableSamplers = nullptr;
+        samplerLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+        bindings.push_back(samplerLayoutBinding);
+    }
+
+    VkDescriptorSetLayoutCreateInfo layoutInfo{};
+    layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+    layoutInfo.bindingCount = static_cast<uint32_t>(bindings.size());
+    layoutInfo.pBindings = bindings.data();
+
+    if (vkCreateDescriptorSetLayout(renderManager->vulkanData.vkDevice, &layoutInfo, nullptr, descriptorSetLayout) != VK_SUCCESS)
+    {
+        throw std::runtime_error("failed to create descriptor set layout!");
+    }
+}
+
+void CreateDescriptorPool(Zayn::RenderManager* renderManager, VkDescriptorPool* descriptorPool, bool hasImage)
+{
+    std::vector<VkDescriptorPoolSize> poolSizes = {};
+    VkDescriptorPoolSize poolSize_1{};
+    poolSize_1.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    poolSize_1.descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT * 20);
+    poolSizes.push_back(poolSize_1);
+    if (hasImage)
+    {
+        VkDescriptorPoolSize poolSize_2 = {};
+        poolSize_2.type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        poolSize_2.descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT * 20);
+        poolSizes.push_back(poolSize_2);
+    }
+
+    VkDescriptorPoolCreateInfo poolInfo{};
+    poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+    poolInfo.poolSizeCount = static_cast<uint32_t>(poolSizes.size());
+    poolInfo.pPoolSizes = poolSizes.data();
+    poolInfo.maxSets = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT * 20);
+
+    if (vkCreateDescriptorPool(renderManager->vulkanData.vkDevice, &poolInfo, nullptr, descriptorPool) != VK_SUCCESS)
+    {
+        throw std::runtime_error("failed to create descriptor pool!");
+    }
+}
 
 void Zayn::InitRenderManager(Zayn::RenderManager* renderManager, Zayn::WindowManager* window)
 {
@@ -1196,7 +1254,10 @@ void Zayn::InitRenderManager(Zayn::RenderManager* renderManager, Zayn::WindowMan
 // INIT MATERIAL SYSTEM
 
     //zaynMem->materialSystem = new MaterialSystem(&zaynMem->vulkan.vkDevice);
-    
+
+    CreateDescriptorSetLayout(renderManager, &renderManager->vulkanData.vkDescriptorSetLayout, true); // this one is for those that have texures attached
+    CreateDescriptorPool(renderManager, &renderManager->vulkanData.vkDescriptorPool, true);      // <---- CAN POTENTIAL BE RESUSED BETWEEN ENTITIES THAT HAVE THE SAME TYPES OF THINGS BEING SHARED
+
 }
 
 /*

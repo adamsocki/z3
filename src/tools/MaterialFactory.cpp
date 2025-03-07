@@ -74,7 +74,8 @@ namespace Zayn {
 
     void MakeMaterial(Engine* engine, MaterialCreateInfo* info)
     {
-        //memset(outMaterial, 0, sizeof(Material_old));
+
+
         Game::Material material = {};
         material.type = info->type;
         //outMaterial->color = info->color;
@@ -86,9 +87,8 @@ namespace Zayn {
 
         material.descriptorSets.resize(MAX_FRAMES_IN_FLIGHT);
         for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-            AllocateMaterialDescriptorSet(engine,&material, i);
+            AllocateMaterialDescriptorSet(engine, &material, i);
         }
-
 
         PushBack(&engine->materialFactory.materials, material);
     }
