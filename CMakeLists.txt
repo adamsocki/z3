@@ -13,6 +13,7 @@ FetchContent_Declare(
         GIT_TAG        3.3.8 # Choose your desired version tag
 )
 
+
 FetchContent_MakeAvailable(glfw)
 
 #include_directories(${glfw_SOURCE_DIR}/include)
@@ -49,8 +50,11 @@ add_executable(Z3 src/main.cpp
         src/tools/MeshFactory.cpp
         src/tools/MeshFactory.h
         src/game/UniformBufferObject.h
+        src/game/ModelPushConstant.h
+
 
 )
+
 
 if (DEFINED VULKAN_SDK_PATH)
     set(Vulkan_INCLUDE_DIRS "${VULKAN_SDK_PATH}/Include") # 1.1 Make sure this include path is correct

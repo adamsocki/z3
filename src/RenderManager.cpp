@@ -4,6 +4,8 @@
 #include "RenderManager.h"
 #include "MaterialManager.h"
 #include "Engine.h"
+#include "game/ModelPushConstant.h"
+#include "game/UniformBufferObject.h"
 //#include "tools/TextureFactory.h"
 
 
@@ -12,6 +14,7 @@
 #include <GLFW/glfw3.h>
 #include <vulkan/vulkan.h>
 #include <algorithm>
+#include <fstream>
 
 //#include "include/stb_image.h"
 
@@ -1151,6 +1154,16 @@ void StartRender_Init(Zayn::RenderManager* renderManager, Zayn::WindowManager* w
 
 
 
+void Zayn::CopyBuffer(Zayn::RenderManager* renderManager, VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size)
+{
+    VkCommandBuffer commandBuffer = BeginSingleTimeCommands(renderManager);
+
+    VkBufferCopy copyRegion{};
+    copyRegion.size = size;
+    vkCmdCopyBuffer(commandBuffer, srcBuffer, dstBuffer, 1, &copyRegion);
+
+    EndSingleTimeCommands(renderManager, commandBuffer);
+}
 
 
 
@@ -1244,6 +1257,274 @@ void CreateDescriptorPool(Zayn::RenderManager* renderManager, VkDescriptorPool* 
     }
 }
 
+VkShaderModule CreateShaderModule(Zayn::RenderManager* renderManager, const std::vector<char>& code)
+{
+    VkShaderModuleCreateInfo createInfo{};
+    createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
+    createInfo.codeSize = code.size();
+    createInfo.pCode = reinterpret_cast<const uint32_t*>(code.data());
+
+    VkShaderModule shaderModule;
+    if (vkCreateShaderModule(renderManager->vulkanData.vkDevice, &createInfo, nullptr, &shaderModule) != VK_SUCCESS)
+    {
+        throw std::runtime_error("failed to create shader module!");
+    }
+
+    return shaderModule;
+}
+
+static std::vector<char> ReadFile(const std::string& filename)
+{
+    std::ifstream file(filename, std::ios::ate | std::ios::binary);
+
+    if (!file.is_open())
+    {
+        throw std::runtime_error("failed to open file!");
+    }
+
+    size_t fileSize = (size_t)file.tellg();
+    std::vector<char> buffer(fileSize);
+
+    file.seekg(0);
+    file.read(buffer.data(), fileSize);
+
+    file.close();
+
+    return buffer;
+}
+
+
+template <typename T>
+void CreatePushConstant(Zayn::RenderManager* renderManager)
+{
+    VkPushConstantRange pushConstantRange = {};
+    pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
+    pushConstantRange.offset = 0;
+    pushConstantRange.size = sizeof(T);
+
+    renderManager->vulkanData.vkPushConstantRanges.push_back(pushConstantRange);
+}
+
+void  CreateGraphicsPipeline(Zayn::RenderManager* renderManager, VkPipeline* pipeline, const std::string& vertShaderFilePath, const std::string& fragShaderFilePath, std::vector<VkPushConstantRange> pushConstants, VkDescriptorSetLayout* descriptorSetLayout, VkPipelineLayout* pipelineLayout)
+{
+    auto vertShaderCode = ReadFile(vertShaderFilePath);
+    auto fragShaderCode = ReadFile(fragShaderFilePath);
+
+    VkShaderModule vertShaderModule = CreateShaderModule(renderManager, vertShaderCode);
+    VkShaderModule fragShaderModule = CreateShaderModule(renderManager, fragShaderCode);
+
+    VkPipelineShaderStageCreateInfo vertShaderStageInfo{};
+    vertShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+    vertShaderStageInfo.stage = VK_SHADER_STAGE_VERTEX_BIT;
+    vertShaderStageInfo.module = vertShaderModule;
+    vertShaderStageInfo.pName = "main";
+
+    VkPipelineShaderStageCreateInfo fragShaderStageInfo{};
+    fragShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+    fragShaderStageInfo.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
+    fragShaderStageInfo.module = fragShaderModule;
+    fragShaderStageInfo.pName = "main";
+
+    VkPipelineShaderStageCreateInfo shaderStages[] = { vertShaderStageInfo, fragShaderStageInfo };
+
+    VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
+    vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
+
+    auto bindingDescription = Zayn::Vertex::getBindingDescription();
+    auto attributeDescriptions = Zayn::Vertex::getAttributeDescriptions();
+
+    vertexInputInfo.vertexBindingDescriptionCount = 1;
+    vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(attributeDescriptions.size());
+    vertexInputInfo.pVertexBindingDescriptions = &bindingDescription;
+    vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions.data();
+
+    VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
+    inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
+    inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+    inputAssembly.primitiveRestartEnable = VK_FALSE;
+
+    VkPipelineViewportStateCreateInfo viewportState = {};
+    viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+    viewportState.viewportCount = 1;
+    viewportState.scissorCount = 1;
+
+    VkPipelineRasterizationStateCreateInfo rasterizer = {};
+    rasterizer.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
+    rasterizer.depthClampEnable = VK_FALSE;
+    rasterizer.rasterizerDiscardEnable = VK_FALSE;
+    rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
+    rasterizer.lineWidth = 1.0f;
+    rasterizer.cullMode = VK_CULL_MODE_BACK_BIT;
+    rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
+    rasterizer.depthBiasEnable = VK_FALSE;
+
+    VkPipelineMultisampleStateCreateInfo multisampling = {};
+    multisampling.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
+    multisampling.sampleShadingEnable = VK_FALSE;
+    multisampling.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
+
+    VkPipelineDepthStencilStateCreateInfo depthStencil = {};
+    depthStencil.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
+    depthStencil.depthTestEnable = VK_TRUE;
+    depthStencil.depthWriteEnable = VK_TRUE;
+    depthStencil.depthCompareOp = VK_COMPARE_OP_LESS;
+    depthStencil.depthBoundsTestEnable = VK_FALSE;
+    depthStencil.minDepthBounds = 0.0f; // Optional
+    depthStencil.maxDepthBounds = 1.0f; // Optional
+
+    depthStencil.stencilTestEnable = VK_FALSE;
+    depthStencil.front = {}; // Optional
+    depthStencil.back = {};  // Optional
+
+    VkPipelineColorBlendAttachmentState colorBlendAttachment = {};
+    colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
+    colorBlendAttachment.blendEnable = VK_FALSE;
+
+    VkPipelineColorBlendStateCreateInfo colorBlending = {};
+    colorBlending.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
+    colorBlending.logicOpEnable = VK_FALSE;
+    colorBlending.logicOp = VK_LOGIC_OP_COPY;
+    colorBlending.attachmentCount = 1;
+    colorBlending.pAttachments = &colorBlendAttachment;
+    colorBlending.blendConstants[0] = 0.0f;
+    colorBlending.blendConstants[1] = 0.0f;
+    colorBlending.blendConstants[2] = 0.0f;
+    colorBlending.blendConstants[3] = 0.0f;
+
+    std::vector<VkDynamicState> dynamicStates = {
+            VK_DYNAMIC_STATE_VIEWPORT,
+            VK_DYNAMIC_STATE_SCISSOR };
+
+    VkPipelineDynamicStateCreateInfo dynamicState = {};
+    dynamicState.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
+    dynamicState.dynamicStateCount = static_cast<uint32_t>(dynamicStates.size());
+    dynamicState.pDynamicStates = dynamicStates.data();
+
+    VkPipelineLayoutCreateInfo pipelineLayoutInfo = {};
+    pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+    pipelineLayoutInfo.setLayoutCount = 1;
+    pipelineLayoutInfo.pSetLayouts = descriptorSetLayout;
+
+    VkPushConstantRange pushConstantRange = {};
+    pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
+    pushConstantRange.offset = 0;
+    pushConstantRange.size = sizeof(Game::ModelPushConstant);
+    pipelineLayoutInfo.pushConstantRangeCount = 1;
+    pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
+
+    if (vkCreatePipelineLayout(renderManager->vulkanData.vkDevice, &pipelineLayoutInfo, nullptr, pipelineLayout) != VK_SUCCESS)
+    {
+        throw std::runtime_error("failed to create pipeline layout!");
+    }
+
+    VkGraphicsPipelineCreateInfo pipelineInfo = {};
+    pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+    pipelineInfo.stageCount = 2;
+    pipelineInfo.pStages = shaderStages;
+    pipelineInfo.pVertexInputState = &vertexInputInfo;
+    pipelineInfo.pInputAssemblyState = &inputAssembly;
+    pipelineInfo.pViewportState = &viewportState;
+    pipelineInfo.pRasterizationState = &rasterizer;
+    pipelineInfo.pMultisampleState = &multisampling;
+    pipelineInfo.pDepthStencilState = &depthStencil;
+    pipelineInfo.pColorBlendState = &colorBlending;
+    pipelineInfo.pDynamicState = &dynamicState;
+    pipelineInfo.layout = *pipelineLayout;
+    pipelineInfo.renderPass = renderManager->vulkanData.vkRenderPass;
+    pipelineInfo.subpass = 0;
+    pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
+
+    if (vkCreateGraphicsPipelines(renderManager->vulkanData.vkDevice, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, pipeline) != VK_SUCCESS)
+    {
+        throw std::runtime_error("failed to create graphics pipeline!");
+    }
+
+    vkDestroyShaderModule(renderManager->vulkanData.vkDevice, fragShaderModule, nullptr);
+    vkDestroyShaderModule(renderManager->vulkanData.vkDevice, vertShaderModule, nullptr);
+}
+
+std::string GetShaderPath(const std::string& filename) {
+//#ifdef WINDOWS
+    return "../src/render/shaders/" + filename;
+    //return "/src/renderer/shaders/" + filename;
+//#else
+    //return "/Users/socki/dev/zayn2/src/renderer/shaders/" + filename;
+//#endif
+}
+
+void CreateUniformBuffer(Zayn::RenderManager* renderManager, std::vector<VkBuffer>& uniformBuffers, std::vector<VkDeviceMemory>& uniformBuffersMemory, std::vector<void*>& uniformBuffersMapped)
+{
+    VkDeviceSize bufferSize = sizeof(Game::UniformBufferObject);
+
+    uniformBuffers.resize(MAX_FRAMES_IN_FLIGHT);
+    uniformBuffersMemory.resize(MAX_FRAMES_IN_FLIGHT);
+    uniformBuffersMapped.resize(MAX_FRAMES_IN_FLIGHT);
+
+    for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
+    {
+        Zayn::CreateBuffer(renderManager, bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, uniformBuffers[i], uniformBuffersMemory[i]);
+        vkMapMemory(renderManager->vulkanData.vkDevice, uniformBuffersMemory[i], 0, bufferSize, 0, &uniformBuffersMapped[i]);
+    }
+}
+
+void CreateCommandBuffers(Zayn::RenderManager* renderManager)
+{
+    // Zayn->vkCommandBuffers = (VkCommandBuffer *)malloc(sizeof(VkCommandBuffer) * MAX_FRAMES_IN_FLIGHT);
+    renderManager->vulkanData.vkCommandBuffers.resize(MAX_FRAMES_IN_FLIGHT);
+
+    VkCommandBufferAllocateInfo allocInfo{};
+    allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+    allocInfo.commandPool = renderManager->vulkanData.vkCommandPool;
+    allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+    allocInfo.commandBufferCount = MAX_FRAMES_IN_FLIGHT;
+
+    if (vkAllocateCommandBuffers(renderManager->vulkanData.vkDevice, &allocInfo, renderManager->vulkanData.vkCommandBuffers.data()) != VK_SUCCESS)
+    {
+        throw std::runtime_error("failed to allocate command buffers!");
+    }
+//#if IMGUI
+//    // ImGui Command Buffer
+//    //zaynMem->imGuiCommandBuffers.resize(zaynMem->vkSwapChainImageViews.size()); // or MAX_FRAMES_IN_FLIGHT?
+//    zaynMem->myIMGUI.imGuiCommandBuffers.resize(MAX_FRAMES_IN_FLIGHT);
+//    // create command buffers
+//    allocInfo = {};
+//    allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+//    allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+//    allocInfo.commandPool = zaynMem->myIMGUI.imGuiCommandPool;
+//    allocInfo.commandBufferCount =
+//        static_cast<uint32_t>(zaynMem->myIMGUI.imGuiCommandBuffers.size());
+//    vkAllocateCommandBuffers(zaynMem->vulkan.vkDevice, &allocInfo, zaynMem->myIMGUI.imGuiCommandBuffers.data());
+//#endif
+}
+
+void CreateSyncObjects(Zayn::RenderManager* renderManager)
+{
+    renderManager->vulkanData.vkImageAvailableSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
+    renderManager->vulkanData.vkRenderFinishedSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
+    renderManager->vulkanData.vkInFlightFences.resize(MAX_FRAMES_IN_FLIGHT);
+    renderManager->vulkanData.vkImagesInFlight.resize(renderManager->vulkanData.vkSwapChainImages.size(), VK_NULL_HANDLE);
+
+    VkSemaphoreCreateInfo semaphoreInfo{};
+    semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+
+    VkFenceCreateInfo fenceInfo{};
+    fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+    fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
+
+
+    for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
+    {
+        if (vkCreateSemaphore(renderManager->vulkanData.vkDevice, &semaphoreInfo, nullptr, &renderManager->vulkanData.vkImageAvailableSemaphores[i]) != VK_SUCCESS ||
+            vkCreateSemaphore(renderManager->vulkanData.vkDevice, &semaphoreInfo, nullptr, &renderManager->vulkanData.vkRenderFinishedSemaphores[i]) != VK_SUCCESS ||
+            vkCreateFence(renderManager->vulkanData.vkDevice, &fenceInfo, nullptr, &renderManager->vulkanData.vkInFlightFences[i]) != VK_SUCCESS)
+        {
+
+            throw std::runtime_error("failed to create synchronization objects for a frame!");
+        }
+    }
+}
+
+
 void Zayn::InitRenderManager(Zayn::RenderManager* renderManager, Zayn::WindowManager* window)
 {
     std::cout << "InitRender_Vulkan()" << std::endl;
@@ -1258,68 +1539,12 @@ void Zayn::InitRenderManager(Zayn::RenderManager* renderManager, Zayn::WindowMan
     CreateDescriptorSetLayout(renderManager, &renderManager->vulkanData.vkDescriptorSetLayout, true); // this one is for those that have texures attached
     CreateDescriptorPool(renderManager, &renderManager->vulkanData.vkDescriptorPool, true);      // <---- CAN POTENTIAL BE RESUSED BETWEEN ENTITIES THAT HAVE THE SAME TYPES OF THINGS BEING SHARED
 
+    CreatePushConstant<Game::ModelPushConstant>(renderManager);
+
+    CreateGraphicsPipeline(renderManager, &renderManager->vulkanData.vkGraphicsPipeline, GetShaderPath("vkShader_3d_INIT_vert.spv"), GetShaderPath("vkShader_3d_INIT_frag.spv"), renderManager->vulkanData.vkPushConstantRanges, &renderManager->vulkanData.vkDescriptorSetLayout, &renderManager->vulkanData.vkPipelineLayout);
+
+    CreateUniformBuffer(renderManager, renderManager->vulkanData.vkUniformBuffers, renderManager->vulkanData.vkUniformBuffersMemory, renderManager->vulkanData.vkUniformBuffersMapped);
+
+    CreateCommandBuffers(renderManager);
+    CreateSyncObjects(renderManager);
 }
-
-/*
-
-
-
-void Zayn::InitRenderer(RenderManager* renderManager)
-{
-    std::cout << "InitRender_Vulkan()" << std::endl;
-    // I DONT THINK ANY GAME SPECIFIC THINGS OCCUR HERE
-    StartRender_Init(zaynMem);
-    std::cout << "after InitRender_Vulkan()" << std::endl;
-
-
-
-    // INIT MATERIAL SYSTEM
-    zaynMem->materialSystem = new MaterialSystem(&zaynMem->vulkan.vkDevice);
-
-
-
-    // CUSTOM CODE FOR RENDERS @TODO need to make this simpler
-    CreateDescriptorSetLayout(&zaynMem->vulkan.vkDescriptorSetLayout, true, zaynMem); // this one is for those that have texures attached
-    CreateDescriptorPool(zaynMem, &zaynMem->vulkan.vkDescriptorPool, true);      // <---- CAN POTENTIAL BE RESUSED BETWEEN ENTITIES THAT HAVE THE SAME TYPES OF THINGS BEING SHARED
-    
-
-    CreatePushConstant<ModelPushConstant>(zaynMem);
-    
-    CreateGraphicsPipeline(zaynMem, &zaynMem->vulkan.vkGraphicsPipeline, getShaderPath("vkShader_3d_INIT_vert.spv"), getShaderPath("vkShader_3d_INIT_frag.spv"), zaynMem->vulkan.vkPushConstantRanges, &zaynMem->vulkan.vkDescriptorSetLayout, &zaynMem->vulkan.vkPipelineLayout);
-    
-
-
-    // for new system  1. 
-    //CreateTextureImage(zaynMem, zaynMem->texture_001.mipLevels, &zaynMem->texture_001.image, &zaynMem->texture_001.memory, getTexturePath("viking_room.png"), VK_FORMAT_R8G8B8A8_SRGB);
-    //CreateTextureImageView(zaynMem, zaynMem->texture_001.mipLevels, &zaynMem->texture_001.image, &zaynMem->texture_001.view);
-    //CreateTextureSampler(zaynMem, zaynMem->texture_001.mipLevels, &zaynMem->texture_001.sampler); 
-    ////CreateMesh(zaynMem, getModelPath("viking_room.obj"), zaynMem->gameObject.mesh);
-    //LoadModel(getModelPath("viking_room.obj"), &zaynMem->mesh_001.vertices, &zaynMem->mesh_001.indices);
-    //CreateVertexBuffer(zaynMem, zaynMem->mesh_001.vertices, &zaynMem->mesh_001.vertexBuffer, &zaynMem->mesh_001.vertexBufferMemory);
-    //CreateIndexBuffer(zaynMem, zaynMem->mesh_001.indices, &zaynMem->mesh_001.indexBuffer, &zaynMem->mesh_001.indexBufferMemory);
-
-
-
-    //CreateGameObject(zaynMem);
-
-   
-   
-
-
-   /* CreateTextureImage(zaynMem, zaynMem->vulkan.vkMipLevels, &zaynMem->vulkan.vkTextureImage, &zaynMem->vulkan.vkTextureImageMemory, getTexturePath("viking_room.png"), VK_FORMAT_R8G8B8A8_SRGB);
-    CreateTextureImageView(zaynMem, zaynMem->vulkan.vkMipLevels, &zaynMem->vulkan.vkTextureImage, &zaynMem->vulkan.vkTextureImageView);
-    CreateTextureSampler(zaynMem, zaynMem->vulkan.vkMipLevels, &zaynMem->vulkan.vkTextureSampler);     
-    LoadModel(getModelPath("viking_room.obj"), &zaynMem->vulkan.vkVertices, &zaynMem->vulkan.vkIndices);
-    CreateVertexBuffer(zaynMem, zaynMem->vulkan.vkVertices, &zaynMem->vulkan.vkVertexBuffer, &zaynMem->vulkan.vkVertexBufferMemory);
-    CreateIndexBuffer(zaynMem, zaynMem->vulkan.vkIndices, &zaynMem->vulkan.vkIndexBuffer, &zaynMem->vulkan.vkIndexBufferMemory);
-    #1#
-    CreateUniformBuffer(zaynMem, zaynMem->vulkan.vkUniformBuffers, zaynMem->vulkan.vkUniformBuffersMemory, zaynMem->vulkan.vkUniformBuffersMapped);
-    
-    
-    //CreateDescriptorSets(zaynMem, true, sizeof(UniformBufferObject), zaynMem->vulkan.vkUniformBuffers, &zaynMem->vulkan.vkDescriptorSetLayout, &zaynMem->vulkan.vkDescriptorPool, zaynMem->vulkan.vkDescriptorSets, &zaynMem->vulkan.vkTextureImageView, &zaynMem->vulkan.vkTextureSampler);
-
-
-    
-    EndRender_Init(zaynMem);
-}
-*/

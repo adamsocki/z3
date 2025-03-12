@@ -8,8 +8,19 @@
 #include "../game/GameObject.h"
 #include "../DynamicArray.h"
 #include "../RenderManager.h"
+#include "../game/ModelPushConstant.h"
 
 namespace Zayn {
+
+    struct GameObjectCreateInfo
+    {
+        Game::Material* material;
+        Game::Mesh* mesh;
+        glm::mat4 transform;
+        std::string name;
+        Game::ModelPushConstant pushConstantData;
+    };
+
 
     struct GameObjectFactory{
         DynamicArray<Game::GameObject> gameObjects;

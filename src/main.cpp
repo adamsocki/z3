@@ -24,7 +24,6 @@ int main() {
 
     std::cout << "Hello, World!" << std::endl;
 
-
     int i = 1;
     while (true)
     {

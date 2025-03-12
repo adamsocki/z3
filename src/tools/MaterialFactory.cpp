@@ -42,7 +42,7 @@ namespace Zayn {
         VkDescriptorBufferInfo bufferInfo = {};
         bufferInfo.buffer = renderManager->vulkanData.vkUniformBuffers[frameIndex]; // Use frame's uniform buffer
         bufferInfo.offset = 0;
-        bufferInfo.range = sizeof(UniformBufferObject);
+        bufferInfo.range = sizeof(Game::UniformBufferObject);
 
         // Bind the material's texture to the descriptor set
         VkDescriptorImageInfo imageInfo{};
@@ -80,10 +80,11 @@ namespace Zayn {
         material.type = info->type;
         //outMaterial->color = info->color;
         //memcpy(outMaterial->color, info->color, sizeof(float) * 4);
-        material.roughness = info->roughness;
-        material.metallic = info->metallic;
+//        material.roughness = info->roughness;
+//        material.metallic = info->metallic;
         material.texture = info->texture;
         material.name = info->name;
+//        material.color = info->color;
 
         material.descriptorSets.resize(MAX_FRAMES_IN_FLIGHT);
         for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
@@ -95,7 +96,7 @@ namespace Zayn {
 
     void InitMaterialFactory(Engine* engine)
     {
-        DynamicArray<Game::Material> materials = MakeDynamicArray<Game::Material>(&engine->permanentMemory, 100);
+        engine->materialFactory.materials = MakeDynamicArray<Game::Material>(&engine->permanentMemory, 100);
     }
 
 

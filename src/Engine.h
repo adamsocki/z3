@@ -14,6 +14,7 @@
 #include "tools/TextureFactory.h"
 #include "tools/MaterialFactory.h"
 #include "tools/GameObjectFactory.h"
+#include "tools/MeshFactory.h"
 
 #define MAX_FRAMES_IN_FLIGHT 2
 
@@ -34,6 +35,7 @@ namespace Zayn {
 
         TextureFactory textureFactory;
         MaterialFactory materialFactory;
+        MeshFactory meshFactory;
         GameObjectFactory gameObjectFactory;
     };
 

@@ -1,0 +1,632 @@
+[
+{
+  "directory": "D:/dev_d/Z3/build",
+  "command": "C:\\MinGW\\bin\\g++.exe  @CMakeFiles/Z3.dir/includes_CXX.rsp -g -std=gnu++1z -o CMakeFiles\\Z3.dir\\src\\main.cpp.obj -c D:\\dev_d\\Z3\\src\\main.cpp",
+  "file": "D:/dev_d/Z3/src/main.cpp",
+  "output": "CMakeFiles/Z3.dir/src/main.cpp.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build",
+  "command": "C:\\MinGW\\bin\\g++.exe  @CMakeFiles/Z3.dir/includes_CXX.rsp -g -std=gnu++1z -o CMakeFiles\\Z3.dir\\src\\Engine.cpp.obj -c D:\\dev_d\\Z3\\src\\Engine.cpp",
+  "file": "D:/dev_d/Z3/src/Engine.cpp",
+  "output": "CMakeFiles/Z3.dir/src/Engine.cpp.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build",
+  "command": "C:\\MinGW\\bin\\g++.exe  @CMakeFiles/Z3.dir/includes_CXX.rsp -g -std=gnu++1z -o CMakeFiles\\Z3.dir\\src\\MemoryManager.cpp.obj -c D:\\dev_d\\Z3\\src\\MemoryManager.cpp",
+  "file": "D:/dev_d/Z3/src/MemoryManager.cpp",
+  "output": "CMakeFiles/Z3.dir/src/MemoryManager.cpp.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build",
+  "command": "C:\\MinGW\\bin\\g++.exe  @CMakeFiles/Z3.dir/includes_CXX.rsp -g -std=gnu++1z -o CMakeFiles\\Z3.dir\\src\\WindowManager.cpp.obj -c D:\\dev_d\\Z3\\src\\WindowManager.cpp",
+  "file": "D:/dev_d/Z3/src/WindowManager.cpp",
+  "output": "CMakeFiles/Z3.dir/src/WindowManager.cpp.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build",
+  "command": "C:\\MinGW\\bin\\g++.exe  @CMakeFiles/Z3.dir/includes_CXX.rsp -g -std=gnu++1z -o CMakeFiles\\Z3.dir\\src\\TimeManager.cpp.obj -c D:\\dev_d\\Z3\\src\\TimeManager.cpp",
+  "file": "D:/dev_d/Z3/src/TimeManager.cpp",
+  "output": "CMakeFiles/Z3.dir/src/TimeManager.cpp.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build",
+  "command": "C:\\MinGW\\bin\\g++.exe  @CMakeFiles/Z3.dir/includes_CXX.rsp -g -std=gnu++1z -o CMakeFiles\\Z3.dir\\src\\InputManager.cpp.obj -c D:\\dev_d\\Z3\\src\\InputManager.cpp",
+  "file": "D:/dev_d/Z3/src/InputManager.cpp",
+  "output": "CMakeFiles/Z3.dir/src/InputManager.cpp.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build",
+  "command": "C:\\MinGW\\bin\\g++.exe  @CMakeFiles/Z3.dir/includes_CXX.rsp -g -std=gnu++1z -o CMakeFiles\\Z3.dir\\src\\RenderManager.cpp.obj -c D:\\dev_d\\Z3\\src\\RenderManager.cpp",
+  "file": "D:/dev_d/Z3/src/RenderManager.cpp",
+  "output": "CMakeFiles/Z3.dir/src/RenderManager.cpp.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build",
+  "command": "C:\\MinGW\\bin\\g++.exe  @CMakeFiles/Z3.dir/includes_CXX.rsp -g -std=gnu++1z -o CMakeFiles\\Z3.dir\\src\\DynamicArray.cpp.obj -c D:\\dev_d\\Z3\\src\\DynamicArray.cpp",
+  "file": "D:/dev_d/Z3/src/DynamicArray.cpp",
+  "output": "CMakeFiles/Z3.dir/src/DynamicArray.cpp.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build",
+  "command": "C:\\MinGW\\bin\\g++.exe  @CMakeFiles/Z3.dir/includes_CXX.rsp -g -std=gnu++1z -o CMakeFiles\\Z3.dir\\src\\MaterialManager.cpp.obj -c D:\\dev_d\\Z3\\src\\MaterialManager.cpp",
+  "file": "D:/dev_d/Z3/src/MaterialManager.cpp",
+  "output": "CMakeFiles/Z3.dir/src/MaterialManager.cpp.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build",
+  "command": "C:\\MinGW\\bin\\g++.exe  @CMakeFiles/Z3.dir/includes_CXX.rsp -g -std=gnu++1z -o CMakeFiles\\Z3.dir\\src\\TextureManager.cpp.obj -c D:\\dev_d\\Z3\\src\\TextureManager.cpp",
+  "file": "D:/dev_d/Z3/src/TextureManager.cpp",
+  "output": "CMakeFiles/Z3.dir/src/TextureManager.cpp.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build",
+  "command": "C:\\MinGW\\bin\\g++.exe  @CMakeFiles/Z3.dir/includes_CXX.rsp -g -std=gnu++1z -o CMakeFiles\\Z3.dir\\src\\GameManager.cpp.obj -c D:\\dev_d\\Z3\\src\\GameManager.cpp",
+  "file": "D:/dev_d/Z3/src/GameManager.cpp",
+  "output": "CMakeFiles/Z3.dir/src/GameManager.cpp.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build",
+  "command": "C:\\MinGW\\bin\\g++.exe  @CMakeFiles/Z3.dir/includes_CXX.rsp -g -std=gnu++1z -o CMakeFiles\\Z3.dir\\src\\game\\GameObject.cpp.obj -c D:\\dev_d\\Z3\\src\\game\\GameObject.cpp",
+  "file": "D:/dev_d/Z3/src/game/GameObject.cpp",
+  "output": "CMakeFiles/Z3.dir/src/game/GameObject.cpp.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build",
+  "command": "C:\\MinGW\\bin\\g++.exe  @CMakeFiles/Z3.dir/includes_CXX.rsp -g -std=gnu++1z -o CMakeFiles\\Z3.dir\\src\\game\\Material.cpp.obj -c D:\\dev_d\\Z3\\src\\game\\Material.cpp",
+  "file": "D:/dev_d/Z3/src/game/Material.cpp",
+  "output": "CMakeFiles/Z3.dir/src/game/Material.cpp.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build",
+  "command": "C:\\MinGW\\bin\\g++.exe  @CMakeFiles/Z3.dir/includes_CXX.rsp -g -std=gnu++1z -o CMakeFiles\\Z3.dir\\src\\game\\Texture.cpp.obj -c D:\\dev_d\\Z3\\src\\game\\Texture.cpp",
+  "file": "D:/dev_d/Z3/src/game/Texture.cpp",
+  "output": "CMakeFiles/Z3.dir/src/game/Texture.cpp.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build",
+  "command": "C:\\MinGW\\bin\\g++.exe  @CMakeFiles/Z3.dir/includes_CXX.rsp -g -std=gnu++1z -o CMakeFiles\\Z3.dir\\src\\game\\Mesh.cpp.obj -c D:\\dev_d\\Z3\\src\\game\\Mesh.cpp",
+  "file": "D:/dev_d/Z3/src/game/Mesh.cpp",
+  "output": "CMakeFiles/Z3.dir/src/game/Mesh.cpp.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build",
+  "command": "C:\\MinGW\\bin\\g++.exe  @CMakeFiles/Z3.dir/includes_CXX.rsp -g -std=gnu++1z -o CMakeFiles\\Z3.dir\\src\\tools\\GameObjectFactory.cpp.obj -c D:\\dev_d\\Z3\\src\\tools\\GameObjectFactory.cpp",
+  "file": "D:/dev_d/Z3/src/tools/GameObjectFactory.cpp",
+  "output": "CMakeFiles/Z3.dir/src/tools/GameObjectFactory.cpp.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build",
+  "command": "C:\\MinGW\\bin\\g++.exe  @CMakeFiles/Z3.dir/includes_CXX.rsp -g -std=gnu++1z -o CMakeFiles\\Z3.dir\\src\\tools\\MaterialFactory.cpp.obj -c D:\\dev_d\\Z3\\src\\tools\\MaterialFactory.cpp",
+  "file": "D:/dev_d/Z3/src/tools/MaterialFactory.cpp",
+  "output": "CMakeFiles/Z3.dir/src/tools/MaterialFactory.cpp.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build",
+  "command": "C:\\MinGW\\bin\\g++.exe  @CMakeFiles/Z3.dir/includes_CXX.rsp -g -std=gnu++1z -o CMakeFiles\\Z3.dir\\src\\tools\\TextureFactory.cpp.obj -c D:\\dev_d\\Z3\\src\\tools\\TextureFactory.cpp",
+  "file": "D:/dev_d/Z3/src/tools/TextureFactory.cpp",
+  "output": "CMakeFiles/Z3.dir/src/tools/TextureFactory.cpp.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build",
+  "command": "C:\\MinGW\\bin\\g++.exe  @CMakeFiles/Z3.dir/includes_CXX.rsp -g -std=gnu++1z -o CMakeFiles\\Z3.dir\\src\\tools\\MeshFactory.cpp.obj -c D:\\dev_d\\Z3\\src\\tools\\MeshFactory.cpp",
+  "file": "D:/dev_d/Z3/src/tools/MeshFactory.cpp",
+  "output": "CMakeFiles/Z3.dir/src/tools/MeshFactory.cpp.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/src",
+  "command": "C:\\MinGW\\bin\\gcc.exe -DUNICODE -DWINVER=0x0501 -D_GLFW_USE_CONFIG_H -D_UNICODE @CMakeFiles/glfw.dir/includes_C.rsp -g -std=gnu99 -Wall -Wdeclaration-after-statement -o CMakeFiles\\glfw.dir\\context.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\src\\context.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/src/context.c",
+  "output": "_deps/glfw-build/src/CMakeFiles/glfw.dir/context.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/src",
+  "command": "C:\\MinGW\\bin\\gcc.exe -DUNICODE -DWINVER=0x0501 -D_GLFW_USE_CONFIG_H -D_UNICODE @CMakeFiles/glfw.dir/includes_C.rsp -g -std=gnu99 -Wall -Wdeclaration-after-statement -o CMakeFiles\\glfw.dir\\init.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\src\\init.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/src/init.c",
+  "output": "_deps/glfw-build/src/CMakeFiles/glfw.dir/init.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/src",
+  "command": "C:\\MinGW\\bin\\gcc.exe -DUNICODE -DWINVER=0x0501 -D_GLFW_USE_CONFIG_H -D_UNICODE @CMakeFiles/glfw.dir/includes_C.rsp -g -std=gnu99 -Wall -Wdeclaration-after-statement -o CMakeFiles\\glfw.dir\\input.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\src\\input.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/src/input.c",
+  "output": "_deps/glfw-build/src/CMakeFiles/glfw.dir/input.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/src",
+  "command": "C:\\MinGW\\bin\\gcc.exe -DUNICODE -DWINVER=0x0501 -D_GLFW_USE_CONFIG_H -D_UNICODE @CMakeFiles/glfw.dir/includes_C.rsp -g -std=gnu99 -Wall -Wdeclaration-after-statement -o CMakeFiles\\glfw.dir\\monitor.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\src\\monitor.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/src/monitor.c",
+  "output": "_deps/glfw-build/src/CMakeFiles/glfw.dir/monitor.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/src",
+  "command": "C:\\MinGW\\bin\\gcc.exe -DUNICODE -DWINVER=0x0501 -D_GLFW_USE_CONFIG_H -D_UNICODE @CMakeFiles/glfw.dir/includes_C.rsp -g -std=gnu99 -Wall -Wdeclaration-after-statement -o CMakeFiles\\glfw.dir\\vulkan.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\src\\vulkan.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/src/vulkan.c",
+  "output": "_deps/glfw-build/src/CMakeFiles/glfw.dir/vulkan.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/src",
+  "command": "C:\\MinGW\\bin\\gcc.exe -DUNICODE -DWINVER=0x0501 -D_GLFW_USE_CONFIG_H -D_UNICODE @CMakeFiles/glfw.dir/includes_C.rsp -g -std=gnu99 -Wall -Wdeclaration-after-statement -o CMakeFiles\\glfw.dir\\window.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\src\\window.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/src/window.c",
+  "output": "_deps/glfw-build/src/CMakeFiles/glfw.dir/window.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/src",
+  "command": "C:\\MinGW\\bin\\gcc.exe -DUNICODE -DWINVER=0x0501 -D_GLFW_USE_CONFIG_H -D_UNICODE @CMakeFiles/glfw.dir/includes_C.rsp -g -std=gnu99 -Wall -Wdeclaration-after-statement -o CMakeFiles\\glfw.dir\\win32_init.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\src\\win32_init.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/src/win32_init.c",
+  "output": "_deps/glfw-build/src/CMakeFiles/glfw.dir/win32_init.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/src",
+  "command": "C:\\MinGW\\bin\\gcc.exe -DUNICODE -DWINVER=0x0501 -D_GLFW_USE_CONFIG_H -D_UNICODE @CMakeFiles/glfw.dir/includes_C.rsp -g -std=gnu99 -Wall -Wdeclaration-after-statement -o CMakeFiles\\glfw.dir\\win32_joystick.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\src\\win32_joystick.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/src/win32_joystick.c",
+  "output": "_deps/glfw-build/src/CMakeFiles/glfw.dir/win32_joystick.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/src",
+  "command": "C:\\MinGW\\bin\\gcc.exe -DUNICODE -DWINVER=0x0501 -D_GLFW_USE_CONFIG_H -D_UNICODE @CMakeFiles/glfw.dir/includes_C.rsp -g -std=gnu99 -Wall -Wdeclaration-after-statement -o CMakeFiles\\glfw.dir\\win32_monitor.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\src\\win32_monitor.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/src/win32_monitor.c",
+  "output": "_deps/glfw-build/src/CMakeFiles/glfw.dir/win32_monitor.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/src",
+  "command": "C:\\MinGW\\bin\\gcc.exe -DUNICODE -DWINVER=0x0501 -D_GLFW_USE_CONFIG_H -D_UNICODE @CMakeFiles/glfw.dir/includes_C.rsp -g -std=gnu99 -Wall -Wdeclaration-after-statement -o CMakeFiles\\glfw.dir\\win32_time.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\src\\win32_time.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/src/win32_time.c",
+  "output": "_deps/glfw-build/src/CMakeFiles/glfw.dir/win32_time.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/src",
+  "command": "C:\\MinGW\\bin\\gcc.exe -DUNICODE -DWINVER=0x0501 -D_GLFW_USE_CONFIG_H -D_UNICODE @CMakeFiles/glfw.dir/includes_C.rsp -g -std=gnu99 -Wall -Wdeclaration-after-statement -o CMakeFiles\\glfw.dir\\win32_thread.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\src\\win32_thread.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/src/win32_thread.c",
+  "output": "_deps/glfw-build/src/CMakeFiles/glfw.dir/win32_thread.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/src",
+  "command": "C:\\MinGW\\bin\\gcc.exe -DUNICODE -DWINVER=0x0501 -D_GLFW_USE_CONFIG_H -D_UNICODE @CMakeFiles/glfw.dir/includes_C.rsp -g -std=gnu99 -Wall -Wdeclaration-after-statement -o CMakeFiles\\glfw.dir\\win32_window.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\src\\win32_window.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/src/win32_window.c",
+  "output": "_deps/glfw-build/src/CMakeFiles/glfw.dir/win32_window.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/src",
+  "command": "C:\\MinGW\\bin\\gcc.exe -DUNICODE -DWINVER=0x0501 -D_GLFW_USE_CONFIG_H -D_UNICODE @CMakeFiles/glfw.dir/includes_C.rsp -g -std=gnu99 -Wall -Wdeclaration-after-statement -o CMakeFiles\\glfw.dir\\wgl_context.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\src\\wgl_context.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/src/wgl_context.c",
+  "output": "_deps/glfw-build/src/CMakeFiles/glfw.dir/wgl_context.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/src",
+  "command": "C:\\MinGW\\bin\\gcc.exe -DUNICODE -DWINVER=0x0501 -D_GLFW_USE_CONFIG_H -D_UNICODE @CMakeFiles/glfw.dir/includes_C.rsp -g -std=gnu99 -Wall -Wdeclaration-after-statement -o CMakeFiles\\glfw.dir\\egl_context.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\src\\egl_context.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/src/egl_context.c",
+  "output": "_deps/glfw-build/src/CMakeFiles/glfw.dir/egl_context.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/src",
+  "command": "C:\\MinGW\\bin\\gcc.exe -DUNICODE -DWINVER=0x0501 -D_GLFW_USE_CONFIG_H -D_UNICODE @CMakeFiles/glfw.dir/includes_C.rsp -g -std=gnu99 -Wall -Wdeclaration-after-statement -o CMakeFiles\\glfw.dir\\osmesa_context.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\src\\osmesa_context.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/src/osmesa_context.c",
+  "output": "_deps/glfw-build/src/CMakeFiles/glfw.dir/osmesa_context.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/examples",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/boing.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\boing.dir\\boing.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\examples\\boing.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/examples/boing.c",
+  "output": "_deps/glfw-build/examples/CMakeFiles/boing.dir/boing.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/examples",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/boing.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\boing.dir\\__\\deps\\glad_gl.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\deps\\glad_gl.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/deps/glad_gl.c",
+  "output": "_deps/glfw-build/examples/CMakeFiles/boing.dir/__/deps/glad_gl.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/examples",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/gears.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\gears.dir\\gears.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\examples\\gears.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/examples/gears.c",
+  "output": "_deps/glfw-build/examples/CMakeFiles/gears.dir/gears.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/examples",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/gears.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\gears.dir\\__\\deps\\glad_gl.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\deps\\glad_gl.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/deps/glad_gl.c",
+  "output": "_deps/glfw-build/examples/CMakeFiles/gears.dir/__/deps/glad_gl.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/examples",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/heightmap.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\heightmap.dir\\heightmap.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\examples\\heightmap.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/examples/heightmap.c",
+  "output": "_deps/glfw-build/examples/CMakeFiles/heightmap.dir/heightmap.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/examples",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/heightmap.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\heightmap.dir\\__\\deps\\glad_gl.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\deps\\glad_gl.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/deps/glad_gl.c",
+  "output": "_deps/glfw-build/examples/CMakeFiles/heightmap.dir/__/deps/glad_gl.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/examples",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/offscreen.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\offscreen.dir\\offscreen.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\examples\\offscreen.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/examples/offscreen.c",
+  "output": "_deps/glfw-build/examples/CMakeFiles/offscreen.dir/offscreen.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/examples",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/offscreen.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\offscreen.dir\\__\\deps\\glad_gl.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\deps\\glad_gl.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/deps/glad_gl.c",
+  "output": "_deps/glfw-build/examples/CMakeFiles/offscreen.dir/__/deps/glad_gl.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/examples",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/particles.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\particles.dir\\particles.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\examples\\particles.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/examples/particles.c",
+  "output": "_deps/glfw-build/examples/CMakeFiles/particles.dir/particles.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/examples",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/particles.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\particles.dir\\__\\deps\\tinycthread.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\deps\\tinycthread.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/deps/tinycthread.c",
+  "output": "_deps/glfw-build/examples/CMakeFiles/particles.dir/__/deps/tinycthread.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/examples",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/particles.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\particles.dir\\__\\deps\\getopt.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\deps\\getopt.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/deps/getopt.c",
+  "output": "_deps/glfw-build/examples/CMakeFiles/particles.dir/__/deps/getopt.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/examples",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/particles.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\particles.dir\\__\\deps\\glad_gl.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\deps\\glad_gl.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/deps/glad_gl.c",
+  "output": "_deps/glfw-build/examples/CMakeFiles/particles.dir/__/deps/glad_gl.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/examples",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/sharing.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\sharing.dir\\sharing.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\examples\\sharing.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/examples/sharing.c",
+  "output": "_deps/glfw-build/examples/CMakeFiles/sharing.dir/sharing.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/examples",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/sharing.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\sharing.dir\\__\\deps\\glad_gl.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\deps\\glad_gl.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/deps/glad_gl.c",
+  "output": "_deps/glfw-build/examples/CMakeFiles/sharing.dir/__/deps/glad_gl.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/examples",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/simple.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\simple.dir\\simple.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\examples\\simple.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/examples/simple.c",
+  "output": "_deps/glfw-build/examples/CMakeFiles/simple.dir/simple.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/examples",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/simple.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\simple.dir\\__\\deps\\glad_gl.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\deps\\glad_gl.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/deps/glad_gl.c",
+  "output": "_deps/glfw-build/examples/CMakeFiles/simple.dir/__/deps/glad_gl.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/examples",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/splitview.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\splitview.dir\\splitview.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\examples\\splitview.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/examples/splitview.c",
+  "output": "_deps/glfw-build/examples/CMakeFiles/splitview.dir/splitview.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/examples",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/splitview.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\splitview.dir\\__\\deps\\glad_gl.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\deps\\glad_gl.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/deps/glad_gl.c",
+  "output": "_deps/glfw-build/examples/CMakeFiles/splitview.dir/__/deps/glad_gl.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/examples",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/wave.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\wave.dir\\wave.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\examples\\wave.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/examples/wave.c",
+  "output": "_deps/glfw-build/examples/CMakeFiles/wave.dir/wave.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/examples",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/wave.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\wave.dir\\__\\deps\\glad_gl.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\deps\\glad_gl.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/deps/glad_gl.c",
+  "output": "_deps/glfw-build/examples/CMakeFiles/wave.dir/__/deps/glad_gl.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/tests",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/clipboard.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\clipboard.dir\\clipboard.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\tests\\clipboard.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/tests/clipboard.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/clipboard.dir/clipboard.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/tests",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/clipboard.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\clipboard.dir\\__\\deps\\getopt.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\deps\\getopt.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/deps/getopt.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/clipboard.dir/__/deps/getopt.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/tests",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/clipboard.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\clipboard.dir\\__\\deps\\glad_gl.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\deps\\glad_gl.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/deps/glad_gl.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/clipboard.dir/__/deps/glad_gl.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/tests",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/events.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\events.dir\\events.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\tests\\events.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/tests/events.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/events.dir/events.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/tests",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/events.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\events.dir\\__\\deps\\getopt.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\deps\\getopt.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/deps/getopt.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/events.dir/__/deps/getopt.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/tests",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/events.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\events.dir\\__\\deps\\glad_gl.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\deps\\glad_gl.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/deps/glad_gl.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/events.dir/__/deps/glad_gl.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/tests",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/msaa.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\msaa.dir\\msaa.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\tests\\msaa.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/tests/msaa.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/msaa.dir/msaa.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/tests",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/msaa.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\msaa.dir\\__\\deps\\getopt.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\deps\\getopt.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/deps/getopt.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/msaa.dir/__/deps/getopt.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/tests",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/msaa.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\msaa.dir\\__\\deps\\glad_gl.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\deps\\glad_gl.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/deps/glad_gl.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/msaa.dir/__/deps/glad_gl.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/tests",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/glfwinfo.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\glfwinfo.dir\\glfwinfo.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\tests\\glfwinfo.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/tests/glfwinfo.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/glfwinfo.dir/glfwinfo.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/tests",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/glfwinfo.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\glfwinfo.dir\\__\\deps\\getopt.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\deps\\getopt.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/deps/getopt.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/glfwinfo.dir/__/deps/getopt.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/tests",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/glfwinfo.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\glfwinfo.dir\\__\\deps\\glad_gl.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\deps\\glad_gl.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/deps/glad_gl.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/glfwinfo.dir/__/deps/glad_gl.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/tests",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/glfwinfo.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\glfwinfo.dir\\__\\deps\\glad_vulkan.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\deps\\glad_vulkan.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/deps/glad_vulkan.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/glfwinfo.dir/__/deps/glad_vulkan.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/tests",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/iconify.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\iconify.dir\\iconify.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\tests\\iconify.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/tests/iconify.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/iconify.dir/iconify.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/tests",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/iconify.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\iconify.dir\\__\\deps\\getopt.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\deps\\getopt.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/deps/getopt.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/iconify.dir/__/deps/getopt.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/tests",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/iconify.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\iconify.dir\\__\\deps\\glad_gl.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\deps\\glad_gl.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/deps/glad_gl.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/iconify.dir/__/deps/glad_gl.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/tests",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/monitors.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\monitors.dir\\monitors.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\tests\\monitors.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/tests/monitors.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/monitors.dir/monitors.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/tests",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/monitors.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\monitors.dir\\__\\deps\\getopt.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\deps\\getopt.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/deps/getopt.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/monitors.dir/__/deps/getopt.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/tests",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/monitors.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\monitors.dir\\__\\deps\\glad_gl.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\deps\\glad_gl.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/deps/glad_gl.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/monitors.dir/__/deps/glad_gl.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/tests",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/reopen.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\reopen.dir\\reopen.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\tests\\reopen.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/tests/reopen.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/reopen.dir/reopen.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/tests",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/reopen.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\reopen.dir\\__\\deps\\glad_gl.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\deps\\glad_gl.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/deps/glad_gl.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/reopen.dir/__/deps/glad_gl.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/tests",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/cursor.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\cursor.dir\\cursor.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\tests\\cursor.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/tests/cursor.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/cursor.dir/cursor.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/tests",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/cursor.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\cursor.dir\\__\\deps\\glad_gl.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\deps\\glad_gl.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/deps/glad_gl.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/cursor.dir/__/deps/glad_gl.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/tests",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/empty.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\empty.dir\\empty.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\tests\\empty.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/tests/empty.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/empty.dir/empty.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/tests",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/empty.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\empty.dir\\__\\deps\\tinycthread.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\deps\\tinycthread.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/deps/tinycthread.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/empty.dir/__/deps/tinycthread.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/tests",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/empty.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\empty.dir\\__\\deps\\glad_gl.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\deps\\glad_gl.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/deps/glad_gl.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/empty.dir/__/deps/glad_gl.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/tests",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/gamma.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\gamma.dir\\gamma.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\tests\\gamma.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/tests/gamma.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/gamma.dir/gamma.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/tests",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/gamma.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\gamma.dir\\__\\deps\\glad_gl.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\deps\\glad_gl.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/deps/glad_gl.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/gamma.dir/__/deps/glad_gl.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/tests",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/icon.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\icon.dir\\icon.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\tests\\icon.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/tests/icon.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/icon.dir/icon.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/tests",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/icon.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\icon.dir\\__\\deps\\glad_gl.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\deps\\glad_gl.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/deps/glad_gl.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/icon.dir/__/deps/glad_gl.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/tests",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/inputlag.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\inputlag.dir\\inputlag.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\tests\\inputlag.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/tests/inputlag.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/inputlag.dir/inputlag.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/tests",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/inputlag.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\inputlag.dir\\__\\deps\\getopt.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\deps\\getopt.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/deps/getopt.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/inputlag.dir/__/deps/getopt.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/tests",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/inputlag.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\inputlag.dir\\__\\deps\\glad_gl.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\deps\\glad_gl.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/deps/glad_gl.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/inputlag.dir/__/deps/glad_gl.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/tests",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/joysticks.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\joysticks.dir\\joysticks.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\tests\\joysticks.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/tests/joysticks.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/joysticks.dir/joysticks.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/tests",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/joysticks.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\joysticks.dir\\__\\deps\\glad_gl.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\deps\\glad_gl.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/deps/glad_gl.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/joysticks.dir/__/deps/glad_gl.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/tests",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/opacity.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\opacity.dir\\opacity.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\tests\\opacity.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/tests/opacity.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/opacity.dir/opacity.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/tests",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/opacity.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\opacity.dir\\__\\deps\\glad_gl.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\deps\\glad_gl.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/deps/glad_gl.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/opacity.dir/__/deps/glad_gl.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/tests",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/tearing.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\tearing.dir\\tearing.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\tests\\tearing.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/tests/tearing.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/tearing.dir/tearing.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/tests",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/tearing.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\tearing.dir\\__\\deps\\glad_gl.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\deps\\glad_gl.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/deps/glad_gl.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/tearing.dir/__/deps/glad_gl.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/tests",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/threads.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\threads.dir\\threads.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\tests\\threads.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/tests/threads.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/threads.dir/threads.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/tests",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/threads.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\threads.dir\\__\\deps\\tinycthread.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\deps\\tinycthread.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/deps/tinycthread.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/threads.dir/__/deps/tinycthread.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/tests",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/threads.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\threads.dir\\__\\deps\\glad_gl.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\deps\\glad_gl.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/deps/glad_gl.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/threads.dir/__/deps/glad_gl.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/tests",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/timeout.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\timeout.dir\\timeout.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\tests\\timeout.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/tests/timeout.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/timeout.dir/timeout.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/tests",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/timeout.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\timeout.dir\\__\\deps\\glad_gl.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\deps\\glad_gl.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/deps/glad_gl.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/timeout.dir/__/deps/glad_gl.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/tests",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/title.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\title.dir\\title.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\tests\\title.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/tests/title.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/title.dir/title.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/tests",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/title.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\title.dir\\__\\deps\\glad_gl.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\deps\\glad_gl.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/deps/glad_gl.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/title.dir/__/deps/glad_gl.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/tests",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/triangle-vulkan.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\triangle-vulkan.dir\\triangle-vulkan.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\tests\\triangle-vulkan.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/tests/triangle-vulkan.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/triangle-vulkan.dir/triangle-vulkan.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/tests",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/triangle-vulkan.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\triangle-vulkan.dir\\__\\deps\\glad_vulkan.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\deps\\glad_vulkan.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/deps/glad_vulkan.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/triangle-vulkan.dir/__/deps/glad_vulkan.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/tests",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/windows.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\windows.dir\\windows.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\tests\\windows.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/tests/windows.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/windows.dir/windows.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/tests",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/windows.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\windows.dir\\__\\deps\\getopt.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\deps\\getopt.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/deps/getopt.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/windows.dir/__/deps/getopt.c.obj"
+},
+{
+  "directory": "D:/dev_d/Z3/build/_deps/glfw-build/tests",
+  "command": "C:\\MinGW\\bin\\gcc.exe  @CMakeFiles/windows.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\windows.dir\\__\\deps\\glad_gl.c.obj -c D:\\dev_d\\Z3\\build\\_deps\\glfw-src\\deps\\glad_gl.c",
+  "file": "D:/dev_d/Z3/build/_deps/glfw-src/deps/glad_gl.c",
+  "output": "_deps/glfw-build/tests/CMakeFiles/windows.dir/__/deps/glad_gl.c.obj"
+}
+]

@@ -29,12 +29,18 @@ namespace Zayn {
         MakeMaterial(engine, &material1);
     }
 
+    void MakeMeshes(Engine* engine)
+    {
+
+    }
+
     void GameObjects(Engine* engine)
     {
         // GameObject - DynamicArray
 
-
-
+        GameObjectCreateInfo gameObject1;
+        gameObject1.material = &engine->materialFactory.materials[0];
+//        gameObject1.mesh
 
 //        Game::Texture texture;
 //        Game::Material material;
@@ -52,6 +58,7 @@ namespace Zayn {
     {
        MakeTextures(engine);
        MakeMaterials(engine);
+       MakeMeshes(engine);
        GameObjects(engine);
     }
 } // Zayn

@@ -1,16 +1,130 @@
 //
 // Created by socki on 3/5/2025.
 //
+#include <map>
+#include <unordered_map>
+#define GLM_ENABLE_EXPERIMENTAL
+
+#include <glm/gtx/hash.hpp>
+#include <iostream>
+#include <vector>
+#include <string>
 
 #include "MeshFactory.h"
+#include "../Engine.h"
+
+
+#define TINYOBJLOADER_IMPLEMENTATION
+#include "../include/tiny_obj_loader.h"
+
+
+
+
+namespace std {
+    template<> struct hash<Zayn::Vertex> {
+        size_t operator()(Zayn::Vertex const& vertex) const {
+            return ((hash<glm::vec3>()(vertex.pos) ^ (hash<glm::vec3>()(vertex.color) << 1)) >> 1) ^ (hash<glm::vec2>()(vertex.texCoord) << 1);
+        }
+    };
+}
 
 namespace Zayn {
 
+    void CreateIndexBuffer(RenderManager* renderManager, std::vector<uint32_t> indices, VkBuffer* indexBuffer, VkDeviceMemory* indexBufferMemory)
+    {
+        if (indices.empty())
+        {
+            return;
+        }
+        VkDeviceSize bufferSize = sizeof(uint32_t) * indices.size();
+
+        VkBuffer stagingBuffer;
+        VkDeviceMemory stagingBufferMemory;
+        CreateBuffer(renderManager, bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
+
+        void* data;
+        vkMapMemory(renderManager->vulkanData.vkDevice, stagingBufferMemory, 0, bufferSize, 0, &data);
+        memcpy(data, indices.data(), (size_t)bufferSize);
+        vkUnmapMemory(renderManager->vulkanData.vkDevice, stagingBufferMemory);
+
+        CreateBuffer(renderManager,bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, *indexBuffer, *indexBufferMemory);
+
+        CopyBuffer(renderManager, stagingBuffer, *indexBuffer, bufferSize);
+
+        vkDestroyBuffer(renderManager->vulkanData.vkDevice, stagingBuffer, nullptr);
+        vkFreeMemory(renderManager->vulkanData.vkDevice, stagingBufferMemory, nullptr);
+    }
+
+    void CreateVertexBuffer(RenderManager* renderManager, std::vector<Vertex>& vertices, VkBuffer* vertexBuffer, VkDeviceMemory* vertexBufferMemory)
+    {
+        if (vertices.empty())
+        {
+            return;
+        }
+
+        VkDeviceSize bufferSize = sizeof(Vertex) * vertices.size();
+        // STAGING BUFFER - CPU accessible memory to upload the data from the vertex array to.
+        VkBuffer stagingBuffer;
+        VkDeviceMemory stagingBufferMemory;
+        CreateBuffer(renderManager, bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
+
+        void* data;
+        vkMapMemory(renderManager->vulkanData.vkDevice, stagingBufferMemory, 0, bufferSize, 0, &data);
+        memcpy(data, vertices.data(), (size_t)bufferSize);
+        vkUnmapMemory(renderManager->vulkanData.vkDevice, stagingBufferMemory);
+
+        CreateBuffer(renderManager, bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, *vertexBuffer, *vertexBufferMemory);
+
+        CopyBuffer(renderManager,stagingBuffer, *vertexBuffer, bufferSize);
+
+        vkDestroyBuffer(renderManager->vulkanData.vkDevice, stagingBuffer, nullptr);
+        vkFreeMemory(renderManager->vulkanData.vkDevice, stagingBufferMemory, nullptr);
+    }
 
 
+    void LoadModel(const std::string modelPath, std::vector<Vertex>* vertices, std::vector<uint32_t>* indices)
+    {
+        tinyobj::attrib_t attrib;
+        std::vector<tinyobj::shape_t> shapes;
+        std::vector<tinyobj::material_t> materials;
+        std::string warn, err;
+
+        if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, modelPath.c_str()))
+        {
+            throw std::runtime_error(warn + err);
+        }
+        std::unordered_map<Vertex, uint32_t> uniqueVertices{};
+
+        for (const auto& shape : shapes)
+        {
+            for (const auto& index : shape.mesh.indices)
+            {
+                Vertex vertex{};
+
+                vertex.pos = {
+                        attrib.vertices[3 * index.vertex_index + 0],
+                        attrib.vertices[3 * index.vertex_index + 1],
+                        attrib.vertices[3 * index.vertex_index + 2] };
+
+                vertex.texCoord = {
+                        attrib.texcoords[2 * index.texcoord_index + 0],
+                        1.0f - attrib.texcoords[2 * index.texcoord_index + 1] };
+
+                vertex.color = { 0.3f, 1.0f, 0.6f };
+
+                if (uniqueVertices.count(vertex) == 0)
+                {
+                    uniqueVertices[vertex] = static_cast<uint32_t>(vertices->size());
+                    vertices->push_back(vertex);
+                }
+
+                indices->push_back(uniqueVertices[vertex]);
+            }
+        }
+    }
 
 
-    void MakeMesh(Engine* engine, Game::Mesh* mesh)
+    void MakeMesh(Engine* engine)
     {
 
     }
@@ -18,7 +132,7 @@ namespace Zayn {
 
     void InitMeshFactory(Engine* engine)
     {
-        DynamicArray<Game::Mesh> meshes = MakeDynamicArray<Game::Mesh>(&engine->permanentMemory, 100);
+        engine->meshFactory.meshes = MakeDynamicArray<Game::Mesh>(&engine->permanentMemory, 100);
     }
 
 } // Zayn

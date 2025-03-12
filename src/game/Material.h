@@ -23,9 +23,9 @@ namespace Game {
         MaterialType type;
         std::vector<VkDescriptorSet> descriptorSets;
         Texture* texture;
-        float color[4];
-        float metallic;
-        float roughness;
+       // float color[4];
+      //  float metallic;
+       // float roughness;
         bool isInitialized = false;
 
 

@@ -11,6 +11,7 @@
 #include "GameManager.h"
 #include "tools/MaterialFactory.h"
 #include "tools/GameObjectFactory.h"
+#include "tools/MeshFactory.h"
 
 
 namespace Zayn {
@@ -19,21 +20,22 @@ namespace Zayn {
     void InitEngine(Engine* engine)
     {
         InitMemoryManager(engine);
-        InitWindowManager(engine, V2(100,133), "spanglish");
+        InitWindowManager(engine, V2(500,533), "spanglish");
         InitTimeManager(engine);
         InitInputManager(engine);
 
         InitTextureFactory(engine);
         InitMaterialFactory(engine);
+        InitMeshFactory(engine);
+
         InitGameObjectFactory(engine);
-
-
-
 
 //        InitMaterialManager(engine);
 
 
         InitRenderManager(&engine->renderManager, &engine->windowManager);
+
+
 
 
 

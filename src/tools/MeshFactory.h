@@ -6,16 +6,18 @@
 #define Z3_MESHFACTORY_H
 
 #include "../game/Mesh.h"
-#include "../Engine.h"
+#include "../DynamicArray.h"
+
+
 
 
 namespace Zayn {
 
     struct MeshFactory {
-
+        DynamicArray<Game::Mesh> meshes;
     };
 
-    void MakeMesh(Engine* engine, Game::Mesh* mesh);
+    void MakeMesh(Engine* engine);
     void InitMeshFactory(Engine* engine);
 
 } // Zayn

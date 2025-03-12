@@ -234,6 +234,10 @@ namespace Zayn {
         VulkanData vulkanData;
     };
 
+
+    void CopyBuffer(Zayn::RenderManager* renderManager, VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
+
+
     void CreateBuffer(Zayn::RenderManager *renderManager, VkDeviceSize size, VkBufferUsageFlags usage,
                       VkMemoryPropertyFlags properties, VkBuffer &buffer, VkDeviceMemory &bufferMemory);
 
