@@ -15,6 +15,7 @@ namespace Game {
     struct Mesh {
 
         std::string name;
+        std::string path;
         VkBuffer vertexBuffer;
         VkDeviceMemory vertexBufferMemory;
         VkBuffer indexBuffer;

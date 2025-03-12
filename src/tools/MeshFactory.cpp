@@ -30,6 +30,14 @@ namespace std {
 
 namespace Zayn {
 
+    std::string GetModelPath(const std::string& filename) {
+    #ifdef WIN32
+        return "../src/render/models/" + filename;
+    #elif __APPLE__
+        return "/Users/socki/dev/zayn2/models/" + filename;
+    #endif
+    }
+
     void CreateIndexBuffer(RenderManager* renderManager, std::vector<uint32_t> indices, VkBuffer* indexBuffer, VkDeviceMemory* indexBufferMemory)
     {
         if (indices.empty())
@@ -82,7 +90,7 @@ namespace Zayn {
     }
 
 
-    void LoadModel(const std::string modelPath, std::vector<Vertex>* vertices, std::vector<uint32_t>* indices)
+    void LoadModel( std::string modelPath, std::vector<Vertex>* vertices, std::vector<uint32_t>* indices)
     {
         tinyobj::attrib_t attrib;
         std::vector<tinyobj::shape_t> shapes;
@@ -124,8 +132,14 @@ namespace Zayn {
     }
 
 
-    void MakeMesh(Engine* engine)
+    void MakeMesh(Engine* engine, MeshCreateInfo* info)
     {
+        RenderManager* renderManager = &engine->renderManager;
+        Game::Mesh mesh ={};
+        mesh.path = info->path;
+        LoadModel(GetModelPath(mesh.path), &mesh.vertices, &mesh.indices);
+        CreateVertexBuffer(renderManager, mesh.vertices, &mesh.vertexBuffer, &mesh.vertexBufferMemory);
+        CreateIndexBuffer(renderManager, mesh.indices, &mesh.indexBuffer, &mesh.indexBufferMemory);
 
     }
 

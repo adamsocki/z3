@@ -6,6 +6,7 @@
 #include "game/GameObject.h"
 #include "Engine.h"
 //#include "tools/TextureFactory.h"
+#include "tools/MeshFactory.h"
 
 namespace Zayn {
 
@@ -31,7 +32,10 @@ namespace Zayn {
 
     void MakeMeshes(Engine* engine)
     {
-
+        MeshCreateInfo mesh1;
+        mesh1.path = "viking_room.obj";
+        mesh1.name = "V1";
+        MakeMesh(engine, &mesh1);
     }
 
     void GameObjects(Engine* engine)
@@ -40,14 +44,14 @@ namespace Zayn {
 
         GameObjectCreateInfo gameObject1;
         gameObject1.material = &engine->materialFactory.materials[0];
-//        gameObject1.mesh
+        gameObject1.mesh = &engine->meshFactory.meshes[0];
 
 //        Game::Texture texture;
 //        Game::Material material;
 //        Game::GameObject gameObject;
 
 
-//        MakeGameObject(engine, gameObjects, &gameObject);
+//        MakeGameObject(engine, &gameObject1);
     }
 
 

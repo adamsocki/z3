@@ -13,11 +13,17 @@
 
 namespace Zayn {
 
+    struct MeshCreateInfo
+    {
+        std::string path;
+        std::string name;
+
+    };
     struct MeshFactory {
         DynamicArray<Game::Mesh> meshes;
     };
 
-    void MakeMesh(Engine* engine);
+    void MakeMesh(Engine* engine, MeshCreateInfo* meshCreateInfo);
     void InitMeshFactory(Engine* engine);
 
 } // Zayn
