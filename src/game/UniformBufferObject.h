@@ -8,11 +8,15 @@
 
 #include <glm/glm.hpp>
 
-struct UniformBufferObject
+namespace Game
 {
-    alignas(16) glm::mat4 view;
-    alignas(16) glm::mat4 proj;
-};
+    struct UniformBufferObject
+    {
+        alignas(16) glm::mat4 view;
+        alignas(16) glm::mat4 proj;
+    };
+
+}
 
 
 #endif //Z3_UNIFORMBUFFEROBJECT_H
