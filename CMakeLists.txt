@@ -51,6 +51,18 @@ add_executable(Z3 src/main.cpp
         src/tools/MeshFactory.h
         src/game/UniformBufferObject.h
         src/game/ModelPushConstant.h
+        src/EntityManager.cpp
+        src/EntityManager.h
+        src/game/entities/Entity.cpp
+        src/game/entities/Entity.h
+        src/tools/EntityFactory.cpp
+        src/tools/EntityFactory.h
+        src/game/entities/EntityTypes.cpp
+        src/game/entities/EntityTypes.h
+        src/game/entities/PlayerEntity.cpp
+        src/game/entities/PlayerEntity.h
+        src/CameraManager.cpp
+        src/CameraManager.h
 
 
 )

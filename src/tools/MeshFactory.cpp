@@ -137,11 +137,16 @@ namespace Zayn {
         RenderManager* renderManager = &engine->renderManager;
         Game::Mesh mesh ={};
         mesh.path = info->path;
+        mesh.name = "mesh";
         LoadModel(GetModelPath(mesh.path), &mesh.vertices, &mesh.indices);
         CreateVertexBuffer(renderManager, mesh.vertices, &mesh.vertexBuffer, &mesh.vertexBufferMemory);
         CreateIndexBuffer(renderManager, mesh.indices, &mesh.indexBuffer, &mesh.indexBufferMemory);
 
+        PushBack(&engine->meshFactory.meshes, mesh);
+
     }
+
+    
 
 
     void InitMeshFactory(Engine* engine)

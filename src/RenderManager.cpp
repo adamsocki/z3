@@ -6,6 +6,8 @@
 #include "Engine.h"
 #include "game/ModelPushConstant.h"
 #include "game/UniformBufferObject.h"
+#include "CameraManager.h"
+#include "game/entities/PlayerEntity.h"
 //#include "tools/TextureFactory.h"
 
 
@@ -15,6 +17,8 @@
 #include <vulkan/vulkan.h>
 #include <algorithm>
 #include <fstream>
+#include <glm/ext/matrix_clip_space.hpp>
+#include <glm/ext/matrix_transform.hpp>
 
 //#include "include/stb_image.h"
 
@@ -113,6 +117,11 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
         void* pUserData)
 {
     std::cerr << "validation layer: " << pCallbackData->pMessage << std::endl;
+    // Try to extract more information about the error
+    if (strstr(pCallbackData->pMessage, "renderPass is VK_NULL_HANDLE")) {
+        std::cerr << "CUSTOM DEBUG: Detected renderPass NULL handle error!" << std::endl;
+        // Print call stack or other debug info if possible
+    }
     return VK_FALSE;
 }
 
@@ -612,6 +621,15 @@ VkFormat FindDepthFormat(Zayn::RenderManager* renderManager)
 
 void CreateRenderPass(Zayn::RenderManager* renderManager)
 {
+
+    std::cout << "Starting render pass creation..." << std::endl;
+
+    // Check if device is valid
+    if (renderManager->vulkanData.vkDevice == VK_NULL_HANDLE) {
+        std::cerr << "ERROR: vkDevice is NULL when creating render pass!" << std::endl;
+        return;
+    }
+
     VkAttachmentDescription colorAttachment{};
     colorAttachment.format = renderManager->vulkanData.vkSwapChainImageFormat;
     colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
@@ -623,11 +641,11 @@ void CreateRenderPass(Zayn::RenderManager* renderManager)
 
 
     // changed for imgui
-#ifdef IMGUI
-    colorAttachment.finalLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-#else
+//#ifdef q
+//    colorAttachment.finalLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+//#else
     colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
-#endif
+//#endif
 
 
 
@@ -675,13 +693,14 @@ void CreateRenderPass(Zayn::RenderManager* renderManager)
 
     if (vkCreateRenderPass(renderManager->vulkanData.vkDevice, &renderPassInfo, nullptr, &renderManager->vulkanData.vkRenderPass) != VK_SUCCESS)
     {
+        std::cerr << "ERROR: Failed to create render pass!" << std::endl;
         throw std::runtime_error("failed to create render pass!");
     }
     else {
-        std::cout << "Render pass created successfully." << std::endl;
+        std::cout << "Render pass created successfully. Handle: " << renderManager->vulkanData.vkRenderPass << std::endl;
     }
 
-#if IMGUI
+//#if IMGUI
 
 
 //    // Attachment
@@ -728,7 +747,7 @@ void CreateRenderPass(Zayn::RenderManager* renderManager)
 //        throw std::runtime_error("Could not create Dear ImGui's render pass");
 //    }
 
-#endif
+//#endif
 }
 
 void CreateCommandPool(Zayn::RenderManager* renderManager)
@@ -746,14 +765,14 @@ void CreateCommandPool(Zayn::RenderManager* renderManager)
         throw std::runtime_error("failed to create command pool!");
     }
 
-#if IMGUI
+//#if IMGUI
 
    /* if (vkCreateCommandPool(renderManager->vulkanData..vkDevice, &poolInfo, nullptr, &zaynMem->myIMGUI.imGuiCommandPool) != VK_SUCCESS)
     {
         throw std::runtime_error("failed to create command pool!");
     }*/
 
-#endif
+//#endif
 }
 
 uint32_t FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties, Zayn::RenderManager* renderManager)
@@ -828,20 +847,20 @@ VkCommandBuffer BeginSingleTimeCommands(Zayn::RenderManager* renderManager)
 
     VkCommandBuffer commandBuffer;
     vkAllocateCommandBuffers(renderManager->vulkanData.vkDevice, &allocInfo, &commandBuffer);
-
-#if IMGUI
-//    Zayn->myIMGUI.imGuiCommandBuffers.resize(
-//    renderManager->vulkanData.vkSwapChainImageViews.size());
 //
-//    allocInfo = {};
-//    allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-//    allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-//    allocInfo.commandPool = Zayn->myIMGUI.imGuiCommandPool;
-//    allocInfo.commandBufferCount =
-//    static_cast<uint32_t>(Zayn->myIMGUI.imGuiCommandBuffers.size());
-//    vkAllocateCommandBuffers(renderManager->vulkanData.vkDevice, &allocInfo, Zayn->myIMGUI.imGuiCommandBuffers.data());
-
-#endif
+//#if IMGUI
+////    Zayn->myIMGUI.imGuiCommandBuffers.resize(
+////    renderManager->vulkanData.vkSwapChainImageViews.size());
+////
+////    allocInfo = {};
+////    allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+////    allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+////    allocInfo.commandPool = Zayn->myIMGUI.imGuiCommandPool;
+////    allocInfo.commandBufferCount =
+////    static_cast<uint32_t>(Zayn->myIMGUI.imGuiCommandBuffers.size());
+////    vkAllocateCommandBuffers(renderManager->vulkanData.vkDevice, &allocInfo, Zayn->myIMGUI.imGuiCommandBuffers.data());
+//
+//#endif
 
     VkCommandBufferBeginInfo beginInfo{};
     beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -1080,54 +1099,95 @@ void CreateDepthResources(Zayn::RenderManager* renderManager)
 
 void CreateFrameBuffers(Zayn::RenderManager* renderManager)
 {
+    if (!renderManager) {
+        std::cerr << "ERROR: renderManager is NULL!" << std::endl;
+        return;
+    }
+
+    std::cout << "Starting framebuffer creation..." << std::endl;
+    std::cout << "renderManager address: " << renderManager << std::endl;
+    std::cout << "vkRenderPass handle in CreateFrameBuffers: " << renderManager->vulkanData.vkRenderPass << std::endl;
+
+    std::cout << "Framebuffers vector size before resize: "
+              << renderManager->vulkanData.vkSwapChainFramebuffers.size() << std::endl;
+
+    // Check if render pass is valid
+    if (renderManager->vulkanData.vkRenderPass == VK_NULL_HANDLE) {
+        std::cerr << "ERROR: vkRenderPass is NULL when creating framebuffers!" << std::endl;
+        return;
+    }
     renderManager->vulkanData.vkSwapChainFramebuffers.resize(renderManager->vulkanData.vkSwapChainImageViews.size());
+    std::cout << "Resized framebuffers vector to: "
+              << renderManager->vulkanData.vkSwapChainFramebuffers.size() << std::endl;
 
-#if IMGUI
 
-   // Zayn->myIMGUI.imGuiFrameBuffers.resize(Zayn->vulkan.vkSwapChainImageViews.size());
-
-#endif
+//#if IMGUI
+//
+//   // Zayn->myIMGUI.imGuiFrameBuffers.resize(Zayn->vulkan.vkSwapChainImageViews.size());
+//
+//#endif
 
     for (size_t i = 0; i < renderManager->vulkanData.vkSwapChainImageViews.size(); i++)
     {
+        std::cout << "Creating framebuffer " << i << "..." << std::endl;
+
         std::array<VkImageView, 2> attachments = {
                 renderManager->vulkanData.vkSwapChainImageViews[i],
-                renderManager->vulkanData.vkDepthImageView };
+                renderManager->vulkanData.vkDepthImageView
+        };
+
+        std::cout << "Attachments: " << attachments[0] << ", " << attachments[1] << std::endl;
 
         VkFramebufferCreateInfo framebufferInfo{};
         framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
         framebufferInfo.renderPass = renderManager->vulkanData.vkRenderPass;
+
+        std::cout << "Using vkRenderPass in framebufferInfo: " << framebufferInfo.renderPass << std::endl;
+
+        // Print the rest of framebufferInfo for debugging
         framebufferInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
         framebufferInfo.pAttachments = attachments.data();
-        framebufferInfo.width  = renderManager->vulkanData.vkSwapChainExtent.width;
+        framebufferInfo.width = renderManager->vulkanData.vkSwapChainExtent.width;
         framebufferInfo.height = renderManager->vulkanData.vkSwapChainExtent.height;
         framebufferInfo.layers = 1;
 
-        if (vkCreateFramebuffer(renderManager->vulkanData.vkDevice, &framebufferInfo, nullptr, &renderManager->vulkanData.vkSwapChainFramebuffers[i]) != VK_SUCCESS)
-        {
+        std::cout << "Before vkCreateFramebuffer call..." << std::endl;
+        VkResult result = vkCreateFramebuffer(
+                renderManager->vulkanData.vkDevice,
+                &framebufferInfo,
+                nullptr,
+                &renderManager->vulkanData.vkSwapChainFramebuffers[i]
+        );
+        std::cout << "vkCreateFramebuffer result: " << result << std::endl;
+
+        if (result != VK_SUCCESS) {
+            std::cerr << "ERROR creating framebuffer " << i << ": " << result << std::endl;
             throw std::runtime_error("failed to create framebuffer!");
         }
 
-#if IMGUI
+        std::cout << "Framebuffer " << i << " created successfully." << std::endl;
 
-        // Imgui framebuffer
-//        VkImageView imgui_attachment[1];
-//        framebufferInfo = {};
-//        framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
-//        framebufferInfo.renderPass = Zayn->myIMGUI.imGuiRenderPass;
-//        framebufferInfo.attachmentCount = 1;
-//        framebufferInfo.pAttachments = imgui_attachment;
-//        framebufferInfo.width = Zayn->vulkan.vkSwapChainExtent.width;
-//        framebufferInfo.height = Zayn->vulkan.vkSwapChainExtent.height;
-//        framebufferInfo.layers = 1;
-//        imgui_attachment[0] = Zayn->vulkan.vkSwapChainImageViews[i];
-//        if (vkCreateFramebuffer(Zayn->vulkan.vkDevice, &framebufferInfo, nullptr,
-//            &Zayn->myIMGUI.imGuiFrameBuffers[i]) != VK_SUCCESS)
-//        {
-//            throw std::runtime_error("failed to create ImGui framebuffer!");
-//        }
-
-#endif
+//
+//#if IMGUI
+//
+//        // Imgui framebuffer
+////        VkImageView imgui_attachment[1];
+////        framebufferInfo = {};
+////        framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+////        framebufferInfo.renderPass = Zayn->myIMGUI.imGuiRenderPass;
+////        framebufferInfo.attachmentCount = 1;
+////        framebufferInfo.pAttachments = imgui_attachment;
+////        framebufferInfo.width = Zayn->vulkan.vkSwapChainExtent.width;
+////        framebufferInfo.height = Zayn->vulkan.vkSwapChainExtent.height;
+////        framebufferInfo.layers = 1;
+////        imgui_attachment[0] = Zayn->vulkan.vkSwapChainImageViews[i];
+////        if (vkCreateFramebuffer(Zayn->vulkan.vkDevice, &framebufferInfo, nullptr,
+////            &Zayn->myIMGUI.imGuiFrameBuffers[i]) != VK_SUCCESS)
+////        {
+////            throw std::runtime_error("failed to create ImGui framebuffer!");
+////        }
+//
+//#endif
     }
 }
 
@@ -1528,6 +1588,8 @@ void CreateSyncObjects(Zayn::RenderManager* renderManager)
 void Zayn::InitRenderManager(Zayn::RenderManager* renderManager, Zayn::WindowManager* window)
 {
     std::cout << "InitRender_Vulkan()" << std::endl;
+    std::cout << "InitRender_Vulkan() with renderManager address: " << renderManager << std::endl;
+
     // I DONT THINK ANY GAME SPECIFIC THINGS OCCUR HERE
     StartRender_Init(renderManager, window);
     std::cout << "after InitRender_Vulkan()" << std::endl;
@@ -1547,4 +1609,300 @@ void Zayn::InitRenderManager(Zayn::RenderManager* renderManager, Zayn::WindowMan
 
     CreateCommandBuffers(renderManager);
     CreateSyncObjects(renderManager);
+
+    std::cout << "after InitRender_Vulkan() with vkRenderPass: " << renderManager->vulkanData.vkRenderPass << std::endl;
+}
+
+VkResult AcquireNextImage(Zayn::RenderManager* renderManager, uint32_t* imageIndex)
+{
+    vkWaitForFences(renderManager->vulkanData.vkDevice, 1, &renderManager->vulkanData.vkInFlightFences[renderManager->vulkanData.vkCurrentFrame], VK_TRUE, UINT64_MAX);
+
+    VkResult result = vkAcquireNextImageKHR(
+            renderManager->vulkanData.vkDevice,
+            renderManager->vulkanData.vkSwapChain,
+            UINT64_MAX,
+            renderManager->vulkanData.vkImageAvailableSemaphores[renderManager->vulkanData.vkCurrentFrame], // must be a not signaled semaphore
+            VK_NULL_HANDLE,
+            imageIndex);
+
+    return result;
+}
+
+void CleanUpSwapChain(Zayn::RenderManager* renderManager)
+{
+    vkDestroyImageView(renderManager->vulkanData.vkDevice, renderManager->vulkanData.vkDepthImageView, nullptr);
+    vkDestroyImage(renderManager->vulkanData.vkDevice, renderManager->vulkanData.vkDepthImage, nullptr);
+    vkFreeMemory(renderManager->vulkanData.vkDevice, renderManager->vulkanData.vkDepthImageMemory, nullptr);
+
+    for (size_t i = 0; i < renderManager->vulkanData.vkSwapChainFramebuffers.size(); i++)
+    {
+        vkDestroyFramebuffer(renderManager->vulkanData.vkDevice, renderManager->vulkanData.vkSwapChainFramebuffers[i], nullptr);
+    }
+
+    for (size_t i = 0; i < renderManager->vulkanData.vkSwapChainImageViews.size(); i++)
+    {
+        vkDestroyImageView(renderManager->vulkanData.vkDevice, renderManager->vulkanData.vkSwapChainImageViews[i], nullptr);
+    }
+
+    vkDestroySwapchainKHR(renderManager->vulkanData.vkDevice, renderManager->vulkanData.vkSwapChain, nullptr);
+}
+
+void RecreateSwapChain(Zayn::RenderManager* renderManager, Zayn::WindowManager* windowManager)
+{
+    int width = 0, height = 0;
+    glfwGetFramebufferSize(windowManager->glfwWindow, &width, &height);
+    while (width == 0 || height == 0)
+    {
+        glfwGetFramebufferSize(windowManager->glfwWindow, &width, &height);
+        glfwWaitEvents();
+    }
+
+    vkDeviceWaitIdle(renderManager->vulkanData.vkDevice);
+
+    CleanUpSwapChain(renderManager);
+    CreateSwapChain(renderManager, windowManager);
+    CreateImageViews(renderManager);
+    CreateDepthResources(renderManager);
+    CreateFrameBuffers(renderManager);
+}
+
+bool BeginFrameRender(Zayn::RenderManager* renderManager, Zayn::WindowManager* windowManager)
+{
+    assert(!renderManager->vulkanData.vkIsFrameStarted && "cannot call begin frame when frame buffer is already in progress");
+    auto result = AcquireNextImage(renderManager, &renderManager->vulkanData.vkCurrentImageIndex);
+
+    if (result == VK_ERROR_OUT_OF_DATE_KHR)
+    {
+        RecreateSwapChain(renderManager, windowManager);
+        return false;
+    }
+    else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR)
+    {
+        throw std::runtime_error("failed to acquire swap chain image!");
+    }
+
+    renderManager->vulkanData.vkIsFrameStarted = true;
+
+    // vkResetFences(Zayn->vkDevice, 1, &Zayn->vkInFlightFences[Zayn->vkCurrentFrame]);
+    // vkResetCommandBuffer(Zayn->vkCommandBuffers[Zayn->vkCurrentFrame], /*VkCommandBufferResetFlagBits*/ 0);
+
+    VkCommandBufferBeginInfo beginInfo{};
+    beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+    if (vkBeginCommandBuffer(renderManager->vulkanData.vkCommandBuffers[renderManager->vulkanData.vkCurrentFrame], &beginInfo) != VK_SUCCESS)
+    {
+        throw std::runtime_error("failed to begin recording command buffer!");
+        return false;
+    }
+
+    return true;
+}
+
+
+void UpdateUniformBuffer(uint32_t currentImage, Zayn::RenderManager* renderManager, Game::CameraManager* cam)
+{
+    // static auto startTime = std::chrono::high_resolution_clock::now();
+
+    // auto currentTime = std::chrono::high_resolution_clock::now();
+    // float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
+
+
+//    Zayn::CameraManager* cam = cam;
+
+    Game::UniformBufferObject ubo = {};
+    // ubo.model = TRS(V3(0.0f, 0.0f, 0.0f), AxisAngle(V3(0.0f, 0.2f, 0.20f), time * DegToRad(10.0f)), V3(1.0f, 1.0f, 1.0f));
+
+    // apply view based on camera rotation
+
+    cam->front.x = cosf(DegToRad(cam->yaw)) * cosf(DegToRad(cam->pitch));
+    cam->front.y = sinf(DegToRad(cam->pitch));
+    cam->front.z = sinf(DegToRad(cam->yaw)) * cosf(DegToRad(cam->pitch));
+    cam->front = Normalize(cam->front);
+
+    glm::vec3 camPos = glm::vec3(cam->pos.x, cam->pos.y, cam->pos.z);
+    glm::vec3 camFront = glm::vec3(cam->front.x, cam->front.y, cam->front.z);
+    glm::vec3 camUp = glm::vec3(cam->up.x, cam->up.y, cam->up.z);
+
+    ubo.view = glm::lookAt(camPos, camPos + camFront, camUp);
+    // ubo.view = glm::lookAt(cam->pos, cam->pos + cam->front, cam->up);
+
+    ubo.proj = glm::perspective(glm::radians(60.0f), renderManager->vulkanData.vkSwapChainExtent.width / (float)renderManager->vulkanData.vkSwapChainExtent.height, 0.1f, 1000.0f);
+    ubo.proj[1][1] *= -1;
+
+
+    memcpy(renderManager->vulkanData.vkUniformBuffersMapped[currentImage], &ubo, sizeof(ubo));
+}
+
+void BeginSwapChainRenderPass(Zayn::RenderManager* renderManager, VkCommandBuffer commandBuffer)
+{
+    assert(renderManager->vulkanData.vkIsFrameStarted && "Can't call beginSwapChainRenderPass if frame is not in progress");
+    assert(commandBuffer == renderManager->vulkanData.vkCommandBuffers[renderManager->vulkanData.vkCurrentFrame] && "Can't begin render pass on command buffer from a different frame");
+
+    VkRenderPassBeginInfo renderPassInfo{};
+    renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+    renderPassInfo.renderPass = renderManager->vulkanData.vkRenderPass;
+    renderPassInfo.framebuffer = renderManager->vulkanData.vkSwapChainFramebuffers[renderManager->vulkanData.vkCurrentImageIndex];
+    renderPassInfo.renderArea.offset = { 0, 0 };
+    renderPassInfo.renderArea.extent = renderManager->vulkanData.vkSwapChainExtent;
+
+    std::array<VkClearValue, 2> clearValues{};
+    clearValues[0].color = { {0.0f, 0.0f, 0.0f, 1.0f} };
+    clearValues[1].depthStencil = { 1.0f, 0 };
+    renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
+    renderPassInfo.pClearValues = clearValues.data();
+
+    vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+
+    VkViewport viewport{};
+    viewport.x = 0.0f;
+    viewport.y = 0.0f;
+    viewport.width = static_cast<float>(renderManager->vulkanData.vkSwapChainExtent.width);
+    viewport.height = static_cast<float>(renderManager->vulkanData.vkSwapChainExtent.height);
+    viewport.minDepth = 0.0f;
+    viewport.maxDepth = 1.0f;
+    VkRect2D scissor{ {0, 0}, renderManager->vulkanData.vkSwapChainExtent };
+    vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
+    vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
+}
+
+void RenderEntities(Zayn::Engine* engine, VkCommandBuffer commandBuffer)
+{
+    //uint32_t dynamicOffset = zaynMem->vulkan.vkCurrentFrame * sizeof(UniformBufferObject);
+    Game::PlayerEntity* playerEntity = (Game::PlayerEntity*)Zayn::GetEntity(&engine->entityFactory, engine->HTEST);
+    for (int i = 0; i < 1; i++)
+    {
+       // GameObject& gameObj = zaynMem->gameObjects[i];
+        VkDescriptorSet& set = playerEntity->material->descriptorSets[engine->renderManager.vulkanData.vkCurrentFrame];
+
+        vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, engine->renderManager.vulkanData.vkGraphicsPipeline);
+        vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, engine->renderManager.vulkanData.vkPipelineLayout, 0, 1, &set, 0, nullptr);
+
+
+        // Push constants for the transform
+        /* ModelPushConstant pushConstant = {};
+         pushConstant.model_1 = TRS((V3(0.0f, 1.0f, -1.0f)), AxisAngle(V3(0.0f, 0.2f, 0.20f), 0.0f), V3(1.0f, 1.0f, 1.0f));*/
+
+        vkCmdPushConstants(commandBuffer, engine->renderManager.vulkanData.vkPipelineLayout, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(Game::ModelPushConstant), &playerEntity->pushConstantData);
+
+        // Bind the vertex and index buffers
+        VkBuffer vertexBuffers[] = { playerEntity->mesh->vertexBuffer };
+        VkDeviceSize offsets[] = { 0 };
+        vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
+
+        vkCmdBindIndexBuffer(commandBuffer, playerEntity->mesh->indexBuffer, 0, VK_INDEX_TYPE_UINT32);
+
+        // Draw the mesh
+        vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(playerEntity->mesh->indices.size()), 1, 0, 0, 0);
+
+    }
+
+
+}
+
+void EndSwapChainRenderPass(Zayn::RenderManager* renderManager, VkCommandBuffer commandBuffer)
+{
+    assert(renderManager->vulkanData.vkIsFrameStarted && "Can't call beginSwapChainRenderPass if frame is not in progress");
+    assert(commandBuffer == renderManager->vulkanData.vkCommandBuffers[renderManager->vulkanData.vkCurrentFrame] && "Can't begin render pass on command buffer from a different frame");
+
+    vkCmdEndRenderPass(commandBuffer);
+}
+
+VkResult SubmitCommandBuffers(Zayn::RenderManager* renderManager, std::vector<VkCommandBuffer> buffers, uint32_t* imageIndex)
+{
+
+    if (renderManager->vulkanData.vkImagesInFlight[*imageIndex] != VK_NULL_HANDLE)
+    {
+        vkWaitForFences(renderManager->vulkanData.vkDevice, 1, &renderManager->vulkanData.vkImagesInFlight[*imageIndex], VK_TRUE, UINT64_MAX);
+    }
+    renderManager->vulkanData.vkImagesInFlight[*imageIndex] = renderManager->vulkanData.vkImagesInFlight[renderManager->vulkanData.vkCurrentFrame];
+    VkSubmitInfo submitInfo = {};
+    submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+
+    VkSemaphore waitSemaphores[] = { renderManager->vulkanData.vkImageAvailableSemaphores[renderManager->vulkanData.vkCurrentFrame] };
+    VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
+    submitInfo.waitSemaphoreCount = 1;
+    submitInfo.pWaitSemaphores = waitSemaphores;
+    submitInfo.pWaitDstStageMask = waitStages;
+
+    submitInfo.commandBufferCount = static_cast<uint32_t>(buffers.size());
+    // submitInfo.commandBufferCount
+    submitInfo.pCommandBuffers = buffers.data();
+
+    VkSemaphore signalSemaphores[] = { renderManager->vulkanData.vkRenderFinishedSemaphores[renderManager->vulkanData.vkCurrentFrame] };
+    submitInfo.signalSemaphoreCount = 1;
+    submitInfo.pSignalSemaphores = signalSemaphores;
+
+    vkResetFences(renderManager->vulkanData.vkDevice, 1, &renderManager->vulkanData.vkInFlightFences[renderManager->vulkanData.vkCurrentFrame]);
+    if (vkQueueSubmit(renderManager->vulkanData.vkGraphicsQueue, 1, &submitInfo, renderManager->vulkanData.vkInFlightFences[renderManager->vulkanData.vkCurrentFrame]) != VK_SUCCESS)
+    {
+        throw std::runtime_error("failed to submit draw command buffer!");
+    }
+
+    VkPresentInfoKHR presentInfo = {};
+    presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
+
+    presentInfo.waitSemaphoreCount = 1;
+    presentInfo.pWaitSemaphores = signalSemaphores;
+
+    VkSwapchainKHR swapChains[] = { renderManager->vulkanData.vkSwapChain };
+    presentInfo.swapchainCount = 1;
+    presentInfo.pSwapchains = swapChains;
+
+    presentInfo.pImageIndices = imageIndex;
+    // presentInfo.pImageIndices = &Zayn->vkCurrentImageIndex;
+
+    auto result = vkQueuePresentKHR(renderManager->vulkanData.vkPresentQueue, &presentInfo);
+
+    renderManager->vulkanData.vkCurrentFrame = (renderManager->vulkanData.vkCurrentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
+
+    return result;
+
+}
+
+void EndFrameRender(Zayn::RenderManager* renderManager, Zayn::WindowManager* windowManager)
+{
+    assert(renderManager->vulkanData.vkIsFrameStarted && "Can't call endFrame while frame is not in progress");
+
+    std::vector<VkCommandBuffer> submitCommandBuffers = {};
+
+    submitCommandBuffers.push_back(renderManager->vulkanData.vkCommandBuffers[renderManager->vulkanData.vkCurrentFrame]);
+
+//#if IMGUI
+//   // submitCommandBuffers.push_back(zaynMem->myIMGUI.imGuiCommandBuffers[zaynMem->vulkan.vkCurrentFrame]);
+//#endif
+
+    if (vkEndCommandBuffer(submitCommandBuffers[0]) != VK_SUCCESS)
+    {
+        throw std::runtime_error("failed to record command buffer!");
+    }
+
+    auto result = SubmitCommandBuffers(renderManager, submitCommandBuffers, &renderManager->vulkanData.vkCurrentImageIndex);
+
+    if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || renderManager->vulkanData.vkFramebufferResized)
+    {
+        renderManager->vulkanData.vkFramebufferResized = false;
+        RecreateSwapChain(renderManager, windowManager);
+    }
+    else if (result != VK_SUCCESS)
+    {
+        throw std::runtime_error("failed to present swap chain image!");
+    }
+    renderManager->vulkanData.vkIsFrameStarted = false;
+}
+
+void Zayn::UpdateRenderManager(Zayn::Engine* engine, Zayn::EntityHandle handle, Zayn::RenderManager* renderManager, Zayn::WindowManager* windowManager, Game::CameraManager* cameraManager)
+{
+    if (BeginFrameRender(renderManager, windowManager))
+    {
+        UpdateUniformBuffer(renderManager->vulkanData.vkCurrentFrame, renderManager, cameraManager);
+
+        BeginSwapChainRenderPass(renderManager, renderManager->vulkanData.vkCommandBuffers[renderManager->vulkanData.vkCurrentFrame]);
+
+        RenderEntities(engine, renderManager->vulkanData.vkCommandBuffers[renderManager->vulkanData.vkCurrentFrame]);
+
+    }
+
+    EndSwapChainRenderPass(renderManager, renderManager->vulkanData.vkCommandBuffers[renderManager->vulkanData.vkCurrentFrame]);
+
+    EndFrameRender(renderManager, windowManager);
+
 }

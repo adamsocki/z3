@@ -309,4 +309,9 @@ namespace Zayn {
         memset(inputManager->inputChars, 0, inputManager->charSize);
     }
 
+    bool InputHeld(InputDevice* device, int32 inputID)
+    {
+        return device->framesHeld[inputID] > 0;
+    }
+
 } // Zayn

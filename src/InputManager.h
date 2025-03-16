@@ -176,6 +176,8 @@ namespace Zayn {
     void UpdateInputManager(Engine* engine);
     void ClearInputManager(Engine* engine);
 
+    bool InputHeld(InputDevice* device, int32 inputID);
+
 } // Zayn
 
 #endif //Z2_INPUTMANAGER_H

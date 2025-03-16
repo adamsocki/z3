@@ -19,6 +19,7 @@ namespace Zayn {
 
 
     void InitGameManager(Engine* engine);
+    void UpdateGameManager(Engine* engine);
 
 } // Zayn
 

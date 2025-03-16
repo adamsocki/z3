@@ -14,8 +14,12 @@
 #include <array>
 #include <cstring>
 
+
+#include "tools/EntityFactory.h"
+
 #include <set>
 #include "WindowManager.h"
+#include "CameraManager.h"
 
 
 namespace Zayn {
@@ -258,6 +262,10 @@ namespace Zayn {
                          int32_t texHeight, uint32_t mipLevels);
 
     VkImageView CreateImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags, uint32_t mipLevels, Zayn::RenderManager* renderManager);
+
+
+    void UpdateRenderManager(Zayn::Engine* engine, Zayn::EntityHandle handle, Zayn::RenderManager* renderManager, Zayn::WindowManager* windowManager, Game::CameraManager* cameraManager);
+
 
 }
 #endif //Z2_RENDERMANAGER_H

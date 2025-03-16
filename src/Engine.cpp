@@ -6,11 +6,8 @@
 #include "WindowManager.h"
 #include "InputManager.h"
 #include "RenderManager.h"
-//#include "MaterialManager.h"
-//#include "TextureManager.h"
 #include "GameManager.h"
 #include "tools/MaterialFactory.h"
-#include "tools/GameObjectFactory.h"
 #include "tools/MeshFactory.h"
 
 
@@ -28,14 +25,19 @@ namespace Zayn {
         InitMaterialFactory(engine);
         InitMeshFactory(engine);
 
-        InitGameObjectFactory(engine);
+        InitEntityFactory(&engine->entityFactory);
+
+//        InitGameObjectFactory(engine);
 
 //        InitMaterialManager(engine);
+
+        InitCameraManager(&engine->cameraManager);
 
 
         InitRenderManager(&engine->renderManager, &engine->windowManager);
 
 
+//        InitCameraManager(engine);
 
 
 
@@ -46,11 +48,17 @@ namespace Zayn {
 
     void UpdateEngine(Engine* engine)
     {
-
+        // Start OF FRAME
         UpdateTimeManager(engine);
         UpdateInputManager(engine);
+        UpdateCameraManager(&engine->cameraManager, &engine->inputManager, &engine->timeManager);
 
+        // START OF GAME Frame
+        UpdateGameManager(engine);
 
+        UpdateRenderManager(engine, engine->HTEST, &engine->renderManager, &engine->windowManager, &engine->cameraManager);
+
+        // End OF FRAME
         ClearInputManager(engine);
 
     }

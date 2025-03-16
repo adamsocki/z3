@@ -19,6 +19,8 @@ namespace Zayn {
         glm::mat4 transform;
         std::string name;
         Game::ModelPushConstant pushConstantData;
+
+//        Entity
     };
 
 
@@ -28,7 +30,7 @@ namespace Zayn {
 
 
 
-    void MakeGameObject(Engine* engine, Game::GameObject* gameObject);
+    void MakeGameObject(Engine* engine, Game::GameObject* gameObject, bool isEntityManaged);
     void InitGameObjectFactory(Engine* engine);
 
 } // Zayn
