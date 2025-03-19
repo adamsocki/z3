@@ -14,7 +14,6 @@
 
 namespace Zayn {
 
-
     void InitEngine(Engine* engine)
     {
         InitMemoryManager(engine);
@@ -29,24 +28,16 @@ namespace Zayn {
         InitEntityFactory(&engine->entityFactory);
 
 //        InitGameObjectFactory(engine);
-
 //        InitMaterialManager(engine);
 
-        InitCameraManager(&engine->cameraManager);
+        InitCameraManager( &engine->cameraManager, engine->windowManager.glfwWindow, &engine->inputManager);
 
 
         InitRenderManager(&engine->renderManager, &engine->windowManager);
 
-
-
-
 //        InitCameraManager(engine);
 
-
-
         InitGameManager(engine);
-
-
     }
 
     void UpdateEngine(Engine* engine)
@@ -54,7 +45,7 @@ namespace Zayn {
         // Start OF FRAME
         UpdateTimeManager(engine);
         UpdateInputManager(engine);
-        UpdateCameraManager(&engine->cameraManager, &engine->inputManager, &engine->timeManager);
+        UpdateCameraManager(&engine->windowManager, &engine->cameraManager, &engine->inputManager, &engine->timeManager);
 
         // START OF GAME Frame
         UpdateGameManager(engine);

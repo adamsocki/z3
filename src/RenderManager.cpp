@@ -1794,10 +1794,7 @@ void RenderEntities(Zayn::Engine* engine, VkCommandBuffer commandBuffer)
 
         // Draw the mesh
         vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(playerEntity->mesh->indices.size()), 1, 0, 0, 0);
-
     }
-
-
 }
 
 void EndSwapChainRenderPass(Zayn::RenderManager* renderManager, VkCommandBuffer commandBuffer)
@@ -1857,15 +1854,12 @@ VkResult SubmitCommandBuffers(Zayn::RenderManager* renderManager, std::vector<Vk
     renderManager->vulkanData.vkCurrentFrame = (renderManager->vulkanData.vkCurrentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
 
     return result;
-
 }
 
 void EndFrameRender(Zayn::RenderManager* renderManager, Zayn::WindowManager* windowManager)
 {
     assert(renderManager->vulkanData.vkIsFrameStarted && "Can't call endFrame while frame is not in progress");
-
     std::vector<VkCommandBuffer> submitCommandBuffers = {};
-
     submitCommandBuffers.push_back(renderManager->vulkanData.vkCommandBuffers[renderManager->vulkanData.vkCurrentFrame]);
 
 #if IMGUI
@@ -1895,25 +1889,15 @@ void EndFrameRender(Zayn::RenderManager* renderManager, Zayn::WindowManager* win
 
 void Zayn::UpdateRenderManager(Zayn::Engine* engine, Zayn::EntityHandle handle, Zayn::RenderManager* renderManager, Zayn::WindowManager* windowManager, Game::CameraManager* cameraManager, InputManager* inputManager)
 {
-
-
     if (BeginFrameRender(renderManager, windowManager))
     {
 #if IMGUI
-        UpdateMyImgui(renderManager, windowManager, inputManager);
-
-
+        UpdateMyImgui(cameraManager, renderManager, windowManager, inputManager);
 #endif
         UpdateUniformBuffer(renderManager->vulkanData.vkCurrentFrame, renderManager, cameraManager);
-
         BeginSwapChainRenderPass(renderManager, renderManager->vulkanData.vkCommandBuffers[renderManager->vulkanData.vkCurrentFrame]);
-
         RenderEntities(engine, renderManager->vulkanData.vkCommandBuffers[renderManager->vulkanData.vkCurrentFrame]);
-
     }
-
     EndSwapChainRenderPass(renderManager, renderManager->vulkanData.vkCommandBuffers[renderManager->vulkanData.vkCurrentFrame]);
-
     EndFrameRender(renderManager, windowManager);
-
 }

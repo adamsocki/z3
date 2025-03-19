@@ -12,30 +12,40 @@
 namespace Zayn {
 
 
-    void InitMyImgui(RenderManager* renderManager, WindowManager* windowManager) {
-        VkDescriptorPoolSize pool_sizes[] = { { VK_DESCRIPTOR_TYPE_SAMPLER, 1000 },
-                                              { VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1000 },
-                                              { VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE, 1000 },
-                                              { VK_DESCRIPTOR_TYPE_STORAGE_IMAGE, 1000 },
-                                              { VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER, 1000 },
-                                              { VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER, 1000 },
-                                              { VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1000 },
-                                              { VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 1000 },
-                                              { VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC, 1000 },
-                                              { VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC, 1000 },
-                                              { VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT, 1000 } };
+    void ToggleImGuiVisibility(RenderManager *renderManager) {
+        // Toggle the visibility flag
+        renderManager->myImgui.visible = !renderManager->myImgui.visible;
+
+        // Optional: Print debug message
+        printf("ImGui visibility: %s\n", renderManager->myImgui.visible ? "ON" : "OFF");
+    }
+
+
+    void InitMyImgui(RenderManager *renderManager, WindowManager *windowManager) {
+        VkDescriptorPoolSize pool_sizes[] = {{VK_DESCRIPTOR_TYPE_SAMPLER,                1000},
+                                             {VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1000},
+                                             {VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE,          1000},
+                                             {VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,          1000},
+                                             {VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER,   1000},
+                                             {VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER,   1000},
+                                             {VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,         1000},
+                                             {VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,         1000},
+                                             {VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC, 1000},
+                                             {VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC, 1000},
+                                             {VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT,       1000}};
 
         VkDescriptorPoolCreateInfo pool_info = {};
         pool_info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
         pool_info.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
         pool_info.maxSets = 1000;
-        pool_info.poolSizeCount = (uint32_t)std::size(pool_sizes);
+        pool_info.poolSizeCount = (uint32_t) std::size(pool_sizes);
         pool_info.pPoolSizes = pool_sizes;
 
 
 
         //VkDescriptorPool imguiPool;
-        vkCreateDescriptorPool(renderManager->vulkanData.vkDevice, &pool_info, nullptr, &renderManager->myImgui.imGuiDescriptorPool);
+        vkCreateDescriptorPool(renderManager->vulkanData.vkDevice, &pool_info, nullptr,
+                               &renderManager->myImgui.imGuiDescriptorPool);
         {
             // Attachment
             VkAttachmentDescription colorAttachment = {};
@@ -76,7 +86,8 @@ namespace Zayn {
             info.pSubpasses = &subpass;
             info.dependencyCount = 1;
             info.pDependencies = &dependency;
-            if (vkCreateRenderPass(renderManager->vulkanData.vkDevice, &info, nullptr, &renderManager->myImgui.imGuiRenderPass) !=
+            if (vkCreateRenderPass(renderManager->vulkanData.vkDevice, &info, nullptr,
+                                   &renderManager->myImgui.imGuiRenderPass) !=
                 VK_SUCCESS) {
                 throw std::runtime_error("Could not create Dear ImGui's render pass");
             }
@@ -88,15 +99,15 @@ namespace Zayn {
 
         IMGUI_CHECKVERSION();
         ImGui::CreateContext();
-        ImGuiIO& io = ImGui::GetIO();
-        (void)io;
+        ImGuiIO &io = ImGui::GetIO();
+        (void) io;
 
         // enable mouse cursor for ImGui
         io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
         io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;  // Enable Gamepad Controls
-        io.WantCaptureMouse = true;
 
-        io.WantCaptureKeyboard = true;
+//        io.WantCaptureMouse = true;
+//        io.WantCaptureKeyboard = true;
 
 
         // this initializes imgui for SDL
@@ -124,34 +135,26 @@ namespace Zayn {
         ImGui_ImplVulkan_CreateFontsTexture();
     }
 
-    void UpdateMyImgui(RenderManager* renderManager, WindowManager* windowManager, InputManager* inputManager)
+    void UpdateMyImgui(Game::CameraManager *cameraManager, RenderManager *renderManager, WindowManager *windowManager, InputManager *inputManager)
     {
+        // Always set up the ImGui frame
+        ImGui_ImplVulkan_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
 
-        // Recording ImGui Command Buffer
-        {
-            // ImGui Render command
-            ImGui_ImplVulkan_NewFrame();
-            ImGui_ImplGlfw_NewFrame();
-
-            ImGui::NewFrame();
-
-            //some imgui UI to test
+        // Only render UI elements if ImGui is visible
+        if (renderManager->myImgui.visible) {
+            // Demo window
             ImGui::ShowDemoWindow();
 
-//            ImGui::Begin("Debug Tools");
-//            if (ImGui::CollapsingHeader("Render Stats"))
-//            {
-//                ImGui::Text("Objects: %d", zaynMem->gameObjects.size());
-//                ImGui::Text("Materials: %d", zaynMem->materials.size());
-//            }
-//            ImGui::End();
-
-
-
-
-            //LevelEditorIMGUI(zaynMem);
-
+            // IMGUI INTERFACE CODE
             ImGui::Begin("Debug Tools");
+
+            // SECTION 1
+            ImGui::Text("Press F1 to toggle ImGui visibility");
+            if (ImGui::Button("Hide ImGui")) {
+                ToggleImGuiVisibility(renderManager);
+            }
 
             if (ImGui::CollapsingHeader("Mouse Information", ImGuiTreeNodeFlags_DefaultOpen)) {
                 // Get mouse position from InputManager
@@ -166,7 +169,6 @@ namespace Zayn {
                 ImGui::Text("Raw Delta X: %.1f", inputManager->mouse->analogue[Input_MousePositionXOffset]);
                 ImGui::Text("Raw Delta Y: %.1f", inputManager->mouse->analogue[Input_MousePositionYOffset]);
 
-
                 // Display normalized coordinates
                 ImGui::Text("Normalized Position [0,1]: (%.3f, %.3f)", normPos.x, normPos.y);
                 ImGui::Text("Normalized Position [-1,1]: (%.3f, %.3f)", normSignedPos.x, normSignedPos.y);
@@ -179,7 +181,7 @@ namespace Zayn {
                 ImGui::Separator();
                 ImGui::Text("Position Visualization:");
 
-                ImDrawList* drawList = ImGui::GetWindowDrawList();
+                ImDrawList *drawList = ImGui::GetWindowDrawList();
                 ImVec2 vizPos = ImVec2(windowPos.x + 20, ImGui::GetCursorScreenPos().y);
 
                 // Draw border
@@ -204,51 +206,49 @@ namespace Zayn {
             }
 
             ImGui::End();
-
-
-
-
-            ImGui::Render();
-
-            ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-
-
-            VkCommandBufferBeginInfo info = {};
-            info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-            info.flags |= VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
-            VkResult err =
-                    vkBeginCommandBuffer(renderManager->myImgui.imGuiCommandBuffers[renderManager->vulkanData.vkCurrentFrame], &info);
-            //check_vk_result(err);
-
-            // Render pass
-            {
-                VkClearValue clearValue = {};
-                clearValue.color = { {0.0f, 0.0f, 0.0f, 1.0f} };
-                // Copy passed clear color
-                memcpy(&clearValue.color.float32[0], &clear_color, 4 * sizeof(float));
-
-                VkRenderPassBeginInfo info = {};
-                info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-                info.renderPass = renderManager->myImgui.imGuiRenderPass;
-                info.framebuffer = renderManager->myImgui.imGuiFrameBuffers[renderManager->vulkanData.vkCurrentImageIndex];
-                // swapChainFramebuffers[currentFrame];
-                info.renderArea.extent.width = renderManager->vulkanData.vkSwapChainExtent.width;
-                info.renderArea.extent.height = renderManager->vulkanData.vkSwapChainExtent.height;
-                info.clearValueCount = 1;
-                info.pClearValues = &clearValue;
-                vkCmdBeginRenderPass(renderManager->myImgui.imGuiCommandBuffers[renderManager->vulkanData.vkCurrentFrame], &info,
-                                     VK_SUBPASS_CONTENTS_INLINE);
-            }
-
-            // ImGui Render command
-            ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), renderManager->myImgui.imGuiCommandBuffers[renderManager->vulkanData.vkCurrentFrame]);
-
-            // Submit command buffer
-            vkCmdEndRenderPass(renderManager->myImgui.imGuiCommandBuffers[renderManager->vulkanData.vkCurrentFrame]);
-            {
-                err = vkEndCommandBuffer(renderManager->myImgui.imGuiCommandBuffers[renderManager->vulkanData.vkCurrentFrame]);
-                //check_vk_result(err);
-            }
         }
+
+        // Always render (even if nothing was drawn)
+        ImGui::Render();
+
+        // Always record command buffer and process render pass
+        VkCommandBufferBeginInfo info = {};
+        info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+        info.flags |= VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+        VkResult err = vkBeginCommandBuffer(
+                renderManager->myImgui.imGuiCommandBuffers[renderManager->vulkanData.vkCurrentFrame],
+                &info);
+
+        // Render pass always processes, even for empty ImGui
+        VkClearValue clearValue = {};
+        clearValue.color = {{0.0f, 0.0f, 0.0f, 1.0f}};
+        ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+        memcpy(&clearValue.color.float32[0], &clear_color, 4 * sizeof(float));
+
+        VkRenderPassBeginInfo renderPassInfo = {};
+        renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+        renderPassInfo.renderPass = renderManager->myImgui.imGuiRenderPass;
+        renderPassInfo.framebuffer = renderManager->myImgui.imGuiFrameBuffers[renderManager->vulkanData.vkCurrentImageIndex];
+        renderPassInfo.renderArea.extent.width = renderManager->vulkanData.vkSwapChainExtent.width;
+        renderPassInfo.renderArea.extent.height = renderManager->vulkanData.vkSwapChainExtent.height;
+        renderPassInfo.clearValueCount = 1;
+        renderPassInfo.pClearValues = &clearValue;
+
+        vkCmdBeginRenderPass(
+                renderManager->myImgui.imGuiCommandBuffers[renderManager->vulkanData.vkCurrentFrame],
+                &renderPassInfo,
+                VK_SUBPASS_CONTENTS_INLINE);
+
+        // Always render ImGui draw data
+        ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(),
+                                        renderManager->myImgui.imGuiCommandBuffers[renderManager->vulkanData.vkCurrentFrame]);
+
+        // Always end the render pass and command buffer
+        vkCmdEndRenderPass(
+                renderManager->myImgui.imGuiCommandBuffers[renderManager->vulkanData.vkCurrentFrame]);
+
+        err = vkEndCommandBuffer(
+                renderManager->myImgui.imGuiCommandBuffers[renderManager->vulkanData.vkCurrentFrame]);
     }
 } // Zayn
+

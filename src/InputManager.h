@@ -202,9 +202,11 @@ namespace Zayn {
     void ClearInputManager(Engine* engine);
 
     bool InputHeld(InputDevice* device, int32 inputID);
+    bool InputPressed(InputDevice *device, int32 inputID);
 
     vec2 GetMousePosition(InputManager* inputManager) ;
     vec2 GetMouseDelta(InputManager* inputManager);
+    void ResetMouseDelta(InputManager* inputManager);
     vec2 GetMousePositionNormalized(InputManager* inputManager);
     vec2 GetMousePositionNormalizedSigned(InputManager* inputManager);
 

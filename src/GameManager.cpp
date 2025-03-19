@@ -5,6 +5,7 @@
 #include "GameManager.h"
 #include "Engine.h"
 #include "game/entities/PlayerEntity.h"
+#include "MyImgui.h"
 
 namespace Zayn {
 
@@ -68,8 +69,17 @@ namespace Zayn {
     }
 
 
+    void GameInputUpdate(Zayn::InputManager* inputManager,Zayn::RenderManager* renderManager)
+    {
 
 
+#ifdef DEBUG
+        if (InputPressed(inputManager->keyboard, Zayn::Input_F1))
+        {
+            ToggleImGuiVisibility(renderManager);
+        }
+#endif
+    }
 
     void InitGameManager(Engine* engine)
     {
@@ -85,9 +95,9 @@ namespace Zayn {
 
     void UpdateGameManager(Engine* engine)
     {
-
-
-
+        Zayn::RenderManager* renderManager = &engine->renderManager;
+        Zayn::InputManager* inputManager   = &engine->inputManager;
+        GameInputUpdate(inputManager, renderManager);
 
     }
 

@@ -113,7 +113,7 @@ add_executable(Z3 src/main.cpp
 )
 
 
-target_compile_definitions(Z3 PRIVATE IMGUI=1)
+target_compile_definitions(Z3 PRIVATE IMGUI=1 DEBUG=1)
 
 
 

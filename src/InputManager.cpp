@@ -403,6 +403,11 @@ namespace Zayn {
         return device->framesHeld[inputID] > 0;
     }
 
+    bool InputPressed(InputDevice *device, int32 inputID)
+    {
+        return device->pressed[inputID] && device->framesHeld[inputID] == 0;
+    }
+
     vec2 GetMousePosition(InputManager* inputManager) {
         return inputManager->nowMousePosWindow;
     }
@@ -414,6 +419,12 @@ namespace Zayn {
         return delta;
     }
 
+    void ResetMouseDelta(InputManager* inputManager)
+    {
+        inputManager->mouse->analogue[Input_MousePositionXOffset] = 0;
+        inputManager->mouse->analogue[Input_MousePositionYOffset] = 0;
+    }
+
     vec2 GetMousePositionNormalized(InputManager* inputManager) {
         return inputManager->mousePosNorm;
     }
@@ -421,6 +432,9 @@ namespace Zayn {
     vec2 GetMousePositionNormalizedSigned(InputManager* inputManager) {
         return inputManager->mousePosNormSigned;
     }
+
+
+
 
 
 } // Zayn

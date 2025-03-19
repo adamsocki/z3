@@ -4,13 +4,13 @@
 
 #include <iostream>
 #include "CameraManager.h"
+
 namespace Game {
 
-    void InitCameraManager(CameraManager* cam)
+    void InitCameraManager(CameraManager* cam, GLFWwindow* glfWwindow, Zayn::InputManager* inputManager)
     {
         cam->rotationSpeed = 100.0f;
         cam->targetPos = V3(0.0f, 0.0f, 0.0f);
-
         cam->currentSpeed = 0;
         cam->targetSpeed = 20.0f;
         cam->targetTurnSpeed = 160.0f;
@@ -19,6 +19,12 @@ namespace Game {
         cam->front = V3(-1, 0, 0);
         cam->up = V3(0, 0, 1);
         cam->right = V3(0, -1, 0);
+
+        cam->cursorCaptured = false;
+        cam->firstMouseCapture = true;
+
+        cam->currentCursorMode = CURSOR_MODE_GAME;
+        SetCursorMode(glfWwindow, inputManager, cam, cam->currentCursorMode);
     }
 
     void NormalizeVector(vec3* v)
@@ -47,86 +53,156 @@ namespace Game {
         return result;
     }
 
-
-    void UpdateCameraManager(CameraManager* cam, Zayn::InputManager* inputManager, Zayn::TimeManager* timeManager)
+    void ToggleCursorCapture(GLFWwindow* window, CameraManager* cam)
     {
-        float moveSpeed = 15.0f * timeManager->time.deltaTime;
+        cam->cursorCaptured = !cam->cursorCaptured;
+    }
 
-        // Get mouse delta and calculate rotation
-        vec2 mouseDelta = GetMouseDelta(inputManager);
+    void EnterGameMode(Zayn::InputManager* inputManager)
+    {
+        Zayn::ResetMouseDelta(inputManager);
+    }
 
-        // Apply mouse sensitivity
-        float sensitivity = 0.1f;
-        float yaw = mouseDelta.x * sensitivity;
-        float pitch = -mouseDelta.y * sensitivity; // Invert Y for natural feel
 
-        // Update camera angles
-        cam->yaw += yaw;
-        cam->pitch += pitch;
+    void SetCursorMode(GLFWwindow* glfwWindow, Zayn::InputManager* inputManager, CameraManager* cam, CursorMode newMode)
+    {
+//        if (cam->currentCursorMode == newMode)
+//        {
+//            return;
+//        }
 
-        // Clamp pitch to avoid camera flipping
-        if (cam->pitch > 89.0f)
-            cam->pitch = 89.0f;
-        if (cam->pitch < -89.0f)
-            cam->pitch = -89.0f;
+        CursorMode oldMode = cam->currentCursorMode;
 
-        // Calculate new orientation vectors based on yaw and pitch
-        // Note: We're using a Z-up coordinate system
-        float yawRad = cam->yaw * (3.14159f / 180.0f);
-        float pitchRad = cam->pitch * (3.14159f / 180.0f);
+        cam->currentCursorMode = newMode;
+        cam->cursorModeJustChanged = true;
 
-        // Calculate front vector (this is the direction the camera is looking)
-        cam->front.x = cos(yawRad) * cos(pitchRad);
-        cam->front.y = sin(yawRad) * cos(pitchRad);
-        cam->front.z = sin(pitchRad);
-        NormalizeVector(&cam->front);
-
-        // Recalculate right vector (perpendicular to front and world up)
-        vec3 worldUp = { 0.0f, 0.0f, 1.0f }; // Z-up world
-        CrossProduct(cam->front, worldUp, &cam->right);
-        NormalizeVector(&cam->right);
-
-        // Recalculate up vector (perpendicular to front and right)
-        CrossProduct(cam->right, cam->front, &cam->up);
-        NormalizeVector(&cam->up);
-
-        // Player Keyboard Movement (FPS style)
-        if (InputHeld(inputManager->keyboard, Zayn::Input_W))
+        // mode specific changes
+        switch(cam->currentCursorMode)
         {
-            // Move forward in XY plane (FPS style)
-            vec3 forwardXY = cam->front;
-            forwardXY.z = 0.0f; // Zero out vertical component for typical FPS movement
-            NormalizeVector(&forwardXY);
-            cam->pos = cam->pos + ScaleVector(forwardXY, moveSpeed);
-        }
-        if (InputHeld(inputManager->keyboard, Zayn::Input_S))
-        {
-            // Move backward in XY plane
-            vec3 forwardXY = cam->front;
-            forwardXY.z = 0.0f;
-            NormalizeVector(&forwardXY);
-            cam->pos = cam->pos - ScaleVector(forwardXY, moveSpeed);
-        }
-        if (InputHeld(inputManager->keyboard, Zayn::Input_A))
-        {
-            // Strafe left
-            cam->pos = cam->pos - ScaleVector(cam->right, moveSpeed);
-        }
-        if (InputHeld(inputManager->keyboard, Zayn::Input_D))
-        {
-            // Strafe right
-            cam->pos = cam->pos + ScaleVector(cam->right, moveSpeed);
+            case CURSOR_MODE_GAME:
+                glfwSetInputMode(glfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+                EnterGameMode(inputManager);
+                break;
+            case CURSOR_MODE_UI:
+                glfwSetInputMode(glfwWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+                break;
+            default:
+                printf("ERROR: Attempted to set invalid cursor mode: %d\n", newMode);
+                break;
         }
 
-        // Optional: Q/E for vertical movement (often used in free-cam modes)
-        if (InputHeld(inputManager->keyboard, Zayn::Input_Q))
+
+        printf("Cursor mode changed: %d -> %d\n", oldMode, cam->currentCursorMode);
+
+    }
+
+    void UpdateCameraManager(Zayn::WindowManager* windowManager, CameraManager* cam, Zayn::InputManager* inputManager, Zayn::TimeManager* timeManager)
+    {
+        switch (cam->currentCursorMode)
         {
-            cam->pos.z += moveSpeed; // Move up in world space
+            case CURSOR_MODE_GAME: {
+
+                float moveSpeed = 15.0f * timeManager->time.deltaTime;
+
+                // Get mouse delta and calculate rotation
+                vec2 mouseDelta = GetMouseDelta(inputManager);
+
+                // Apply mouse sensitivity
+                float sensitivity = 0.1f;
+                float yaw = mouseDelta.x * sensitivity;
+                float pitch = -mouseDelta.y * sensitivity; // Invert Y for natural feel
+
+                // Update camera angles
+                cam->yaw -= yaw;
+                cam->pitch += pitch;
+
+                // Clamp pitch to avoid camera flipping
+                if (cam->pitch > 89.0f)
+                    cam->pitch = 89.0f;
+                if (cam->pitch < -89.0f)
+                    cam->pitch = -89.0f;
+
+                // Calculate new orientation vectors based on yaw and pitch
+                // Note: We're using a Z-up coordinate system
+                float yawRad = cam->yaw * (3.14159f / 180.0f);
+                float pitchRad = cam->pitch * (3.14159f / 180.0f);
+
+                // Calculate front vector (this is the direction the camera is looking)
+                cam->front.x = cos(yawRad) * cos(pitchRad);
+                cam->front.y = sin(yawRad) * cos(pitchRad);
+                cam->front.z = sin(pitchRad);
+                NormalizeVector(&cam->front);
+
+                // Recalculate right vector (perpendicular to front and world up)
+                vec3 worldUp = {0.0f, 0.0f, 1.0f}; // Z-up world
+                CrossProduct(cam->front, worldUp, &cam->right);
+                NormalizeVector(&cam->right);
+
+                // Recalculate up vector (perpendicular to front and right)
+                CrossProduct(cam->right, cam->front, &cam->up);
+                NormalizeVector(&cam->up);
+
+                // Player Keyboard Movement (FPS style)
+                if (InputHeld(inputManager->keyboard, Zayn::Input_W)) {
+                    // Move forward in XY plane (FPS style)
+                    vec3 forwardXY = cam->front;
+                    forwardXY.z = 0.0f; // Zero out vertical component for typical FPS movement
+                    NormalizeVector(&forwardXY);
+                    cam->pos = cam->pos + ScaleVector(forwardXY, moveSpeed);
+                }
+                if (InputHeld(inputManager->keyboard, Zayn::Input_S)) {
+                    // Move backward in XY plane
+                    vec3 forwardXY = cam->front;
+                    forwardXY.z = 0.0f;
+                    NormalizeVector(&forwardXY);
+                    cam->pos = cam->pos - ScaleVector(forwardXY, moveSpeed);
+                }
+                if (InputHeld(inputManager->keyboard, Zayn::Input_A)) {
+                    // Strafe left
+                    cam->pos = cam->pos - ScaleVector(cam->right, moveSpeed);
+                }
+                if (InputHeld(inputManager->keyboard, Zayn::Input_D)) {
+                    // Strafe right
+                    cam->pos = cam->pos + ScaleVector(cam->right, moveSpeed);
+                }
+
+                // Optional: Q/E for vertical movement (often used in free-cam modes)
+                if (InputHeld(inputManager->keyboard, Zayn::Input_Q)) {
+                    cam->pos.z += moveSpeed; // Move up in world space
+                }
+                if (InputHeld(inputManager->keyboard, Zayn::Input_E)) {
+                    cam->pos.z -= moveSpeed; // Move down in world space
+                }
+                break;
+            }
+
+            case CURSOR_MODE_UI:
+            {
+
+                break;
+            }
+
+            default:
+            {
+                break;
+            }
         }
-        if (InputHeld(inputManager->keyboard, Zayn::Input_E))
-        {
-            cam->pos.z -= moveSpeed; // Move down in world space
+
+
+
+
+
+
+
+
+        if (InputPressed(inputManager->keyboard, Zayn::Input_Tab)) {
+            if (cam->currentCursorMode == CURSOR_MODE_GAME) {
+                SetCursorMode(windowManager->glfwWindow, inputManager, cam, CURSOR_MODE_UI);
+            } else {
+                SetCursorMode(windowManager->glfwWindow, inputManager, cam, CURSOR_MODE_GAME);
+            }
         }
+
     }
 
 } // Game

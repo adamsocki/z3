@@ -240,6 +240,8 @@ namespace Zayn {
         std::vector<VkCommandBuffer> imGuiCommandBuffers;
         std::vector<VkFramebuffer> imGuiFrameBuffers;
         VkCommandPool imGuiCommandPool;
+
+        bool visible;
     };
 
 

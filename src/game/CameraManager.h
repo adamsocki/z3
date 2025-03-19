@@ -8,6 +8,7 @@
 #include "../math/matrix.h"
 #include "../InputManager.h"
 #include "../TimeManager.h"
+#include "WindowManager.h"
 
 namespace Game {
 
@@ -15,6 +16,12 @@ namespace Game {
     {
         CameraType_Perspective,
         CameraType_Orthographic,
+    };
+
+    enum CursorMode {
+        CURSOR_MODE_GAME,    // Cursor is hidden, captured for camera control
+        CURSOR_MODE_UI,      // Cursor is visible, free to move
+        CURSOR_MODE_COUNT
     };
 
     struct CameraManager {
@@ -30,7 +37,6 @@ namespace Game {
         vec3 position;
         vec3 upDirection = V3(0.0f, 1.0f, 0.0f);
 
-// glm::vec3 pos;
         vec3 pos;
         vec3 front;
         vec3 up;
@@ -55,8 +61,6 @@ namespace Game {
         real32 yaw;
         real32 roll;
 
-
-
         real32 targetRotY;
         vec3 targetPos;
         real32 currentSpeed;
@@ -64,11 +68,16 @@ namespace Game {
         real32 targetTurnSpeed;
         real32 currentTurnSpeed;
         real32 rotationSpeed;
+
+        bool cursorCaptured;
+        bool firstMouseCapture;
+        CursorMode currentCursorMode;
+        bool cursorModeJustChanged;
     };
 
-    void InitCameraManager(CameraManager* cam);
-    void UpdateCameraManager(CameraManager* cam, Zayn::InputManager* inputManager, Zayn::TimeManager* timeManager);
-
+    void InitCameraManager(CameraManager* cam, GLFWwindow* glfWwindow, Zayn::InputManager* inputManager);
+    void UpdateCameraManager(Zayn::WindowManager* windowManager, CameraManager* cam, Zayn::InputManager* inputManager, Zayn::TimeManager* timeManager);
+    void SetCursorMode(GLFWwindow* glfwWindow, Zayn::InputManager* inputManager, CameraManager* cam, CursorMode newMode);
 } // Game
 
 #endif //Z3_CAMERAMANAGER_H
