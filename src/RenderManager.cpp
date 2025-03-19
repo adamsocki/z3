@@ -1,13 +1,13 @@
 
 
-
 #include "RenderManager.h"
 #include "MaterialManager.h"
 #include "Engine.h"
 #include "game/ModelPushConstant.h"
 #include "game/UniformBufferObject.h"
-#include "CameraManager.h"
+#include "game/CameraManager.h"
 #include "game/entities/PlayerEntity.h"
+#include "MyImgui.h"
 //#include "tools/TextureFactory.h"
 
 
@@ -641,11 +641,11 @@ void CreateRenderPass(Zayn::RenderManager* renderManager)
 
 
     // changed for imgui
-//#ifdef q
-//    colorAttachment.finalLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-//#else
+#ifdef IMGUI
+    colorAttachment.finalLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+#else
     colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
-//#endif
+#endif
 
 
 
@@ -700,54 +700,54 @@ void CreateRenderPass(Zayn::RenderManager* renderManager)
         std::cout << "Render pass created successfully. Handle: " << renderManager->vulkanData.vkRenderPass << std::endl;
     }
 
-//#if IMGUI
+#if IMGUI
 
 
-//    // Attachment
-//    colorAttachment = {};
-//    colorAttachment.format = renderManager->vulkanData.vkSwapChainImageFormat;
-//    colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT; // No MSAA
-//    colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
-//    colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
-//    colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-//    colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-//    colorAttachment.initialLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-//    colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
-//
-//    // Color VkAttachmentReference our render pass needs.
-//    colorAttachmentRef = {};
-//    colorAttachmentRef.attachment = 0;
-//    colorAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-//
-//    // subpass
-//    subpass = {};
-//    subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
-//    subpass.colorAttachmentCount = 1;
-//    subpass.pColorAttachments = &colorAttachmentRef;
-//
-//    // synchronization and dependency
-//    dependency = {};
-//    dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
-//    dependency.dstSubpass = 0;
-//    dependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-//    dependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-//    dependency.srcAccessMask = 0; // or VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
-//    dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
-//
-//    VkRenderPassCreateInfo info = {};
-//    info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
-//    info.attachmentCount = 1;
-//    info.pAttachments = &colorAttachment;
-//    info.subpassCount = 1;
-//    info.pSubpasses = &subpass;
-//    info.dependencyCount = 1;
-//    info.pDependencies = &dependency;
-//    if (vkCreateRenderPass(renderManager->vulkanData.vkDevice, &info, nullptr, &Zayn->myIMGUI.imGuiRenderPass) !=
-//        VK_SUCCESS) {
-//        throw std::runtime_error("Could not create Dear ImGui's render pass");
-//    }
+    // Attachment
+    colorAttachment = {};
+    colorAttachment.format = renderManager->vulkanData.vkSwapChainImageFormat;
+    colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT; // No MSAA
+    colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
+    colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+    colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+    colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+    colorAttachment.initialLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+    colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 
-//#endif
+    // Color VkAttachmentReference our render pass needs.
+    colorAttachmentRef = {};
+    colorAttachmentRef.attachment = 0;
+    colorAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+
+    // subpass
+    subpass = {};
+    subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
+    subpass.colorAttachmentCount = 1;
+    subpass.pColorAttachments = &colorAttachmentRef;
+
+    // synchronization and dependency
+    dependency = {};
+    dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
+    dependency.dstSubpass = 0;
+    dependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+    dependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+    dependency.srcAccessMask = 0; // or VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+    dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+
+    VkRenderPassCreateInfo info = {};
+    info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
+    info.attachmentCount = 1;
+    info.pAttachments = &colorAttachment;
+    info.subpassCount = 1;
+    info.pSubpasses = &subpass;
+    info.dependencyCount = 1;
+    info.pDependencies = &dependency;
+    if (vkCreateRenderPass(renderManager->vulkanData.vkDevice, &info, nullptr, &renderManager->myImgui.imGuiRenderPass) !=
+        VK_SUCCESS) {
+        throw std::runtime_error("Could not create Dear ImGui's render pass");
+    }
+
+#endif
 }
 
 void CreateCommandPool(Zayn::RenderManager* renderManager)
@@ -765,14 +765,14 @@ void CreateCommandPool(Zayn::RenderManager* renderManager)
         throw std::runtime_error("failed to create command pool!");
     }
 
-//#if IMGUI
+#if IMGUI
 
-   /* if (vkCreateCommandPool(renderManager->vulkanData..vkDevice, &poolInfo, nullptr, &zaynMem->myIMGUI.imGuiCommandPool) != VK_SUCCESS)
+    if (vkCreateCommandPool(renderManager->vulkanData.vkDevice, &poolInfo, nullptr, &renderManager->myImgui.imGuiCommandPool) != VK_SUCCESS)
     {
         throw std::runtime_error("failed to create command pool!");
-    }*/
+    }
 
-//#endif
+#endif
 }
 
 uint32_t FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties, Zayn::RenderManager* renderManager)
@@ -847,20 +847,20 @@ VkCommandBuffer BeginSingleTimeCommands(Zayn::RenderManager* renderManager)
 
     VkCommandBuffer commandBuffer;
     vkAllocateCommandBuffers(renderManager->vulkanData.vkDevice, &allocInfo, &commandBuffer);
-//
-//#if IMGUI
-////    Zayn->myIMGUI.imGuiCommandBuffers.resize(
-////    renderManager->vulkanData.vkSwapChainImageViews.size());
-////
-////    allocInfo = {};
-////    allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-////    allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-////    allocInfo.commandPool = Zayn->myIMGUI.imGuiCommandPool;
-////    allocInfo.commandBufferCount =
-////    static_cast<uint32_t>(Zayn->myIMGUI.imGuiCommandBuffers.size());
-////    vkAllocateCommandBuffers(renderManager->vulkanData.vkDevice, &allocInfo, Zayn->myIMGUI.imGuiCommandBuffers.data());
-//
-//#endif
+
+#if IMGUI
+    renderManager->myImgui.imGuiCommandBuffers.resize(
+    renderManager->vulkanData.vkSwapChainImageViews.size());
+
+    allocInfo = {};
+    allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+    allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+    allocInfo.commandPool = renderManager->myImgui.imGuiCommandPool;
+    allocInfo.commandBufferCount =
+    static_cast<uint32_t>(renderManager->myImgui.imGuiCommandBuffers.size());
+    vkAllocateCommandBuffers(renderManager->vulkanData.vkDevice, &allocInfo, renderManager->myImgui.imGuiCommandBuffers.data());
+
+#endif
 
     VkCommandBufferBeginInfo beginInfo{};
     beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -1121,11 +1121,11 @@ void CreateFrameBuffers(Zayn::RenderManager* renderManager)
               << renderManager->vulkanData.vkSwapChainFramebuffers.size() << std::endl;
 
 
-//#if IMGUI
-//
-//   // Zayn->myIMGUI.imGuiFrameBuffers.resize(Zayn->vulkan.vkSwapChainImageViews.size());
-//
-//#endif
+#if IMGUI
+
+    renderManager->myImgui.imGuiFrameBuffers.resize(renderManager->vulkanData.vkSwapChainImageViews.size());
+
+#endif
 
     for (size_t i = 0; i < renderManager->vulkanData.vkSwapChainImageViews.size(); i++)
     {
@@ -1167,27 +1167,27 @@ void CreateFrameBuffers(Zayn::RenderManager* renderManager)
 
         std::cout << "Framebuffer " << i << " created successfully." << std::endl;
 
-//
-//#if IMGUI
-//
-//        // Imgui framebuffer
-////        VkImageView imgui_attachment[1];
-////        framebufferInfo = {};
-////        framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
-////        framebufferInfo.renderPass = Zayn->myIMGUI.imGuiRenderPass;
-////        framebufferInfo.attachmentCount = 1;
-////        framebufferInfo.pAttachments = imgui_attachment;
-////        framebufferInfo.width = Zayn->vulkan.vkSwapChainExtent.width;
-////        framebufferInfo.height = Zayn->vulkan.vkSwapChainExtent.height;
-////        framebufferInfo.layers = 1;
-////        imgui_attachment[0] = Zayn->vulkan.vkSwapChainImageViews[i];
-////        if (vkCreateFramebuffer(Zayn->vulkan.vkDevice, &framebufferInfo, nullptr,
-////            &Zayn->myIMGUI.imGuiFrameBuffers[i]) != VK_SUCCESS)
-////        {
-////            throw std::runtime_error("failed to create ImGui framebuffer!");
-////        }
-//
-//#endif
+
+#if IMGUI
+
+        // Imgui framebuffer
+        VkImageView imgui_attachment[1];
+        framebufferInfo = {};
+        framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+        framebufferInfo.renderPass = renderManager->myImgui.imGuiRenderPass;
+        framebufferInfo.attachmentCount = 1;
+        framebufferInfo.pAttachments = imgui_attachment;
+        framebufferInfo.width = renderManager->vulkanData.vkSwapChainExtent.width;
+        framebufferInfo.height = renderManager->vulkanData.vkSwapChainExtent.height;
+        framebufferInfo.layers = 1;
+        imgui_attachment[0] = renderManager->vulkanData.vkSwapChainImageViews[i];
+        if (vkCreateFramebuffer(renderManager->vulkanData.vkDevice, &framebufferInfo, nullptr,
+            &renderManager->myImgui.imGuiFrameBuffers[i]) != VK_SUCCESS)
+        {
+            throw std::runtime_error("failed to create ImGui framebuffer!");
+        }
+
+#endif
     }
 }
 
@@ -1542,19 +1542,19 @@ void CreateCommandBuffers(Zayn::RenderManager* renderManager)
     {
         throw std::runtime_error("failed to allocate command buffers!");
     }
-//#if IMGUI
-//    // ImGui Command Buffer
-//    //zaynMem->imGuiCommandBuffers.resize(zaynMem->vkSwapChainImageViews.size()); // or MAX_FRAMES_IN_FLIGHT?
-//    zaynMem->myIMGUI.imGuiCommandBuffers.resize(MAX_FRAMES_IN_FLIGHT);
-//    // create command buffers
-//    allocInfo = {};
-//    allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-//    allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-//    allocInfo.commandPool = zaynMem->myIMGUI.imGuiCommandPool;
-//    allocInfo.commandBufferCount =
-//        static_cast<uint32_t>(zaynMem->myIMGUI.imGuiCommandBuffers.size());
-//    vkAllocateCommandBuffers(zaynMem->vulkan.vkDevice, &allocInfo, zaynMem->myIMGUI.imGuiCommandBuffers.data());
-//#endif
+#if IMGUI
+    // ImGui Command Buffer
+    //zaynMem->imGuiCommandBuffers.resize(zaynMem->vkSwapChainImageViews.size()); // or MAX_FRAMES_IN_FLIGHT?
+    renderManager->myImgui.imGuiCommandBuffers.resize(MAX_FRAMES_IN_FLIGHT);
+    // create command buffers
+    allocInfo = {};
+    allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+    allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+    allocInfo.commandPool = renderManager->myImgui.imGuiCommandPool;
+    allocInfo.commandBufferCount =
+        static_cast<uint32_t>(renderManager->myImgui.imGuiCommandBuffers.size());
+    vkAllocateCommandBuffers(renderManager->vulkanData.vkDevice, &allocInfo, renderManager->myImgui.imGuiCommandBuffers.data());
+#endif
 }
 
 void CreateSyncObjects(Zayn::RenderManager* renderManager)
@@ -1591,7 +1591,14 @@ void Zayn::InitRenderManager(Zayn::RenderManager* renderManager, Zayn::WindowMan
     std::cout << "InitRender_Vulkan() with renderManager address: " << renderManager << std::endl;
 
     // I DONT THINK ANY GAME SPECIFIC THINGS OCCUR HERE
+
     StartRender_Init(renderManager, window);
+
+#if IMGUI
+    InitMyImgui(renderManager, window);
+
+
+#endif
     std::cout << "after InitRender_Vulkan()" << std::endl;
 
 // INIT MATERIAL SYSTEM
@@ -1866,9 +1873,11 @@ void EndFrameRender(Zayn::RenderManager* renderManager, Zayn::WindowManager* win
 
     submitCommandBuffers.push_back(renderManager->vulkanData.vkCommandBuffers[renderManager->vulkanData.vkCurrentFrame]);
 
-//#if IMGUI
-//   // submitCommandBuffers.push_back(zaynMem->myIMGUI.imGuiCommandBuffers[zaynMem->vulkan.vkCurrentFrame]);
-//#endif
+#if IMGUI
+
+    submitCommandBuffers.push_back(renderManager->myImgui.imGuiCommandBuffers[renderManager->vulkanData.vkCurrentFrame]);
+    std::cout << "hitIMGUI" <<std::endl;
+#endif
 
     if (vkEndCommandBuffer(submitCommandBuffers[0]) != VK_SUCCESS)
     {
@@ -1891,8 +1900,15 @@ void EndFrameRender(Zayn::RenderManager* renderManager, Zayn::WindowManager* win
 
 void Zayn::UpdateRenderManager(Zayn::Engine* engine, Zayn::EntityHandle handle, Zayn::RenderManager* renderManager, Zayn::WindowManager* windowManager, Game::CameraManager* cameraManager)
 {
+
+
     if (BeginFrameRender(renderManager, windowManager))
     {
+#if IMGUI
+        UpdateMyImgui(renderManager, windowManager);
+
+
+#endif
         UpdateUniformBuffer(renderManager->vulkanData.vkCurrentFrame, renderManager, cameraManager);
 
         BeginSwapChainRenderPass(renderManager, renderManager->vulkanData.vkCommandBuffers[renderManager->vulkanData.vkCurrentFrame]);

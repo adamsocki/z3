@@ -2,6 +2,7 @@
 // Created by socki on 3/14/2025.
 //
 
+#include <iostream>
 #include "CameraManager.h"
 namespace Game {
 
@@ -24,7 +25,7 @@ namespace Game {
     {
 
 
-
+        // Player Keyboard Movement
         if (InputHeld(inputManager->keyboard, Zayn::Input_W))
         {
             cam->pos = cam->pos + cam->front * 15.0f * timeManager->time.deltaTime;
@@ -42,6 +43,36 @@ namespace Game {
         {
             cam->pos = cam->pos - cam->up * 15.0f * timeManager->time.deltaTime;
         }
+
+
+        vec2 mouseDelta = GetMouseDelta(inputManager);
+
+        if(mouseDelta.x != 0)
+        {
+            std::cout << mouseDelta.x << std::endl;
+            return;
+        }
+        float sensitivity = 0.1f;
+        float yaw = mouseDelta.x * sensitivity;
+        float pitch = -mouseDelta.y * sensitivity; // Invert Y for natural feel
+
+        // Update camera angles
+        cam->yaw += yaw;
+        cam->pitch += pitch;
+
+        // Clamp pitch to avoid camera flipping
+        if (cam->pitch > 89.0f)
+            cam->pitch = 89.0f;
+        if (cam->pitch < -89.0f)
+            cam->pitch = -89.0f;
+
+        // Optional: Normalize yaw to keep it in a reasonable range
+        while (cam->yaw > 360.0f)
+            cam->yaw -= 360.0f;
+        while (cam->yaw < 0.0f)
+            cam->yaw += 360.0f;
+
+
 
 
     }

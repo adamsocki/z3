@@ -8,6 +8,7 @@
 #include "data_types.h"
 #include "GLFW/glfw3.h"
 #include "DynamicArray.h"
+#include "math/vector.h"
 
 namespace Zayn {
 
@@ -161,10 +162,20 @@ namespace Zayn {
 
 
         InputDevice* keyboard;
+        InputDevice* mouse;
 
 
-        char *inputChars;
+        char  *inputChars;
         uint32 charSize;
+
+
+        vec2i mousePos;
+        vec2  mousePosNorm;
+        vec2  mousePosNormSigned;
+        bool mousePosUpdated;
+
+        vec2 lastMousePosWindow;
+        vec2 nowMousePosWindow;
 
 
         DynamicArray<InputEvent> events;
@@ -177,6 +188,11 @@ namespace Zayn {
     void ClearInputManager(Engine* engine);
 
     bool InputHeld(InputDevice* device, int32 inputID);
+
+    vec2 GetMousePosition(InputManager* inputManager) ;
+    vec2 GetMouseDelta(InputManager* inputManager);
+    vec2 GetMousePositionNormalized(InputManager* inputManager);
+    vec2 GetMousePositionNormalizedSigned(InputManager* inputManager);
 
 } // Zayn
 

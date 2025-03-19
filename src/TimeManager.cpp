@@ -43,16 +43,16 @@ namespace Zayn {
         time->fpsTimer += time->deltaTime;
 
 
-        if (time->fpsTimer > 0.1f)
-        {
-
-            real64 avgFPS = time->frameCount / time->fpsTimer;
-            std::cout << avgFPS << std::endl;
-
-            time->fpsTimer = 0.0f;
-            time->frameCount = 0;
-
-        }
+//        if (time->fpsTimer > 0.1f)
+//        {
+//
+//            real64 avgFPS = time->frameCount / time->fpsTimer;
+//            std::cout << avgFPS << std::endl;
+//
+//            time->fpsTimer = 0.0f;
+//            time->frameCount = 0;
+//
+//        }
     }
 
 } // Zayn

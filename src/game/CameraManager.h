@@ -5,9 +5,9 @@
 #ifndef Z3_CAMERAMANAGER_H
 #define Z3_CAMERAMANAGER_H
 
-#include "math/matrix.h"
-#include "InputManager.h"
-#include "TimeManager.h"
+#include "../math/matrix.h"
+#include "../InputManager.h"
+#include "../TimeManager.h"
 
 namespace Game {
 

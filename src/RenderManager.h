@@ -19,7 +19,7 @@
 
 #include <set>
 #include "WindowManager.h"
-#include "CameraManager.h"
+#include "game/CameraManager.h"
 
 
 namespace Zayn {
@@ -233,9 +233,20 @@ namespace Zayn {
         bool vkIsFrameStarted = false;
     };
 
+    struct MyIMGUI
+    {
+        VkDescriptorPool imGuiDescriptorPool;
+        VkRenderPass imGuiRenderPass;
+        std::vector<VkCommandBuffer> imGuiCommandBuffers;
+        std::vector<VkFramebuffer> imGuiFrameBuffers;
+        VkCommandPool imGuiCommandPool;
+    };
+
+
     struct RenderManager {
 
         VulkanData vulkanData;
+        MyIMGUI myImgui;
     };
 
 

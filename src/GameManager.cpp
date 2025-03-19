@@ -59,7 +59,7 @@ namespace Zayn {
         playerEntity->material = &engine->materialFactory.materials[0];
         playerEntity->mesh = &engine->meshFactory.meshes[0];
 //        playerEntity->transform = glm::mat4();
-        playerEntity->pushConstantData.model_1 = TRS((V3(1.0f, 0.0f, -10.0f)), AxisAngle(V3(0.0f, 0.0f, 0.20f), 0.0f), V3(1.0f, 1.0f, 1.0f));
+        playerEntity->pushConstantData.model_1 = TRS((V3(1.0f, 0.0f, 0.0f)), AxisAngle(V3(0.0f, 0.0f, 0.20f), 0.0f), V3(1.0f, 1.0f, 1.0f));
 
         playerEntity->name = "test Player 1";
         playerEntity->handle = engine->HTEST;
@@ -87,7 +87,6 @@ namespace Zayn {
     {
 
 
-        UpdateCameraManager(&engine->cameraManager, &engine->inputManager, &engine->timeManager);
 
 
     }

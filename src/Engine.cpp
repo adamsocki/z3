@@ -2,6 +2,7 @@
 // Created by socki on 3/2/2025.
 //
 
+
 #include "Engine.h"
 #include "WindowManager.h"
 #include "InputManager.h"
@@ -37,6 +38,8 @@ namespace Zayn {
         InitRenderManager(&engine->renderManager, &engine->windowManager);
 
 
+
+
 //        InitCameraManager(engine);
 
 
@@ -57,6 +60,7 @@ namespace Zayn {
         UpdateGameManager(engine);
 
         UpdateRenderManager(engine, engine->HTEST, &engine->renderManager, &engine->windowManager, &engine->cameraManager);
+
 
         // End OF FRAME
         ClearInputManager(engine);
