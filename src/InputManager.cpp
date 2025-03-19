@@ -5,6 +5,9 @@
 #include <iostream>
 #include "InputManager.h"
 #include "Engine.h"
+#include "imgui_impl_glfw.h"
+
+//#include "../external/imgui/backends/imgui_impl_glfw.h"
 
 namespace Zayn {
 
@@ -148,6 +151,16 @@ namespace Zayn {
         Zayn::glfwKeyToInputKeyboardDiscrete[GLFW_KEY_UP] = Input_UpArrow;
     }
 
+    enum InputMouseDiscrete : uint32 {
+        Input_MouseLeft,
+        Input_MouseRight,
+        Input_MouseMiddle,
+
+        Input_MouseDiscreteCount,
+    };
+
+
+
 
     void InitInputManager(Engine* engine)
     {
@@ -156,11 +169,13 @@ namespace Zayn {
 
         std::cout << "initInputManager: Done" << '\n';
 
-        AllocateInputManager(inputManager, permanentMemory, 1);
+        AllocateInputManager(inputManager, permanentMemory, 5);
         // inputManager->windowReference = *windowReference;/**/
 
         inputManager->keyboard = &inputManager->devices[0];
+        inputManager->mouse = &inputManager->devices[1];
         AllocateInputDevice(inputManager->keyboard, InputDeviceType_Keyboard, Input_KeyboardDiscreteCount, 0);
+        AllocateInputDevice(inputManager->mouse, InputDeviceType_Mouse, Input_MouseDiscreteCount, Input_MouseAnalogueCount);
 
         InitializeKeyMap();
     }
@@ -176,11 +191,11 @@ namespace Zayn {
             Zayn::InputEvent event = {};
             event.device = inputManager->keyboard;
             event.index = inputKey;
-            if (key == GLFW_KEY_A)
-            {
-                // std::cout << "A Is for Asshole: " << key << std::endl;
-
-            }
+//            if (key == GLFW_KEY_A)
+//            {
+//                // std::cout << "A Is for Asshole: " << key << std::endl;
+//
+//            }
             event.discreteValue = true;
 
             PushBack(&inputManager->events, event);
@@ -206,6 +221,8 @@ namespace Zayn {
 
     void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
     {
+
+
 #if IMGUI
         ImGui_ImplGlfw_MouseButtonCallback(window, button, action, mods);
 #endif
@@ -213,6 +230,54 @@ namespace Zayn {
 
     void cursorPosCallback(GLFWwindow* window, double xpos, double ypos)
     {
+        Zayn::InputManager* inputManager = static_cast<Zayn::InputManager*>(glfwGetWindowUserPointer(window));
+        inputManager->lastMousePosWindow = inputManager->nowMousePosWindow;
+        inputManager->mousePosUpdated = true;
+        inputManager->nowMousePosWindow.x = xpos;
+        inputManager->nowMousePosWindow.y = ypos;
+
+        inputManager->mousePos.x = (int32)xpos;
+        inputManager->mousePos.y = (int32)ypos;
+
+        real32 xOffset = (real32)(xpos - inputManager->lastMousePosWindow.x);
+        real32 yOffset = (real32)(ypos - inputManager->lastMousePosWindow.y);
+
+        inputManager->mouse->analogue[Input_MousePositionX] = (real32)xpos;
+        inputManager->mouse->analogue[Input_MousePositionY] = (real32)ypos;
+        inputManager->mouse->analogue[Input_MousePositionXOffset] = xOffset;
+        inputManager->mouse->analogue[Input_MousePositionYOffset] = yOffset;
+
+
+        InputEvent eventX = {};
+        eventX.device = inputManager->mouse;
+        eventX.index = Input_MousePositionX;
+        eventX.value = (real32)xpos;
+
+        InputEvent eventY = {};
+        eventY.device = inputManager->mouse;
+        eventY.index = Input_MousePositionY;
+        eventY.value = (real32)ypos;
+
+        InputEvent eventXOffset = {};
+        eventXOffset.device = inputManager->mouse;
+        eventXOffset.index = Input_MousePositionXOffset;
+        eventXOffset.value = (real32)(xpos - inputManager->lastMousePosWindow.x);
+
+        InputEvent eventYOffset = {};
+        eventYOffset.device = inputManager->mouse;
+        eventYOffset.index = Input_MousePositionYOffset;
+        eventYOffset.value = (real32)(ypos - inputManager->lastMousePosWindow.y);
+
+        PushBack(&inputManager->events, eventX);
+        PushBack(&inputManager->events, eventY);
+        PushBack(&inputManager->events, eventXOffset);
+        PushBack(&inputManager->events, eventYOffset);
+
+
+//        std::cout << "X Pos: " << xpos << std::endl;
+//        std::cout << "Y Pos: " << ypos << std::endl;
+
+
         // std::cout << "Key pressed: " << xpos << std::endl;
 #if IMGUI
         ImGui_ImplGlfw_CursorPosCallback(window, xpos, ypos);
@@ -296,14 +361,38 @@ namespace Zayn {
             }
         }
 
+        if (inputManager->mousePosUpdated)
+        {
+//            UpdateMouseInputs();
 
+            int width, height;
+            glfwGetWindowSize(windowManager->glfwWindow, &width, &height);
+            inputManager->mousePosNorm.x = inputManager->nowMousePosWindow.x / (real32)width;
+            inputManager->mousePosNorm.y = inputManager->nowMousePosWindow.y / (real32)height;
 
+            inputManager->mousePosNormSigned.x = (inputManager->mousePosNorm.x * 2.0f) - 1.0f;
+            inputManager->mousePosNormSigned.y = (inputManager->mousePosNorm.y * 2.0f) - 1.0f;
+
+            inputManager->mouse->analogue[Input_MousePositionXNorm] = inputManager->mousePosNorm.x;
+            inputManager->mouse->analogue[Input_MousePositionYNorm] = inputManager->mousePosNorm.y;
+
+            inputManager->mouse->analogue[Input_MousePositionX] = inputManager->nowMousePosWindow.x;
+            inputManager->mouse->analogue[Input_MousePositionY] = inputManager->nowMousePosWindow.y;
+
+            inputManager->mousePosUpdated = false;
+
+            inputManager->lastMousePosWindow = inputManager->nowMousePosWindow;
+        }
     }
 
     void ClearInputManager(Engine* engine) {
         InputManager* inputManager = &engine->inputManager;
 
         DynamicArrayClear(&inputManager->events);
+
+        inputManager->mouse->analogue[Input_MousePositionXOffset] = 0.0f;
+        inputManager->mouse->analogue[Input_MousePositionYOffset] = 0.0f;
+
 
         inputManager->charCount = 0;
         memset(inputManager->inputChars, 0, inputManager->charSize);
@@ -313,5 +402,39 @@ namespace Zayn {
     {
         return device->framesHeld[inputID] > 0;
     }
+
+    bool InputPressed(InputDevice *device, int32 inputID)
+    {
+        return device->pressed[inputID] && device->framesHeld[inputID] == 0;
+    }
+
+    vec2 GetMousePosition(InputManager* inputManager) {
+        return inputManager->nowMousePosWindow;
+    }
+
+    vec2 GetMouseDelta(InputManager* inputManager) {
+        vec2 delta = {};
+        delta.x = inputManager->mouse->analogue[Input_MousePositionXOffset];
+        delta.y = inputManager->mouse->analogue[Input_MousePositionYOffset];
+        return delta;
+    }
+
+    void ResetMouseDelta(InputManager* inputManager)
+    {
+        inputManager->mouse->analogue[Input_MousePositionXOffset] = 0;
+        inputManager->mouse->analogue[Input_MousePositionYOffset] = 0;
+    }
+
+    vec2 GetMousePositionNormalized(InputManager* inputManager) {
+        return inputManager->mousePosNorm;
+    }
+
+    vec2 GetMousePositionNormalizedSigned(InputManager* inputManager) {
+        return inputManager->mousePosNormSigned;
+    }
+
+
+
+
 
 } // Zayn

@@ -5,6 +5,9 @@
 #ifndef Z2_ENGINE_H
 #define Z2_ENGINE_H
 
+#define IMGUI 1
+
+
 #include "MemoryManager.h"
 #include "WindowManager.h"
 #include "TimeManager.h"
@@ -16,9 +19,10 @@
 #include "tools/GameObjectFactory.h"
 #include "tools/MeshFactory.h"
 #include "tools/EntityFactory.h"
-#include "CameraManager.h"
+#include "game/CameraManager.h"
 
 #define MAX_FRAMES_IN_FLIGHT 2
+
 
 
 namespace Zayn {

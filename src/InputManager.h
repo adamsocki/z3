@@ -8,6 +8,7 @@
 #include "data_types.h"
 #include "GLFW/glfw3.h"
 #include "DynamicArray.h"
+#include "math/vector.h"
 
 namespace Zayn {
 
@@ -122,6 +123,20 @@ namespace Zayn {
         Input_KeyboardDiscreteCount
     };
 
+    enum InputMouseAnalogue : uint32 {
+        Input_MousePositionX,
+        Input_MousePositionY,
+        Input_MousePositionXNorm,
+        Input_MousePositionYNorm,
+
+        Input_MousePositionXOffset,
+        Input_MousePositionYOffset,
+
+        Input_ScrollDirection,
+
+        Input_MouseAnalogueCount,
+    };
+
     extern InputKeyboardDiscrete glfwKeyToInputKeyboardDiscrete[GLFW_KEY_LAST + 1];
 
     struct InputDevice
@@ -161,10 +176,20 @@ namespace Zayn {
 
 
         InputDevice* keyboard;
+        InputDevice* mouse;
 
 
-        char *inputChars;
+        char  *inputChars;
         uint32 charSize;
+
+
+        vec2i mousePos;
+        vec2  mousePosNorm;
+        vec2  mousePosNormSigned;
+        bool mousePosUpdated;
+
+        vec2 lastMousePosWindow;
+        vec2 nowMousePosWindow;
 
 
         DynamicArray<InputEvent> events;
@@ -177,6 +202,13 @@ namespace Zayn {
     void ClearInputManager(Engine* engine);
 
     bool InputHeld(InputDevice* device, int32 inputID);
+    bool InputPressed(InputDevice *device, int32 inputID);
+
+    vec2 GetMousePosition(InputManager* inputManager) ;
+    vec2 GetMouseDelta(InputManager* inputManager);
+    void ResetMouseDelta(InputManager* inputManager);
+    vec2 GetMousePositionNormalized(InputManager* inputManager);
+    vec2 GetMousePositionNormalizedSigned(InputManager* inputManager);
 
 } // Zayn
 

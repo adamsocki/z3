@@ -19,7 +19,7 @@
 
 #include <set>
 #include "WindowManager.h"
-#include "CameraManager.h"
+#include "game/CameraManager.h"
 
 
 namespace Zayn {
@@ -233,9 +233,22 @@ namespace Zayn {
         bool vkIsFrameStarted = false;
     };
 
+    struct MyIMGUI
+    {
+        VkDescriptorPool imGuiDescriptorPool;
+        VkRenderPass imGuiRenderPass;
+        std::vector<VkCommandBuffer> imGuiCommandBuffers;
+        std::vector<VkFramebuffer> imGuiFrameBuffers;
+        VkCommandPool imGuiCommandPool;
+
+        bool visible;
+    };
+
+
     struct RenderManager {
 
         VulkanData vulkanData;
+        MyIMGUI myImgui;
     };
 
 
@@ -264,8 +277,7 @@ namespace Zayn {
     VkImageView CreateImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags, uint32_t mipLevels, Zayn::RenderManager* renderManager);
 
 
-    void UpdateRenderManager(Zayn::Engine* engine, Zayn::EntityHandle handle, Zayn::RenderManager* renderManager, Zayn::WindowManager* windowManager, Game::CameraManager* cameraManager);
-
+    void UpdateRenderManager(Zayn::Engine* engine, Zayn::EntityHandle handle, Zayn::RenderManager* renderManager, Zayn::WindowManager* windowManager, Game::CameraManager* cameraManager, InputManager* inputManager);
 
 }
 #endif //Z2_RENDERMANAGER_H
