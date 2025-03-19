@@ -159,19 +159,7 @@ namespace Zayn {
         Input_MouseDiscreteCount,
     };
 
-    enum InputMouseAnalogue : uint32 {
-        Input_MousePositionX,
-        Input_MousePositionY,
-        Input_MousePositionXNorm,
-        Input_MousePositionYNorm,
 
-        Input_MousePositionXOffset,
-        Input_MousePositionYOffset,
-
-        Input_ScrollDirection,
-
-        Input_MouseAnalogueCount,
-    };
 
 
     void InitInputManager(Engine* engine)
@@ -250,6 +238,15 @@ namespace Zayn {
 
         inputManager->mousePos.x = (int32)xpos;
         inputManager->mousePos.y = (int32)ypos;
+
+        real32 xOffset = (real32)(xpos - inputManager->lastMousePosWindow.x);
+        real32 yOffset = (real32)(ypos - inputManager->lastMousePosWindow.y);
+
+        inputManager->mouse->analogue[Input_MousePositionX] = (real32)xpos;
+        inputManager->mouse->analogue[Input_MousePositionY] = (real32)ypos;
+        inputManager->mouse->analogue[Input_MousePositionXOffset] = xOffset;
+        inputManager->mouse->analogue[Input_MousePositionYOffset] = yOffset;
+
 
         InputEvent eventX = {};
         eventX.device = inputManager->mouse;
@@ -392,6 +389,10 @@ namespace Zayn {
         InputManager* inputManager = &engine->inputManager;
 
         DynamicArrayClear(&inputManager->events);
+
+        inputManager->mouse->analogue[Input_MousePositionXOffset] = 0.0f;
+        inputManager->mouse->analogue[Input_MousePositionYOffset] = 0.0f;
+
 
         inputManager->charCount = 0;
         memset(inputManager->inputChars, 0, inputManager->charSize);

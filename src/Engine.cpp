@@ -59,7 +59,7 @@ namespace Zayn {
         // START OF GAME Frame
         UpdateGameManager(engine);
 
-        UpdateRenderManager(engine, engine->HTEST, &engine->renderManager, &engine->windowManager, &engine->cameraManager);
+        UpdateRenderManager(engine, engine->HTEST, &engine->renderManager, &engine->windowManager, &engine->cameraManager, &engine->inputManager);
 
 
         // End OF FRAME

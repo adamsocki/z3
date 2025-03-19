@@ -15,7 +15,7 @@ namespace Zayn {
 
 
     void InitMyImgui(Zayn::RenderManager *pManager, Zayn::WindowManager *pWindowManager);
-    void UpdateMyImgui(RenderManager* renderManager, WindowManager* windowManager);
+    void UpdateMyImgui(RenderManager* renderManager, WindowManager* windowManager, InputManager* inputManager);
 } // Zayn
 
 #endif //Z3_MYIMGUI_H

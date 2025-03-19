@@ -123,6 +123,20 @@ namespace Zayn {
         Input_KeyboardDiscreteCount
     };
 
+    enum InputMouseAnalogue : uint32 {
+        Input_MousePositionX,
+        Input_MousePositionY,
+        Input_MousePositionXNorm,
+        Input_MousePositionYNorm,
+
+        Input_MousePositionXOffset,
+        Input_MousePositionYOffset,
+
+        Input_ScrollDirection,
+
+        Input_MouseAnalogueCount,
+    };
+
     extern InputKeyboardDiscrete glfwKeyToInputKeyboardDiscrete[GLFW_KEY_LAST + 1];
 
     struct InputDevice

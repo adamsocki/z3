@@ -124,8 +124,9 @@ namespace Zayn {
         ImGui_ImplVulkan_CreateFontsTexture();
     }
 
-    void UpdateMyImgui(RenderManager* renderManager, WindowManager* windowManager)
+    void UpdateMyImgui(RenderManager* renderManager, WindowManager* windowManager, InputManager* inputManager)
     {
+
         // Recording ImGui Command Buffer
         {
             // ImGui Render command
@@ -150,7 +151,59 @@ namespace Zayn {
 
             //LevelEditorIMGUI(zaynMem);
 
+            ImGui::Begin("Debug Tools");
 
+            if (ImGui::CollapsingHeader("Mouse Information", ImGuiTreeNodeFlags_DefaultOpen)) {
+                // Get mouse position from InputManager
+                vec2 mousePos = GetMousePosition(inputManager);
+                vec2 delta = GetMouseDelta(inputManager);
+                vec2 normPos = GetMousePositionNormalized(inputManager);
+                vec2 normSignedPos = GetMousePositionNormalizedSigned(inputManager);
+
+                ImGui::Text("Cursor Position: (%.1f, %.1f)", mousePos.x, mousePos.y);
+                ImGui::Text("Cursor Delta: (%.1f, %.1f)", delta.x, delta.y);
+
+                ImGui::Text("Raw Delta X: %.1f", inputManager->mouse->analogue[Input_MousePositionXOffset]);
+                ImGui::Text("Raw Delta Y: %.1f", inputManager->mouse->analogue[Input_MousePositionYOffset]);
+
+
+                // Display normalized coordinates
+                ImGui::Text("Normalized Position [0,1]: (%.3f, %.3f)", normPos.x, normPos.y);
+                ImGui::Text("Normalized Position [-1,1]: (%.3f, %.3f)", normSignedPos.x, normSignedPos.y);
+
+                // Add visualization of mouse position
+                ImVec2 windowPos = ImGui::GetWindowPos();
+                ImVec2 windowSize = ImGui::GetWindowSize();
+                float visualizationSize = 100.0f;
+
+                ImGui::Separator();
+                ImGui::Text("Position Visualization:");
+
+                ImDrawList* drawList = ImGui::GetWindowDrawList();
+                ImVec2 vizPos = ImVec2(windowPos.x + 20, ImGui::GetCursorScreenPos().y);
+
+                // Draw border
+                drawList->AddRect(vizPos,
+                                  ImVec2(vizPos.x + visualizationSize, vizPos.y + visualizationSize),
+                                  IM_COL32(255, 255, 255, 255));
+
+                // Draw cursor position
+                ImVec2 cursorDot = ImVec2(
+                        vizPos.x + normPos.x * visualizationSize,
+                        vizPos.y + normPos.y * visualizationSize
+                );
+
+                drawList->AddCircleFilled(cursorDot, 4.0f, IM_COL32(255, 0, 0, 255));
+
+                ImGui::Dummy(ImVec2(visualizationSize + 20, visualizationSize + 10));
+            }
+
+            if (ImGui::CollapsingHeader("Render Stats")) {
+                ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
+                ImGui::Text("Frame Time: %.3f ms", 1000.0f / ImGui::GetIO().Framerate);
+            }
+
+            ImGui::End();
 
 
 
