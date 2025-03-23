@@ -17,13 +17,14 @@ namespace Zayn {
     void InitEngine(Engine* engine)
     {
         InitMemoryManager(engine);
-        InitWindowManager(engine, V2(500,533), "spanglish");
+        InitWindowManager(engine, V2(1500,1033), "spanglish");
         InitTimeManager(engine);
         InitInputManager(engine);
 
         InitTextureFactory(engine);
         InitMaterialFactory(engine);
         InitMeshFactory(engine);
+
 
         InitEntityFactory(&engine->entityFactory);
 
@@ -34,6 +35,8 @@ namespace Zayn {
 
 
         InitRenderManager(&engine->renderManager, &engine->windowManager);
+        InitLevelEditor(&engine->levelEditor);
+
 
 //        InitCameraManager(engine);
 

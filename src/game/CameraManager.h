@@ -8,7 +8,7 @@
 #include "../math/matrix.h"
 #include "../InputManager.h"
 #include "../TimeManager.h"
-#include "WindowManager.h"
+#include "../WindowManager.h"
 
 namespace Game {
 
@@ -73,6 +73,9 @@ namespace Game {
         bool firstMouseCapture;
         CursorMode currentCursorMode;
         bool cursorModeJustChanged;
+
+        real32 moveSpeed;
+
     };
 
     void InitCameraManager(CameraManager* cam, GLFWwindow* glfWwindow, Zayn::InputManager* inputManager);

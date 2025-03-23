@@ -9,6 +9,7 @@
 #include "../GameObject.h"
 #include "../ModelPushConstant.h"
 #include "../../tools/EntityFactory.h"
+#include "../components/Component.h"
 //#include "../../tools/EntityFactory.h"
 //#include "../../tools/EntityFactory.h"
 
@@ -24,6 +25,7 @@ namespace Game {
 
         ModelPushConstant pushConstantData;
 
+        Component component;
     };
 
 } // Game

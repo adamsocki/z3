@@ -45,6 +45,12 @@ add_library(imgui STATIC
         ${imgui_SOURCE_DIR}/imgui_widgets.cpp
         ${imgui_SOURCE_DIR}/backends/imgui_impl_glfw.cpp
         ${imgui_SOURCE_DIR}/backends/imgui_impl_vulkan.cpp
+        src/game/editor/LevelEditor.cpp
+        src/game/editor/LevelEditor.h
+        src/game/editor/myImgui_LevelEditor.cpp
+        src/game/editor/myImgui_LevelEditor.h
+        src/game/components/Component.cpp
+        src/game/components/Component.h
 )
 
 target_include_directories(imgui PUBLIC

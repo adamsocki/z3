@@ -1598,6 +1598,8 @@ void Zayn::InitRenderManager(Zayn::RenderManager* renderManager, Zayn::WindowMan
     InitMyImgui(renderManager, window);
 
 
+
+
 #endif
     std::cout << "after InitRender_Vulkan()" << std::endl;
 
@@ -1863,9 +1865,7 @@ void EndFrameRender(Zayn::RenderManager* renderManager, Zayn::WindowManager* win
     submitCommandBuffers.push_back(renderManager->vulkanData.vkCommandBuffers[renderManager->vulkanData.vkCurrentFrame]);
 
 #if IMGUI
-
     submitCommandBuffers.push_back(renderManager->myImgui.imGuiCommandBuffers[renderManager->vulkanData.vkCurrentFrame]);
-    std::cout << "hitIMGUI" <<std::endl;
 #endif
 
     if (vkEndCommandBuffer(submitCommandBuffers[0]) != VK_SUCCESS)
@@ -1892,7 +1892,7 @@ void Zayn::UpdateRenderManager(Zayn::Engine* engine, Zayn::EntityHandle handle, 
     if (BeginFrameRender(renderManager, windowManager))
     {
 #if IMGUI
-        UpdateMyImgui(cameraManager, renderManager, windowManager, inputManager);
+        UpdateMyImgui(engine, &engine->levelEditor, cameraManager, renderManager, windowManager, inputManager);
 #endif
         UpdateUniformBuffer(renderManager->vulkanData.vkCurrentFrame, renderManager, cameraManager);
         BeginSwapChainRenderPass(renderManager, renderManager->vulkanData.vkCommandBuffers[renderManager->vulkanData.vkCurrentFrame]);

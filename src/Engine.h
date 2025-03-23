@@ -20,6 +20,7 @@
 #include "tools/MeshFactory.h"
 #include "tools/EntityFactory.h"
 #include "game/CameraManager.h"
+#include "game/editor/LevelEditor.h"
 
 #define MAX_FRAMES_IN_FLIGHT 2
 
@@ -46,6 +47,8 @@ namespace Zayn {
 
         Game::CameraManager cameraManager;
         EntityHandle HTEST;
+
+        LevelEditor levelEditor;
         //        GameObjectFactory gameObjectFactory;
 
     };

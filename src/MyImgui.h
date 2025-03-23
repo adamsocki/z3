@@ -6,6 +6,7 @@
 #define Z3_MYIMGUI_H
 
 #include "RenderManager.h"
+#include "game/editor/LevelEditor.h"
 
 namespace Zayn {
 
@@ -15,7 +16,7 @@ namespace Zayn {
 
     void ToggleImGuiVisibility(RenderManager* renderManager);
     void InitMyImgui(Zayn::RenderManager *pManager, Zayn::WindowManager *pWindowManager);
-    void UpdateMyImgui(Game::CameraManager* cameraManager, RenderManager* renderManager, WindowManager* windowManager, InputManager* inputManager);
+    void UpdateMyImgui(Engine* engine, LevelEditor* levelEditor, Game::CameraManager *cameraManager, RenderManager *renderManager, WindowManager *windowManager, InputManager *inputManager);
 } // Zayn
 
 #endif //Z3_MYIMGUI_H

@@ -8,6 +8,7 @@
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_vulkan.h"
+#include "game/editor/myImgui_LevelEditor.h"
 
 namespace Zayn {
 
@@ -135,17 +136,23 @@ namespace Zayn {
         ImGui_ImplVulkan_CreateFontsTexture();
     }
 
-    void UpdateMyImgui(Game::CameraManager *cameraManager, RenderManager *renderManager, WindowManager *windowManager, InputManager *inputManager)
+    void UpdateMyImgui(Engine* engine, LevelEditor* levelEditor, Game::CameraManager *cameraManager, RenderManager *renderManager, WindowManager *windowManager, InputManager *inputManager)
     {
         // Always set up the ImGui frame
         ImGui_ImplVulkan_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
+        EntityFactory* entityFactory = &engine->entityFactory;
+
         // Only render UI elements if ImGui is visible
         if (renderManager->myImgui.visible) {
             // Demo window
             ImGui::ShowDemoWindow();
+//            RenderLevelEditorUI(levelEditor);
+//            RenderEnhancedToolbar(levelEditor);
+
+            MyRenderLevelEditorWindow(levelEditor, entityFactory, engine);
 
             // IMGUI INTERFACE CODE
             ImGui::Begin("Debug Tools");
