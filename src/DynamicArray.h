@@ -61,9 +61,9 @@ namespace Zayn {
     void DynamicArrayAllocateChunk(DynamicArray<T>* array)
     {
         ArrayChunk* newChunk = (ArrayChunk*)AllocateMem(array->allocator, sizeof(ArrayChunk) + (array->elementsPerChunk * sizeof(T)));
-        newChunk->nextChunk = NULL;
+        newChunk->nextChunk = nullptr;
 
-        if (array->headChunk == NULL)
+        if (array->headChunk == nullptr)
         {
             array->headChunk = newChunk;
             array->tailChunk = newChunk;

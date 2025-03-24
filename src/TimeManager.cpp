@@ -5,12 +5,23 @@
 #include "TimeManager.h"
 #include "Engine.h"
 
+#ifdef _WIN32
+#include <windows.h>
+
+#elif defined(__APPLE__)
+#include <mach/mach_time.h>
+#include <CoreServices/CoreServices.h>
+#include <unistd.h>
+
+#endif
+
 namespace Zayn {
 
 
     void InitTimeManager(Engine* engine)
     {
         Time* time = &engine->timeManager.time;
+#ifdef WIN32
         QueryPerformanceFrequency(&time->mTime.systemFrequency);
         QueryPerformanceCounter(&time->mTime.systemTime);
 
@@ -18,6 +29,21 @@ namespace Zayn {
         //SeedRand(time->mTime.startSystemTime.QuadPart);
 
         time->systemTime = (real32)time->mTime.systemTime.QuadPart;
+#elif __APPLE__
+
+        mach_timebase_info_data_t timebaseInfo;
+        mach_timebase_info(&timebaseInfo);
+
+        time->mTime.conversionFactor = (double)timebaseInfo.numer / (double)timebaseInfo.denom / 1000000000.0;
+
+        time->mTime.systemTime.QuadPart = mach_absolute_time();
+        time->mTime.startSystemTime.QuadPart = time->mTime.systemTime.QuadPart;
+
+        time->mTime.systemFrequency.QuadPart = 1;
+
+        time->systemTime = (real32)time->mTime.systemTime.QuadPart;
+
+#endif
 
         time->startTime = 0.0f;
     }
@@ -26,10 +52,14 @@ namespace Zayn {
         Time* time = &engine->timeManager.time;
         time->mTime.prevSystemTime = time->mTime.systemTime;
         //LARGE_INTEGER
-        int32 error = QueryPerformanceCounter(&time->mTime.systemTime);
+#ifdef WIN32
+            int32 error = QueryPerformanceCounter(&time->mTime.systemTime);
 
-        time->deltaTime = ((real64)time->mTime.systemTime.QuadPart - (real64)time->mTime.prevSystemTime.QuadPart) / (real64)time->mTime.systemFrequency.QuadPart;
-
+            time->deltaTime = ((real64)time->mTime.systemTime.QuadPart - (real64)time->mTime.prevSystemTime.QuadPart) / (real64)time->mTime.systemFrequency.QuadPart;
+#elif __APPLE__
+            time->mTime.systemTime.QuadPart = mach_absolute_time();
+            time->deltaTime = ((real64)time->mTime.systemTime.QuadPart - (real64)time->mTime.prevSystemTime.QuadPart) * time->mTime.conversionFactor;
+#endif
         time->totalTime += time->deltaTime;
         time->frameCount = time->frameCount + 1;
         //std::cout << "framecnf: " << time->frameCount << std::endl;

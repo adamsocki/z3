@@ -46,7 +46,7 @@ namespace Zayn {
 
 
     inline void DeallocateMem(MAllocator* allocator, void* data) {
-        if (allocator->deallocate == NULL) { return; }
+        if (allocator->deallocate == nullptr) { return; }
         allocator->deallocate(allocator, data);
     }
 

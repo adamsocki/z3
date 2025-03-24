@@ -6,7 +6,19 @@
 #define Z2_TIMEMANAGER_H
 
 #include "data_types.h"
+
+#ifdef WIN32
 #include <windows.h>
+
+
+#elif defined(__APPLE__)
+// Define LARGE_INTEGER equivalent for Apple
+typedef struct {
+    uint64_t QuadPart;
+} LARGE_INTEGER;
+
+#endif
+
 
 //#include "Engine.h"
 
@@ -20,6 +32,10 @@ namespace Zayn {
         LARGE_INTEGER systemTime;
         LARGE_INTEGER systemFrequency;
         LARGE_INTEGER prevSystemTime;
+
+#ifdef __APPLE__
+        double conversionFactor;
+#endif
 
     };
 

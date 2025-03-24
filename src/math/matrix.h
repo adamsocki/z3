@@ -183,9 +183,15 @@ inline quaternion ToQuaternion(mat3 a) {
     result.z = sqrtf(Max(0.0f, 1.0f - a.columns[0][0] - a.columns[1][1] + a.columns[2][2])) / 2.0f;
 
     // @NOTE: _copysign(x, y) returns a value with the magnitude of x and the sign of y
+#if WIN32
     result.x = _copysign(result.x, a.columns[2][1] - a.columns[1][2]);
     result.y = _copysign(result.y, a.columns[0][2] - a.columns[2][0]);
     result.z = _copysign(result.z, a.columns[1][0] - a.columns[0][1]);
+#elif __APPLE__
+    result.x = copysign(result.x, a.columns[2][1] - a.columns[1][2]);
+    result.y = copysign(result.y, a.columns[0][2] - a.columns[2][0]);
+    result.z = copysign(result.z, a.columns[1][0] - a.columns[0][1]);
+#endif
 
     return result;
 }
@@ -198,9 +204,17 @@ inline quaternion ToQuaternionFromMat4(mat4 a) {
     result.z = sqrtf(Max(0.0f, 1.0f - a.columns[0][0] - a.columns[1][1] + a.columns[2][2])) / 2.0f;
 
     // @NOTE: _copysign(x, y) returns a value with the magnitude of x and the sign of y
+
+#if WIN32
     result.x = _copysign(result.x, a.columns[2][1] - a.columns[1][2]);
     result.y = _copysign(result.y, a.columns[0][2] - a.columns[2][0]);
     result.z = _copysign(result.z, a.columns[1][0] - a.columns[0][1]);
+#elif __APPLE__
+    result.x = copysign(result.x, a.columns[2][1] - a.columns[1][2]);
+    result.y = copysign(result.y, a.columns[0][2] - a.columns[2][0]);
+    result.z = copysign(result.z, a.columns[1][0] - a.columns[0][1]);
+#endif
+
     return result;
 }
 

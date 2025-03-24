@@ -243,7 +243,7 @@ void SetupDebugMessenger(Zayn::RenderManager* renderManager)
 
 
 #ifdef __APPLE__
-    if (CreateDebugUtilsMessengerEXT(Zayn->vkInstance, reinterpret_cast<const VkDebugUtilsMessengerCreateInfoEXT*>(&createInfo), &pAllocator, &Zayn->vkDebugMessenger) != VK_SUCCESS)
+    if (CreateDebugUtilsMessengerEXT(renderManager->vulkanData.vkInstance, reinterpret_cast<const VkDebugUtilsMessengerCreateInfoEXT*>(&createInfo), &pAllocator, &renderManager->vulkanData.vkDebugMessenger) != VK_SUCCESS)
     {
         throw std::runtime_error("failed to set up debug messenger!");
     }
