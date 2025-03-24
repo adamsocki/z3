@@ -88,7 +88,7 @@ namespace Zayn {
         bool active;
 
 
-        LevelData currentLevel;
+        LevelData currentLevelData;
         std::string currentLevelPath;
         bool unsavedChanges;
 
@@ -126,6 +126,8 @@ namespace Zayn {
 
         std::string currentAssetDirectory;
 
+        std::vector<std::string> levelFiles;
+
 
     };
 
@@ -158,6 +160,8 @@ namespace Zayn {
 
 
     bool SaveLevel(LevelData levelData);
+    bool LoadLevel(LevelData* currentLevelData, std::string levelFile);
+    std::vector<std::string> GetLevelFiles(const std::string& folderPath);
 
 
 

@@ -472,11 +472,11 @@ VkPresentModeKHR ChooseSwapPresentMode(const std::vector<VkPresentModeKHR>& avai
             return availablePresentMode;
         }
         // UNCOMMENT BELOW IF YOU WANT TO NOT HAVE VSYNC ON
-         else if (availablePresentMode == VK_PRESENT_MODE_IMMEDIATE_KHR)
+         /*else if (availablePresentMode == VK_PRESENT_MODE_IMMEDIATE_KHR)
          {
              std::cout << "Present mode: Immediate (No VSync)" << std::endl;
              return availablePresentMode;
-         }
+         }*/
     }
     return VK_PRESENT_MODE_FIFO_KHR;
 }

@@ -114,6 +114,8 @@ add_executable(Z3 src/main.cpp
         src/game/MouseManager.h
         src/MyImgui.cpp
         src/MyImgui.h
+        src/game/entities/FloorEntity.cpp
+        src/game/entities/FloorEntity.h
 
 
 )

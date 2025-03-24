@@ -8,6 +8,7 @@
 #include "../entities/Entity.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <__filesystem/path.h>
 
 namespace Zayn {
 
@@ -255,8 +256,6 @@ namespace Zayn {
 
                 if (ImGui::Button("Create"))
                 {
-                    // TODO: Create a new level with the specified parameters
-                    // levelEditor->CreateNewLevel(levelName, levelWidth, levelHeight);
                     LevelData levelData ={};
                     levelData.name = levelName;
                     SaveLevel(levelData);
@@ -274,7 +273,33 @@ namespace Zayn {
 
             if (ImGui::Button("Open Level..."))
             {
+                levelEditor->levelFiles = GetLevelFiles("../src/game/levels/");
+                ImGui::OpenPopup("Open Level");
 
+            }
+
+            if (ImGui::BeginPopup("Open Level")) {
+                ImGui::Text("Select a level to open:");
+                ImGui::Separator();
+
+                // Display a list of available level files
+                for (const auto& levelFile : levelEditor->levelFiles) {
+                    // Extract just the filename without path
+                    std::string filename = std::filesystem::path(levelFile).filename().string();
+
+                    if (ImGui::Selectable(filename.c_str())) {
+                        // Handle level loading here
+                        LoadLevel(&levelEditor->currentLevelData, levelFile);
+                        ImGui::CloseCurrentPopup();
+                    }
+                }
+
+                ImGui::Separator();
+                if (ImGui::Button("Cancel")) {
+                    ImGui::CloseCurrentPopup();
+                }
+
+                ImGui::EndPopup();
             }
             ImGui::Separator();
             if (ImGui::Button("Save Level..."))
@@ -285,6 +310,20 @@ namespace Zayn {
             {
 
             }
+        }
+
+        if (ImGui::CollapsingHeader("Level Data", ImGuiTreeNodeFlags_DefaultOpen)) {
+            ImGui::Text("Name: %s", levelEditor->currentLevelData.name.c_str());
+
+            // Display the version
+            ImGui::Text("Version: %d", levelEditor->currentLevelData.version);
+
+            // Display the filename (with null check)
+            ImGui::Text("File: %s", levelEditor->currentLevelData.fileName ? levelEditor->currentLevelData.fileName : "None");
+
+            // Display entity count
+            // ImGui::Text("Entities: %d", levelEditor->currentLevelData.levelEntityHandles.size());
+
         }
 
 
@@ -434,10 +473,11 @@ namespace Zayn {
             if (ImGui::IsItemHovered()) ImGui::SetTooltip("New Level (Ctrl+N)");
 
             ImGui::SameLine();
-            if (ImGui::Button("open")) {
+            if (ImGui::Button("load")) {
                 // TODO: Show file dialog
+
             }
-            if (ImGui::IsItemHovered()) ImGui::SetTooltip("Open Level (Ctrl+O)");
+            if (ImGui::IsItemHovered()) ImGui::SetTooltip("Load Level (Ctrl+O)");
 
             ImGui::SameLine();
             if (ImGui::Button("Save")) {
