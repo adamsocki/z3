@@ -340,6 +340,53 @@ namespace Zayn {
 
                 ImGui::TreePop();
                 ImGui::Spacing();
+
+                if (ImGui::Button("Create New Entity...")) {
+                    ImGui::OpenPopup("New Entity");
+                }
+
+
+                if (ImGui::BeginPopup("New Entity")) {
+                    ImGui::Text("Select and Entity Type to Create:");
+                    ImGui::Separator();
+
+                    const char* items[static_cast<int>(Game::EntityType::EntityType_Count)];
+                    for (int i = 0; i < static_cast<int>(Game::EntityType::EntityType_Count); i++) {
+                        items[i] = Game::entityTypeInfoForBuffer[i].typeName;
+                    }
+
+                    int currentSelectedItem = static_cast<int>(levelEditor->entityCreator.selectedEntityType);
+
+                    if (ImGui::Combo("Entity Type", &currentSelectedItem, items, static_cast<int>(Game::EntityType::EntityType_Count))) {
+                        // Update the selected type when changed
+                        // selectedType = static_cast<Game::EntityType>(currentSelectedItem);
+                    }
+
+                    // Display a list of available entity types
+                    // for (const auto& levelFile : levelEditor->levelFiles) {
+                    //     // Extract just the filename without path
+                    //     std::string filename = std::filesystem::path(levelFile).filename().string();
+                    //
+                    //     if (ImGui::Selectable(filename.c_str())) {
+                    //         // Handle level loading here
+                    //         LoadLevel(&levelEditor->currentLevelData, levelFile);
+                    //         ImGui::CloseCurrentPopup();
+                    //     }
+                    // }
+
+                    ImGui::Separator();
+                    if (ImGui::Button("Cancel")) {
+                        ImGui::CloseCurrentPopup();
+                    }
+
+                    if (ImGui::Button("Create")) {
+                        ImGui::CloseCurrentPopup();
+                        // Create new Entity()
+                    }
+
+                    ImGui::EndPopup();
+                }
+
             }
             if(ImGui::TreeNode("Create Lighting") )
             {

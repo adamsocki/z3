@@ -61,8 +61,17 @@ namespace Zayn {
     void InitEntityBuffers(EntityFactory* entityFactory);
     void InitEntityFactory(EntityFactory* entityFactory);
 
+    namespace LE{
+
+        struct EntityCreator {
+            Game::EntityType selectedEntityType;
+
+        };
+    }
 
 
 } // Zayn
+
+
 
 #endif //Z3_ENTITYFACTORY_H

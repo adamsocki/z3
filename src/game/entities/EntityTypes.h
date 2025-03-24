@@ -18,6 +18,7 @@ namespace Game {
         EntityType_Count
     };
 
+
     struct EntityTypeInfoForBuffer
     {
         EntityType type;

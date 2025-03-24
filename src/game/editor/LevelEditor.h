@@ -128,6 +128,8 @@ namespace Zayn {
 
         std::vector<std::string> levelFiles;
 
+        LE::EntityCreator entityCreator;
+
 
     };
 
