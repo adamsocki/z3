@@ -64,7 +64,7 @@ namespace Zayn {
     namespace LE{
 
         struct EntityCreator {
-            Game::EntityType selectedEntityType;
+            Game::EntityType selectedEntityType = Game::EntityType::EntityType_Count;
 
         };
     }

@@ -355,10 +355,12 @@ namespace Zayn {
                         items[i] = Game::entityTypeInfoForBuffer[i].typeName;
                     }
 
+
                     int currentSelectedItem = static_cast<int>(levelEditor->entityCreator.selectedEntityType);
 
                     if (ImGui::Combo("Entity Type", &currentSelectedItem, items, static_cast<int>(Game::EntityType::EntityType_Count))) {
                         // Update the selected type when changed
+                        levelEditor->entityCreator.selectedEntityType = static_cast<Game::EntityType>(currentSelectedItem);
                         // selectedType = static_cast<Game::EntityType>(currentSelectedItem);
                     }
 
