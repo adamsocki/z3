@@ -6,8 +6,89 @@
 #include "imgui.h"
 #include <imgui_internal.h>
 #include "../entities/Entity.h"
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 namespace Zayn {
+
+
+
+    bool EditTransformMatrix(const char* label, mat4 matrix) {
+
+        glm::vec3 position( matrix.m30, matrix.m31, matrix.m32);
+//            glm::vec3 position( matrix.m30, matrix.m31, matrix.m32);
+//        glm::vec3 position( matrix.m30, matrix.m31, matrix.m32);
+
+        if (ImGui::TreeNodeEx(label, ImGuiTreeNodeFlags_DefaultOpen)) {
+
+            if (ImGui::DragFloat3("Position", glm::value_ptr(position), 0.1f)) {
+                matrix.m30 = position.x;
+                matrix.m31 = position.y;
+                matrix.m32 = position.z;
+                //changed = true;
+            }
+
+
+            ImGui::TreePop();
+        }
+
+        return true;
+    }
+
+    void RenderInspectorWindow(LevelEditor* levelEditor, EntityFactory* entityFactory, Engine* engine)
+    {
+        ImGui::Begin("Inspector", &levelEditor->inspectorWindowOpen);
+
+//
+
+        Game::Entity* entity = static_cast<Game::Entity*>(GetEntity(entityFactory, engine->HTEST));
+
+
+        if (!entity) {
+            ImGui::TextDisabled("Selected entity is not valid");
+            ImGui::End();
+            return;
+        }
+
+        static char nameBuffer[256];
+        strncpy(nameBuffer, entity->name.c_str(), sizeof(nameBuffer) - 1);
+        if (ImGui::InputText("Name", nameBuffer, sizeof(nameBuffer))) {
+            entity->name = nameBuffer;
+        }
+
+        ImGui::Text("ID: %d (Gen: %d, Type: %d)",
+                    levelEditor->selectedEntity.indexInInfo,
+                    levelEditor->selectedEntity.generation,
+                    levelEditor->selectedEntity.type);
+
+        ImGui::Separator();
+
+        // Transform
+        if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen)) {
+           // EditTransformMatrix("Matrix", entity->transform);
+
+            // If you're using a ModelPushConstant
+            if (ImGui::CollapsingHeader("Push Constants", ImGuiTreeNodeFlags_DefaultOpen)) {
+                // Edit the model matrix in the push constant
+                EditTransformMatrix("Model Matrix", entity->pushConstantData.model_1);
+
+
+            }
+            if (ImGui::CollapsingHeader("Render Properties", ImGuiTreeNodeFlags_DefaultOpen)) {
+                // Mesh selection
+                if (entity->mesh) {
+                    ImGui::Text("Current Mesh: %s", entity->mesh->name.c_str());
+                } else {
+                    ImGui::TextDisabled("No mesh assigned");
+                }
+            }
+        }
+
+
+
+
+        ImGui::End();
+    }
 
     // Scene hierarchy window
     void RenderSceneHierarchyWindow(LevelEditor* levelEditor, EntityFactory* entityFactory, Engine* engine) {
@@ -152,6 +233,8 @@ namespace Zayn {
             ImGui::EndMainMenuBar();
         }
 
+
+        RenderInspectorWindow(levelEditor, entityFactory, engine);
 
 
         ImGui::Begin("Level Editor");
@@ -347,97 +430,6 @@ namespace Zayn {
     }
     void RenderLevelEditorUI(LevelEditor* levelEditor)
     {
-
-
-//
-//        ImGui::SetNextWindowViewport(viewport->ID);
-        ImGuiViewport* viewport = ImGui::GetMainViewport();
-        ImGui::SetNextWindowPos(viewport->Pos);
-        ImGui::SetNextWindowSize(viewport->Size);
-
-        ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
-//        ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_None);
-
-//        ImGui::SetNextWindowViewport(viewport->ID);
-
-       // ImGui::Begin("LevelEditor");
-
-
-        if (ImGui::BeginMainMenuBar()) {
-            if (ImGui::BeginMenu("File"))
-            {
-                if (ImGui::MenuItem("New", "Ctrl+N"))
-                {
-
-                }
-                if (ImGui::MenuItem("Open", "Ctrl+O"))
-                {
-
-                }
-                if (ImGui::MenuItem("Save", "Ctrl+S"))
-                {
-
-                }
-
-                if (ImGui::MenuItem("Save As...", "Ctrl+Shift+S"))
-                {
-
-                }
-                ImGui::Separator();
-                if (ImGui::MenuItem("Exit", "Alt+F4"))
-                {
-
-                }
-                ImGui::EndMenu();
-            }
-
-
-            if (ImGui::BeginMenu("Edit")) {
-                if (ImGui::MenuItem("Undo", "Ctrl+Z", false, printf("mi"))) { /* TODO: Implement undo */ }
-                if (ImGui::MenuItem("Redo", "Ctrl+Y", false, printf("mi"))) { /* TODO: Implement redo */ }
-                ImGui::Separator();
-                if (ImGui::MenuItem("Cut", "Ctrl+X", false, levelEditor->hasSelection)) { /* TODO: Implement cut */ }
-                if (ImGui::MenuItem("Copy", "Ctrl+C", false, levelEditor->hasSelection)) { /* TODO: Implement copy */ }
-                if (ImGui::MenuItem("Paste", "Ctrl+V", false, /* TODO: Check clipboard */ false)) { /* TODO: Implement paste */ }
-                if (ImGui::MenuItem("Delete", "Del", false, levelEditor->hasSelection)) {  }
-                ImGui::Separator();
-                if (ImGui::MenuItem("Select All", "Ctrl+A")) { /* TODO: Implement select all */ }
-                ImGui::EndMenu();
-            }
-
-            if (ImGui::BeginMenu("View")) {
-//                if (ImGui::MenuItem("Scene Hierarchy", NULL, &editor->hierarchyWindowOpen)) {}
-//                if (ImGui::MenuItem("Inspector", NULL, &editor->inspectorWindowOpen)) {}
-//                if (ImGui::MenuItem("Asset Browser", NULL, &editor->assetBrowserWindowOpen)) {}
-//                if (ImGui::MenuItem("Settings", NULL, &editor->settingsWindowOpen)) {}
-                if (ImGui::MenuItem("Scene Hierarchy", NULL, printf("mi"))) {}
-                if (ImGui::MenuItem("Inspector", NULL, printf("mi"))) {}
-                if (ImGui::MenuItem("Asset Browser", NULL, printf("mi"))) {}
-                if (ImGui::MenuItem("Settings", NULL, printf("mi"))) {}
-                ImGui::Separator();
-//                if (ImGui::MenuItem("Grid", NULL, &editor->viewport.showGrid)) {}
-//                if (ImGui::MenuItem("Wireframe Mode", NULL, &editor->viewport.wireframeMode)) {}
-                if (ImGui::MenuItem("Grid", NULL, printf("mi"))) {}
-                if (ImGui::MenuItem("Wireframe Mode", NULL, printf("mi"))) {}
-
-                ImGui::EndMenu();
-            }
-
-
-
-
-
-
-
-
-            ImGui::EndMainMenuBar();
-
-
-
-
-        }
-
-
     }
 
     void RenderToolbar()
