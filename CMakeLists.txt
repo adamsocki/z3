@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 project(Z3)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 
 include(FetchContent)
 
@@ -20,6 +20,7 @@ else()
 endif()
 
 #find_package(Vulkan REQUIRED)
+find_package(nlohmann_json 3.11.3 REQUIRED)
 
 FetchContent_Declare(
         glfw
@@ -64,7 +65,8 @@ target_include_directories(imgui PUBLIC
 #include_directories(${Vulkan_INCLUDE_DIRS})
 
 #target_compile_definitions(imgui PUBLIC IMGUI_IMPL_VULKAN_NO_PROTOTYPES)
-target_link_libraries(imgui PUBLIC glfw ${Vulkan_LIBRARIES})
+target_link_libraries(imgui PUBLIC glfw ${Vulkan_LIBRARIES} nlohmann_json::nlohmann_json)
+
 
 add_executable(Z3 src/main.cpp
         src/Engine.cpp
@@ -98,8 +100,6 @@ add_executable(Z3 src/main.cpp
         src/tools/MeshFactory.h
         src/game/UniformBufferObject.h
         src/game/ModelPushConstant.h
-        src/EntityManager.cpp
-        src/EntityManager.h
         src/game/entities/Entity.cpp
         src/game/entities/Entity.h
         src/tools/EntityFactory.cpp

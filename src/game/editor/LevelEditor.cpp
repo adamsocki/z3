@@ -4,9 +4,52 @@
 
 #include "LevelEditor.h"
 
+#include <fstream>
+#include <string>
+#include <nlohmann/json.hpp>
+
 namespace Zayn {
 
 
+
+
+    void CreateNewLevel(CreateNewLevelInfo info) {
+
+    }
+
+    bool SaveLevel(LevelData levelData)
+    {
+        nlohmann::json levelJson;
+
+        levelJson["name"]    = levelData.name;
+        levelJson["version"] = levelData.version;
+
+        // write json to file
+        try {
+            std::string fullPath = std::string("../src/game/levels/") + levelData.name;
+            if (!fullPath.ends_with(".zlvl")) {
+                fullPath += ".zlvl";
+            }
+
+            std::filesystem::create_directories("levels");
+            std::ofstream file(fullPath);
+            if (!file.is_open()) {
+                printf("Failed to open file for writing: %s\n", fullPath.c_str());
+                return false;
+            }
+
+            file << levelJson.dump(4);  // Pretty print with 4-space indentation
+            file.close();
+
+            printf("Level saved successfully to: %s\n", fullPath.c_str());
+            return true;
+
+        } catch (const std::exception& e) {
+            printf("Error saving level: %s\n", e.what());
+            return false;
+        }
+
+    }
 
     void ApplyEditorTheme(LevelEditor* editor)
     {

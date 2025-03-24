@@ -39,6 +39,8 @@ namespace Zayn {
     struct LevelData
     {
         std::string name;
+        int32 version = 1;
+        const char* fileName;
         DynamicArray<EntityHandle> levelEntityHandles;
     };
 
@@ -143,6 +145,21 @@ namespace Zayn {
 
     bool SaveLevelInEditor();
     bool NewLevel();
+
+
+    struct CreateNewLevelInfo {
+        char levelName[128] = "";
+    };
+
+    // struct LevelDataInfo {
+    //     char levelName[128] = "";
+    // };
+    void CreateNewLevel(CreateNewLevelInfo info);
+
+
+    bool SaveLevel(LevelData levelData);
+
+
 
 
 

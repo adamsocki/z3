@@ -52,14 +52,13 @@ namespace Zayn {
         {
             //MakeEntityBuffer<EntityType>
         }
+
         AddEntity(entityFactory, &engine->HTEST, Game::EntityType_Player);
         Game::PlayerEntity* playerEntity = (Game::PlayerEntity*)GetEntity(entityFactory, engine->HTEST);
-//        Game::PlayerEntity playerEntity = {};
 
         playerEntity->health = 100;
         playerEntity->material = &engine->materialFactory.materials[0];
         playerEntity->mesh = &engine->meshFactory.meshes[0];
-//        playerEntity->transform = glm::mat4();
         playerEntity->pushConstantData.model_1 = TRS((V3(1.0f, 0.0f, 0.0f)), AxisAngle(V3(0.0f, 0.0f, 0.20f), 0.0f), V3(1.0f, 1.0f, 1.0f));
 
         playerEntity->name = "test Player 1";
@@ -67,6 +66,9 @@ namespace Zayn {
 
 
     }
+
+
+
 
 
     void GameInputUpdate(Zayn::InputManager* inputManager,Zayn::RenderManager* renderManager)
@@ -88,6 +90,11 @@ namespace Zayn {
        MakeMeshes(engine);
 
        MakeEntities(engine);
+
+
+
+        // TODO: Put somewhere Better
+        // MakeLevel(1);
 
 
     }

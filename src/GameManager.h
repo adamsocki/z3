@@ -4,6 +4,7 @@
 
 #ifndef Z3_GAMEMANAGER_H
 #define Z3_GAMEMANAGER_H
+#include "game/editor/LevelEditor.h"
 
 namespace Zayn {
 
@@ -12,6 +13,7 @@ namespace Zayn {
     struct GameManager {
 
 
+        LevelData levelData;
 
 
     };

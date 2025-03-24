@@ -243,8 +243,35 @@ namespace Zayn {
         if (ImGui::CollapsingHeader("Level Controls", ImGuiTreeNodeFlags_DefaultOpen)) {
             if (ImGui::Button("New Level..."))
             {
-
+                // Popup info for new level
+                ImGui::OpenPopup("New Level");
             }
+
+            if (ImGui::BeginPopup("New Level")) {
+                ImGui::Text("Create New Level");
+                ImGui::Separator();
+                static char levelName[128] = "";
+                ImGui::InputText("Level Name", levelName, IM_ARRAYSIZE(levelName));
+
+                if (ImGui::Button("Create"))
+                {
+                    // TODO: Create a new level with the specified parameters
+                    // levelEditor->CreateNewLevel(levelName, levelWidth, levelHeight);
+                    LevelData levelData ={};
+                    levelData.name = levelName;
+                    SaveLevel(levelData);
+                    ImGui::CloseCurrentPopup();
+                }
+
+                ImGui::SameLine();
+                if (ImGui::Button("Cancel"))
+                {
+                    ImGui::CloseCurrentPopup();
+                }
+
+                ImGui::EndPopup();
+            }
+
             if (ImGui::Button("Open Level..."))
             {
 
