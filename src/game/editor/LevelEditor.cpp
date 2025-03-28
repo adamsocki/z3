@@ -7,6 +7,12 @@
 #include <fstream>
 #include <string>
 #include <nlohmann/json.hpp>
+#include "../../Engine.h"
+#include "../entities/Entity.h"
+
+namespace Game {
+    struct Entity;
+}
 
 namespace Zayn {
 
@@ -49,12 +55,36 @@ namespace Zayn {
 
     }
 
-    bool SaveLevel(LevelData levelData)
+    bool SaveLevel(LevelData levelData, Engine* engine)
     {
         nlohmann::json levelJson;
 
         levelJson["name"]    = levelData.name;
         levelJson["version"] = levelData.version;
+
+
+        nlohmann::json entitiesJson = nlohmann::json::array();
+
+        for (int32 i = 0; i < levelData.levelEntityHandles.count; i++) {
+            EntityHandle entityHandle = levelData.levelEntityHandles[i];
+            Game::Entity* entity = static_cast<Game::Entity*>(GetEntity(&engine->entityFactory, entityHandle));
+
+            if (!entity) continue;  // Skip invalid entities
+
+            // Basic entity data
+            nlohmann::json entityJson;
+            entityJson["id"] = i;
+            entityJson["name"] = entity->name;
+            entityJson["handle"] = {
+                {"indexInInfo", entityHandle.indexInInfo},
+                {"generation", entityHandle.generation},
+                {"type", entityHandle.type}
+            };
+
+            entitiesJson.push_back(entityJson);
+        }
+
+        levelJson["entities"] = entitiesJson;
 
         // write json to file
         try {
@@ -131,13 +161,16 @@ namespace Zayn {
 
     }
 
-    void InitLevelEditor(LevelEditor* levelEditor)
+    void InitLevelEditor(LevelEditor* levelEditor, Engine* engine)
     {
 
         levelEditor->active = false;
 
         levelEditor->currentLevelData.name = "Untitled";
         levelEditor->currentLevelPath = "";
+
+        levelEditor->currentLevelData.levelEntityHandles = MakeDynamicArray<EntityHandle>(&engine->permanentMemory, 100000);
+
 
         ApplyEditorTheme(levelEditor);
 

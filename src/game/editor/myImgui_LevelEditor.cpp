@@ -11,9 +11,7 @@
 #include <__filesystem/path.h>
 
 namespace Zayn {
-
-
-
+    
     bool EditTransformMatrix(const char* label, mat4 matrix) {
 
         glm::vec3 position( matrix.m30, matrix.m31, matrix.m32);
@@ -40,60 +38,92 @@ namespace Zayn {
     {
         ImGui::Begin("Inspector", &levelEditor->inspectorWindowOpen);
 
-//
+       // Game::Entity* entity = static_cast<Game::Entity*>(GetEntity(entityFactory, engine->HTEST));
 
-        Game::Entity* entity = static_cast<Game::Entity*>(GetEntity(entityFactory, engine->HTEST));
-
-
-        if (!entity) {
-            ImGui::TextDisabled("Selected entity is not valid");
+        if (!levelEditor->hasSelection) {
+            ImGui::TextDisabled("No entity selected");
             ImGui::End();
             return;
         }
 
-        static char nameBuffer[256];
-        strncpy(nameBuffer, entity->name.c_str(), sizeof(nameBuffer) - 1);
-        if (ImGui::InputText("Name", nameBuffer, sizeof(nameBuffer))) {
-            entity->name = nameBuffer;
+        EntityHandle selectedHandle = levelEditor->selectedEntityHandle;
+        Game::Entity* entity = static_cast<Game::Entity*>(GetEntity(entityFactory, selectedHandle));
+        if (!entity) {
+            ImGui::TextDisabled("Selected entity pointer is invalid!");
+            levelEditor->hasSelection = false; // Deselect invalid entity
+            ImGui::End();
+            return;
         }
 
-        ImGui::Text("ID: %d (Gen: %d, Type: %d)",
-                    levelEditor->selectedEntity.indexInInfo,
-                    levelEditor->selectedEntity.generation,
-                    levelEditor->selectedEntity.type);
 
+        static char nameBuffer[256];
+        ImGui::PushID((void*)(intptr_t)selectedHandle.indexInInfo);
+        strncpy(nameBuffer, entity->name.c_str(), sizeof(nameBuffer) - 1);
+        nameBuffer[sizeof(nameBuffer) - 1] = '\0'; // Ensure null termination
+        if (ImGui::InputText("Name", nameBuffer, sizeof(nameBuffer))) {
+            entity->name = nameBuffer; // Update entity name directly
+        }
+        ImGui::PopID();
+
+        ImGui::Text("Handle: Idx=%d, Gen=%d, Type=%d",
+                    selectedHandle.indexInInfo,
+                    selectedHandle.generation,
+                    (int)selectedHandle.type); // Cast enum to int for display
         ImGui::Separator();
 
-        // Transform
-        if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen)) {
-           // EditTransformMatrix("Matrix", entity->transform);
 
-            // If you're using a ModelPushConstant
-            if (ImGui::CollapsingHeader("Push Constants", ImGuiTreeNodeFlags_DefaultOpen)) {
-                // Edit the model matrix in the push constant
-                EditTransformMatrix("Model Matrix", entity->pushConstantData.model_1);
+        // --- Components Section ---
+        ImGui::Text("Components");
+        ImGui::Separator();
 
 
-            }
-            if (ImGui::CollapsingHeader("Render Properties", ImGuiTreeNodeFlags_DefaultOpen)) {
-                // Mesh selection
-                if (entity->mesh) {
-                    ImGui::Text("Current Mesh: %s", entity->mesh->name.c_str());
-                } else {
-                    ImGui::TextDisabled("No mesh assigned");
-                }
-            }
-        }
-
-
-
+        // ComponentFactory*  = &engine->componentFactory; // Adjust if stored elsewhere
+        //
+        // // -- Transform Component --
+        // Game::TransformComponent* tc = FindComponentInArray(&storage->transformComponents, selectedHandle);
+        // bool showTransform = (tc != nullptr);
+        // if (ImGui::CollapsingHeader("Transform", &showTransform, ImGuiTreeNodeFlags_DefaultOpen)) {
+        //     RenderTransformComponentUI(tc);
+        // }
 
         ImGui::End();
     }
 
+    inline bool AreHandlesEqual(EntityHandle h1, EntityHandle h2) {
+        return  h1.indexInInfo == h2.indexInInfo &&
+                h1.generation == h2.generation &&
+                h1.type == h2.type;
+    }
+
+
+
+    void RenderEntityNode(Engine* engine, EntityFactory* entityFactory, LevelEditor* levelEditor, EntityHandle entityHandle) {
+        void* entityBasePtr = GetEntity(entityFactory, entityHandle);
+        if (!entityBasePtr) { return;}
+        Game::Entity* entity = static_cast<Game::Entity*>(entityBasePtr);
+
+        bool isSelectedEntity = levelEditor->hasSelection && AreHandlesEqual(entityHandle, levelEditor->selectedEntityHandle);
+
+        ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick;
+        if (isSelectedEntity) flags |= ImGuiTreeNodeFlags_Selected;
+
+
+
+        // TODO: Check for children when hierarchy is implemented
+        bool hasChildren = false;
+        if (!hasChildren) flags |= ImGuiTreeNodeFlags_Leaf;
+
+        bool nodeOpen = ImGui::TreeNodeEx((void*)(intptr_t)entityHandle.indexInInfo, flags, "%s", entity->name.c_str()); // Use entity name
+        if (ImGui::IsItemClicked()) {
+            levelEditor->selectedEntityHandle = entityHandle;
+            printf("this is being clicked");
+            levelEditor->hasSelection = true;
+        }
+        ImGui::TreePop();
+
+    }
     // Scene hierarchy window
     void RenderSceneHierarchyWindow(LevelEditor* levelEditor, EntityFactory* entityFactory, Engine* engine) {
-
         ImGui::Begin("Scene Hierarchy", &levelEditor->hierarchyWindowOpen);
         // Search bar for filtering entities
         static char searchBuffer[256] = "";
@@ -101,77 +131,17 @@ namespace Zayn {
         ImGui::Separator();
 
         // Entity list
-//        for (int i = 0; i < levelEditor->entityCount; i++) {
-            for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < levelEditor->currentLevelData.levelEntityHandles.count; i++)
+        {
+            EntityHandle entityHandle = levelEditor->currentLevelData.levelEntityHandles[i];
 
-            //EntityHandle entityHandle = levelEditor->currentLevel.levelEntityHandles[i];
-
-//            Game::PlayerEntity* playerEntity = (Game::PlayerEntity*)GetEntity(entityFactory, engine->HTEST);
-
-            Game::Entity* entity = static_cast<Game::Entity*>(GetEntity(entityFactory, engine->HTEST));
-
-
-            static char nameBuffer[256];
-            strncpy(nameBuffer, entity->name.c_str(), sizeof(nameBuffer) - 1);
-            if (ImGui::InputText("Entity Name", nameBuffer, sizeof(nameBuffer))){
-
-            }
+            Game::Entity* entity = static_cast<Game::Entity*>(GetEntity(entityFactory, levelEditor->currentLevelData.levelEntityHandles[i]));
+            if (!entity) continue;
+            RenderEntityNode(engine, entityFactory, levelEditor, entityHandle);
 
 
-//            Entity*
-
-
-            // Skip if doesn't match search
-//            if (searchBuffer[0] != '\0' && entity.name.find(searchBuffer) == std::string::npos) {
-//                continue;
-//            }
-//
-//            // Check if this entity is selected
-//            bool isSelected = levelEditor->hasSelection &&
-//                              entity.handle.indexInInfo == levelEditor->selectedEntity.indexInInfo &&
-//                              entity.handle.generation == levelEditor->selectedEntity.generation &&
-//                              entity.handle.type == levelEditor->selectedEntity.type;
-//
-//            ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
-//            if (isSelected) flags |= ImGuiTreeNodeFlags_Selected;
-//
-//            ImGui::TreeNodeEx(entity.name.c_str(), flags);
-//
-//            // Handle selection
-//            if (ImGui::IsItemClicked()) {
-//                SelectEntity(levelEditor, entity.handle);
-//            }
-//
-//            // Context menu
-//            if (ImGui::BeginPopupContextItem()) {
-//                if (ImGui::MenuItem("Rename")) {
-//                    // TODO: Implement rename
-//                }
-//                if (ImGui::MenuItem("Duplicate")) {
-//                    // TODO: Implement duplicate
-//                }
-//                if (ImGui::MenuItem("Delete")) {
-//                    if (isSelected) {
-//                       // DeleteSelectedEntity(editor);
-//                    } else {
-//                        // TODO: Implement delete for non-selected entity
-//                    }
-//                }
-//                ImGui::EndPopup();
-//            }
         }
-
-        // Context menu for background (to create new entities)
-//        if (ImGui::BeginPopupContextWindow(NULL, ImGuiPopupFlags_MouseButtonRight | ImGuiPopupFlags_NoOpenOverItems)) {
-//            if (ImGui::MenuItem("Create Empty Entity")) {
-//                //CreateEntityInEditor(editor, Game::EntityType_Player, "New Entity");
-//            }
-//            ImGui::EndPopup();
-//        }
-
         ImGui::End();
-
-
     }
 
     void RenderAssetGrid(LevelEditor* editor, const char* assetNames[], int assetCount) {
@@ -180,41 +150,7 @@ namespace Zayn {
         float thumbnailSize = 80.0f;
         int columns = Max(1, (int)(windowWidth / (thumbnailSize + 10)));
 
-//        if (ImGui::BeginTable("AssetGrid", columns)) {
-//            for (int i = 0; i < assetCount; i++) {
-//                ImGui::TableNextColumn();
-//
-//                // Asset thumbnail/icon
-//                ImGui::Button(assetNames[i], ImVec2(thumbnailSize, thumbnailSize));
-//
-//                if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0)) {
-//                    // Double-click to use asset
-//                    // TODO: Handle double-click based on asset type
-//                }
-//
-//                // Drag and drop source
-//                if (ImGui::BeginDragDropSource()) {
-//                    ImGui::SetDragDropPayload("ASSET", assetNames[i], strlen(assetNames[i]) + 1);
-//                    ImGui::Text("Asset: %s", assetNames[i]);
-//                    ImGui::EndDragDropSource();
-//                }
-//
-//                // Context menu
-//                if (ImGui::BeginPopupContextItem()) {
-//                    if (ImGui::MenuItem("Import")) { /* TODO: Import asset */ }
-//                    if (ImGui::MenuItem("Delete")) { /* TODO: Delete asset */ }
-//                    if (ImGui::MenuItem("Rename")) { /* TODO: Rename asset */ }
-//                    ImGui::EndPopup();
-//                }
-//
-//                // Asset name label
-//                ImGui::TextWrapped("%s", assetNames[i]);
-//            }
-//            ImGui::EndTable();
-//        }
     }
-
-
     void MyRenderLevelEditorWindow(LevelEditor* levelEditor, EntityFactory* entityFactory, Engine* engine)
     {
         if (ImGui::BeginMainMenuBar()) {
@@ -258,7 +194,7 @@ namespace Zayn {
                 {
                     LevelData levelData ={};
                     levelData.name = levelName;
-                    SaveLevel(levelData);
+                    SaveLevel(levelData, engine);
                     ImGui::CloseCurrentPopup();
                 }
 
@@ -304,7 +240,7 @@ namespace Zayn {
             ImGui::Separator();
             if (ImGui::Button("Save Level..."))
             {
-
+                SaveLevel(levelEditor->currentLevelData, engine);
             }
             if (ImGui::Button("Save Level As..."))
             {
@@ -384,6 +320,8 @@ namespace Zayn {
                     if (ImGui::Button("Create")) {
                         ImGui::CloseCurrentPopup();
                         // Create new Entity()
+                        LE::CreateEntity(&engine->entityFactory, levelEditor->entityCreator, levelEditor);
+
                     }
 
                     ImGui::EndPopup();
@@ -487,7 +425,6 @@ namespace Zayn {
 
 
     }
-
     void RenderEnhancedToolbar(LevelEditor* levelEditor)
     {
         const float toolbarHeight = 40.0f;
@@ -543,11 +480,7 @@ namespace Zayn {
         }
         ImGui::End();
         ImGui::PopStyleVar(3);
-    }
-    void RenderLevelEditorUI(LevelEditor* levelEditor)
-    {
-    }
-
+    }\
     void RenderToolbar()
     {
         ImGui::Begin("Toolbar", NULL, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar);

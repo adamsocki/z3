@@ -12,6 +12,7 @@
 #include "../game/entities/EntityTypes.h"
 
 namespace Zayn {
+    struct LevelEditor;
 
     struct FreeList {
         int32 freeList[1000];
@@ -61,12 +62,15 @@ namespace Zayn {
     void InitEntityBuffers(EntityFactory* entityFactory);
     void InitEntityFactory(EntityFactory* entityFactory);
 
-    namespace LE{
+    namespace LE {
 
         struct EntityCreator {
             Game::EntityType selectedEntityType = Game::EntityType::EntityType_Count;
 
         };
+
+        void CreateEntity(EntityFactory* entityFactory, EntityCreator entityCreator, LevelEditor* levelEditor);
+
     }
 
 

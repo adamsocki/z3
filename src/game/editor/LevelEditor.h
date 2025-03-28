@@ -88,15 +88,16 @@ namespace Zayn {
         bool active;
 
 
+
         LevelData currentLevelData;
         std::string currentLevelPath;
         bool unsavedChanges;
 
-        DynamicArray<EntityHandle> entityHandles;
+        // DynamicArray<EntityHandle> entityHandles;
         int32 entityCount = 0;
 
 
-        EntityHandle selectedEntity;
+        EntityHandle selectedEntityHandle;
         bool hasSelection;
 
         // UI Conditions
@@ -134,7 +135,7 @@ namespace Zayn {
     };
 
 
-    void InitLevelEditor  (LevelEditor* levelEditor);
+    void InitLevelEditor  (LevelEditor* levelEditor, Engine* engine);
     void UpdateLevelEditor(LevelEditor* levelEditor);
     void ToggleLevelEditor(LevelEditor* levelEditor);
 
@@ -161,7 +162,7 @@ namespace Zayn {
     void CreateNewLevel(CreateNewLevelInfo info);
 
 
-    bool SaveLevel(LevelData levelData);
+    bool SaveLevel(LevelData levelData, Engine* engine);
     bool LoadLevel(LevelData* currentLevelData, std::string levelFile);
     std::vector<std::string> GetLevelFiles(const std::string& folderPath);
 

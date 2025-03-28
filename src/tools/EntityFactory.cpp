@@ -6,6 +6,11 @@
 #include <cstdlib>
 #include "EntityFactory.h"
 #include "../Engine.h"
+#include "../game/entities/Entity.h"
+
+namespace Game {
+    struct Entity;
+}
 
 namespace Zayn {
 
@@ -83,6 +88,26 @@ namespace Zayn {
         entityFactory->nextID = 0;
 
        // InitEntityBuffers();
+    }
+
+    void LE::CreateEntity(EntityFactory* entityFactory, EntityCreator entityCreator, LevelEditor *levelEditor) {
+        EntityHandle newEntityHandle = {};
+        AddEntity(entityFactory, &newEntityHandle, entityCreator.selectedEntityType);
+
+        Game::Entity* entity = static_cast<Game::Entity*>(GetEntity(entityFactory, newEntityHandle));
+
+
+        entity->name = "default";
+
+
+
+
+        PushBack(&levelEditor->currentLevelData.levelEntityHandles, newEntityHandle);
+
+
+        // levelEditor->currentLevelData
+        // levelEditor->
+
     }
 
     void InitEntityBuffers(EntityFactory* entityFactory) {

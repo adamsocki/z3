@@ -5,11 +5,16 @@
 #ifndef Z3_COMPONENT_H
 #define Z3_COMPONENT_H
 
+#include "../../tools/EntityFactory.h"
+
 namespace Game {
 
     struct Component {
-
+        Zayn::EntityHandle ownerEntity;
     };
+
+    void InitComponent(Component* component);
+    void UpdateComponent(Component* component);
 
 } // Game
 

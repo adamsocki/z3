@@ -52,6 +52,8 @@ add_library(imgui STATIC
         src/game/editor/myImgui_LevelEditor.h
         src/game/components/Component.cpp
         src/game/components/Component.h
+        src/game/components/TransformComponent.cpp
+        src/game/components/TransformComponent.h
 )
 
 target_include_directories(imgui PUBLIC
@@ -116,6 +118,8 @@ add_executable(Z3 src/main.cpp
         src/MyImgui.h
         src/game/entities/FloorEntity.cpp
         src/game/entities/FloorEntity.h
+        src/tools/ComponentFactory.cpp
+        src/tools/ComponentFactory.h
 
 
 )
