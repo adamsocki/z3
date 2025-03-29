@@ -54,6 +54,7 @@ add_library(imgui STATIC
         src/game/components/Component.h
         src/game/components/TransformComponent.cpp
         src/game/components/TransformComponent.h
+        src/game/editor/SerializationHelper.h
 )
 
 target_include_directories(imgui PUBLIC

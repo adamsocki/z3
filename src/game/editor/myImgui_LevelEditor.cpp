@@ -34,6 +34,35 @@ namespace Zayn {
         return true;
     }
 
+    void RenderTransformComponentUI(Game::TransformComponent* tc) {
+        if (!tc) return;
+        ImGui::DragFloat3("Position", &tc->position.x, 0.1f); // Adjust if value_ptr needed for your vec3
+
+        // vec3 eulerAngles = EulerAngles(tc->rotation); // Need EulerAngles function for your quaternion
+        // eulerAngles = Degrees(eulerAngles);          // Need Degrees function for your vec3
+        ImGui::DragFloat3("Rotation (Euler Deg)", &tc->rotation.x, 0.1f, -1.0f, 1.0f);
+            // tc->rotation = QuatFromEuler(Radians(eulerAngles)); // Need Radians and QuatFromEuler for your types
+
+        // Edit scale directly
+        ImGui::DragFloat3("Scale", &tc->scale.x, 0.05f); // Adjust if value_ptr needed
+        // if (ImGui::DragFloat3("Position", glm::value_ptr(tc->position), 0.1f)) {
+        //     matrix.m30 = position.x;
+        //     matrix.m31 = position.y;
+        //     matrix.m32 = position.z;
+        //     //changed = true;
+        // }
+        //
+        // // Convert quaternion to Euler for easier editing (optional)
+        // glm::vec3 eulerAngles = glm::eulerAngles(tc->rotation);
+        // eulerAngles = glm::degrees(eulerAngles); // Convert to degrees
+        // if (ImGui::DragFloat3("Rotation (Euler)", glm::value_ptr(eulerAngles), 1.0f)) {
+        //     tc->rotation = glm::quat(glm::radians(eulerAngles)); // Convert back to radians and then quat
+        // }
+        // // Alternatively, edit quaternion directly if preferred
+        //
+        // ImGui::DragFloat3("Scale", glm::value_ptr(tc->scale), 0.05f);
+    }
+
     void RenderInspectorWindow(LevelEditor* levelEditor, EntityFactory* entityFactory, Engine* engine)
     {
         ImGui::Begin("Inspector", &levelEditor->inspectorWindowOpen);
@@ -76,24 +105,69 @@ namespace Zayn {
         ImGui::Text("Components");
         ImGui::Separator();
 
+        ComponentStorage* storage = &engine->componentFactory.componentStorage;
 
-        // ComponentFactory*  = &engine->componentFactory; // Adjust if stored elsewhere
-        //
-        // // -- Transform Component --
-        // Game::TransformComponent* tc = FindComponentInArray(&storage->transformComponents, selectedHandle);
-        // bool showTransform = (tc != nullptr);
-        // if (ImGui::CollapsingHeader("Transform", &showTransform, ImGuiTreeNodeFlags_DefaultOpen)) {
-        //     RenderTransformComponentUI(tc);
-        // }
+        Game::TransformComponent* tc = FindComponentInArray(&storage->transformComponents, selectedHandle);
+        bool showTransform = (tc != nullptr);
+        if (ImGui::CollapsingHeader("Transform", &showTransform, ImGuiTreeNodeFlags_DefaultOpen)) {
+           RenderTransformComponentUI(tc);
+        }
+        // Handle component removal (if header checkbox is unchecked)
+        if (tc && !showTransform) {
+            // TODO: Implement component removal
+            // RemoveTransformComponent(storage, selectedHandle); // Need function to remove & potentially compact array/update indices
+            printf("TODO: Remove Transform Component\n");
+        }
+
+        ImGui::Separator();
+        if (ImGui::Button("Add Component")) {
+            ImGui::OpenPopup("AddComponentPopup");
+        }
+
+        if (ImGui::BeginPopup("AddComponentPopup")) {
+            ImGui::Text("Available Components:");
+            ImGui::Separator();
+
+            for (int i = 0; i < (int)ComponentType::ComponentType_Count; ++i) {
+                ComponentType type = (ComponentType)i;
+                bool alreadyHasThisType = false;
+                const char* typeName = GetComponentTypeName(type);
+
+                switch(type) {
+                    case ComponentType::TransformComponent_Type: alreadyHasThisType = (tc != nullptr); break;
+                    // case ComponentType::RENDER:    alreadyHas = (rc != nullptr); break;
+                    // case ComponentType::COLLISION: alreadyHas = (cc != nullptr); break;
+                    // ... other types
+                    case ComponentType::ComponentType_Count:
+                        default: break;
+                }
+
+                if (!alreadyHasThisType) {
+                    if (ImGui::MenuItem(typeName)) {
+                        // Add the selected component
+                        switch(type) {
+                            case ComponentType::TransformComponent_Type: AddComponent(&storage->transformComponents, selectedHandle); break;
+                            // case ComponentType::RENDER:    AddComponent(&storage->renderComponents, selectedHandle);    break;
+                            // case ComponentType::COLLISION: AddComponent(&storage->collisionComponents, selectedHandle); break;
+
+                            // ... other types
+                            case ComponentType::ComponentType_Count:
+                                default: break;
+                        }
+                        ImGui::CloseCurrentPopup();
+                    }
+                }
+
+
+            }
+
+
+            ImGui::EndPopup();
+        }
 
         ImGui::End();
     }
 
-    inline bool AreHandlesEqual(EntityHandle h1, EntityHandle h2) {
-        return  h1.indexInInfo == h2.indexInInfo &&
-                h1.generation == h2.generation &&
-                h1.type == h2.type;
-    }
 
 
 
@@ -225,7 +299,7 @@ namespace Zayn {
 
                     if (ImGui::Selectable(filename.c_str())) {
                         // Handle level loading here
-                        LoadLevel(&levelEditor->currentLevelData, levelFile);
+                        LoadLevel(&levelEditor->currentLevelData,  engine, levelFile);
                         ImGui::CloseCurrentPopup();
                     }
                 }
@@ -320,7 +394,7 @@ namespace Zayn {
                     if (ImGui::Button("Create")) {
                         ImGui::CloseCurrentPopup();
                         // Create new Entity()
-                        LE::CreateEntity(&engine->entityFactory, levelEditor->entityCreator, levelEditor);
+                        LE::CreateEntity(engine, &engine->entityFactory, levelEditor->entityCreator, levelEditor);
 
                     }
 

@@ -91,11 +91,18 @@ namespace Zayn {
 
        MakeEntities(engine);
 
-
-
         // TODO: Put somewhere Better
         // MakeLevel(1);
 
+    }
+
+    void UpdateEntities(Engine* engine)
+    {
+
+
+        // Game::UpdateTransformPushConstants();
+
+        Game::UpdateTransformPushConstants(engine);
 
     }
 
@@ -105,6 +112,8 @@ namespace Zayn {
         Zayn::RenderManager* renderManager = &engine->renderManager;
         Zayn::InputManager* inputManager   = &engine->inputManager;
         GameInputUpdate(inputManager, renderManager);
+
+        UpdateEntities(engine);
 
     }
 

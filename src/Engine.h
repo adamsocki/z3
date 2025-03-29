@@ -51,6 +51,7 @@ namespace Zayn {
         EntityHandle HTEST;
 
         LevelEditor levelEditor;
+        bool inLevelEditor = false;
         //        GameObjectFactory gameObjectFactory;
 
     };

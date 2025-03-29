@@ -10,7 +10,7 @@
 
 #include "../GameObject.h"
 #include "../ModelPushConstant.h"
-#include "../../tools/EntityFactory.h"
+// #include "../../tools/EntityFactory.h"
 #include "../components/Component.h"
 
 namespace Game {

@@ -90,7 +90,7 @@ namespace Zayn {
        // InitEntityBuffers();
     }
 
-    void LE::CreateEntity(EntityFactory* entityFactory, EntityCreator entityCreator, LevelEditor *levelEditor) {
+    void LE::CreateEntity(Engine* engine, EntityFactory* entityFactory, EntityCreator entityCreator, LevelEditor *levelEditor) {
         EntityHandle newEntityHandle = {};
         AddEntity(entityFactory, &newEntityHandle, entityCreator.selectedEntityType);
 
@@ -98,6 +98,11 @@ namespace Zayn {
 
 
         entity->name = "default";
+
+        entity->material = &engine->materialFactory.materials[0];
+        entity->mesh = &engine->meshFactory.meshes[0];
+        // entity->type =
+        // entity->pushConstantData.model_1 = TRS((V3(1.0f, 0.0f, 0.0f)), AxisAngle(V3(0.0f, 0.0f, 0.20f), 0.0f), V3(1.0f, 1.0f, 1.0f));
 
 
 

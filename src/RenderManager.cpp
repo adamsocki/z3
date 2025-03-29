@@ -1767,11 +1767,53 @@ void BeginSwapChainRenderPass(Zayn::RenderManager* renderManager, VkCommandBuffe
     vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
     vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 }
+namespace Zayn {
+    namespace LE {
+        void RenderEntities(Zayn::Engine* engine, VkCommandBuffer commandBuffer)
+        {
+            //uint32_t dynamicOffset = zaynMem->vulkan.vkCurrentFrame * sizeof(UniformBufferObject);
+            // Game::PlayerEntity* playerEntity = (Game::PlayerEntity*)Zayn::GetEntity(&engine->entityFactory, engine->HTEST);
+
+            for (int i = 0; i < engine->levelEditor.currentLevelData.levelEntityHandles.count; i++)
+            {
+                // GameObject& gameObj = zaynMem->gameObjects[i];
+
+                Zayn::EntityHandle entityHandle = engine->levelEditor.currentLevelData.levelEntityHandles[i];
+                Game::Entity* entity = static_cast<Game::Entity*>(GetEntity(&engine->entityFactory, entityHandle));
+
+                VkDescriptorSet& set = entity->material->descriptorSets[engine->renderManager.vulkanData.vkCurrentFrame];
+
+                vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, engine->renderManager.vulkanData.vkGraphicsPipeline);
+                vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, engine->renderManager.vulkanData.vkPipelineLayout, 0, 1, &set, 0, nullptr);
+
+
+                // Push constants for the transform
+                /* ModelPushConstant pushConstant = {};
+                 pushConstant.model_1 = TRS((V3(0.0f, 1.0f, -1.0f)), AxisAngle(V3(0.0f, 0.2f, 0.20f), 0.0f), V3(1.0f, 1.0f, 1.0f));*/
+
+                vkCmdPushConstants(commandBuffer, engine->renderManager.vulkanData.vkPipelineLayout, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(Game::ModelPushConstant), &entity->pushConstantData);
+
+                // Bind the vertex and index buffers
+                VkBuffer vertexBuffers[] = { entity->mesh->vertexBuffer };
+                VkDeviceSize offsets[] = { 0 };
+                vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
+
+                vkCmdBindIndexBuffer(commandBuffer, entity->mesh->indexBuffer, 0, VK_INDEX_TYPE_UINT32);
+
+                // Draw the mesh
+                vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(entity->mesh->indices.size()), 1, 0, 0, 0);
+            }
+        }
+    }
+}
 
 void RenderEntities(Zayn::Engine* engine, VkCommandBuffer commandBuffer)
 {
     //uint32_t dynamicOffset = zaynMem->vulkan.vkCurrentFrame * sizeof(UniformBufferObject);
     Game::PlayerEntity* playerEntity = (Game::PlayerEntity*)Zayn::GetEntity(&engine->entityFactory, engine->HTEST);
+
+
+
     for (int i = 0; i < 1; i++)
     {
        // GameObject& gameObj = zaynMem->gameObjects[i];
@@ -1896,7 +1938,15 @@ void Zayn::UpdateRenderManager(Zayn::Engine* engine, Zayn::EntityHandle handle, 
 #endif
         UpdateUniformBuffer(renderManager->vulkanData.vkCurrentFrame, renderManager, cameraManager);
         BeginSwapChainRenderPass(renderManager, renderManager->vulkanData.vkCommandBuffers[renderManager->vulkanData.vkCurrentFrame]);
-        RenderEntities(engine, renderManager->vulkanData.vkCommandBuffers[renderManager->vulkanData.vkCurrentFrame]);
+
+        if (engine->inLevelEditor) {
+            LE::RenderEntities(engine, renderManager->vulkanData.vkCommandBuffers[renderManager->vulkanData.vkCurrentFrame]);
+        }
+        else {
+            RenderEntities(engine, renderManager->vulkanData.vkCommandBuffers[renderManager->vulkanData.vkCurrentFrame]);
+        }
+
+
     }
     EndSwapChainRenderPass(renderManager, renderManager->vulkanData.vkCommandBuffers[renderManager->vulkanData.vkCurrentFrame]);
     EndFrameRender(renderManager, windowManager);

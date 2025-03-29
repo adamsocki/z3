@@ -163,7 +163,9 @@ namespace Zayn {
 
 
     bool SaveLevel(LevelData levelData, Engine* engine);
-    bool LoadLevel(LevelData* currentLevelData, std::string levelFile);
+    bool LoadLevel(Zayn::LevelData* currentLevelData, Zayn::Engine* engine, std::string levelFile);
+
+    // bool LoadLevel(LevelData* currentLevelData, std::string levelFile);
     std::vector<std::string> GetLevelFiles(const std::string& folderPath);
 
 

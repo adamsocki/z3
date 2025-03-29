@@ -12,6 +12,7 @@
 #include "../game/entities/EntityTypes.h"
 
 namespace Zayn {
+    struct Engine;
     struct LevelEditor;
 
     struct FreeList {
@@ -69,7 +70,7 @@ namespace Zayn {
 
         };
 
-        void CreateEntity(EntityFactory* entityFactory, EntityCreator entityCreator, LevelEditor* levelEditor);
+        void CreateEntity(Engine* engine, EntityFactory* entityFactory, EntityCreator entityCreator, LevelEditor* levelEditor);
 
     }
 

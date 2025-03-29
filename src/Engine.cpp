@@ -16,6 +16,7 @@ namespace Zayn {
 
     void InitEngine(Engine* engine)
     {
+        engine->inLevelEditor = true;
         InitMemoryManager(engine);
         InitWindowManager(engine, V2(1500,1033), "spanglish");
         InitTimeManager(engine);
