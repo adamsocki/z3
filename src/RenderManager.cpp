@@ -1,7 +1,6 @@
 
 
 #include "RenderManager.h"
-#include "MaterialManager.h"
 #include "Engine.h"
 #include "game/ModelPushConstant.h"
 #include "game/UniformBufferObject.h"
@@ -1774,35 +1773,76 @@ namespace Zayn {
             //uint32_t dynamicOffset = zaynMem->vulkan.vkCurrentFrame * sizeof(UniformBufferObject);
             // Game::PlayerEntity* playerEntity = (Game::PlayerEntity*)Zayn::GetEntity(&engine->entityFactory, engine->HTEST);
 
-            for (int i = 0; i < engine->levelEditor.currentLevelData.levelEntityHandles.count; i++)
-            {
-                // GameObject& gameObj = zaynMem->gameObjects[i];
+            // for (int i = 0; i < )
 
-                Zayn::EntityHandle entityHandle = engine->levelEditor.currentLevelData.levelEntityHandles[i];
-                Game::Entity* entity = static_cast<Game::Entity*>(GetEntity(&engine->entityFactory, entityHandle));
+            // can't do it if there is no transform or render component
 
-                VkDescriptorSet& set = entity->material->descriptorSets[engine->renderManager.vulkanData.vkCurrentFrame];
+            Zayn::ComponentFactory * componentfactory = &engine->componentFactory;
+            Zayn::ComponentStorage* storage = &componentfactory->componentStorage;
 
-                vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, engine->renderManager.vulkanData.vkGraphicsPipeline);
-                vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, engine->renderManager.vulkanData.vkPipelineLayout, 0, 1, &set, 0, nullptr);
+            Zayn::EntityFactory* entityFactory = &engine->entityFactory;
 
 
-                // Push constants for the transform
-                /* ModelPushConstant pushConstant = {};
-                 pushConstant.model_1 = TRS((V3(0.0f, 1.0f, -1.0f)), AxisAngle(V3(0.0f, 0.2f, 0.20f), 0.0f), V3(1.0f, 1.0f, 1.0f));*/
+            for (int i = 0; i < storage->renderComponents.count; i++) {
+                Game::RenderComponent* rc = &storage->renderComponents[i];
 
-                vkCmdPushConstants(commandBuffer, engine->renderManager.vulkanData.vkPipelineLayout, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(Game::ModelPushConstant), &entity->pushConstantData);
+                Game::Entity* entity = static_cast<Game::Entity*>(GetEntity(entityFactory, rc->owner));
 
-                // Bind the vertex and index buffers
-                VkBuffer vertexBuffers[] = { entity->mesh->vertexBuffer };
-                VkDeviceSize offsets[] = { 0 };
-                vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
 
-                vkCmdBindIndexBuffer(commandBuffer, entity->mesh->indexBuffer, 0, VK_INDEX_TYPE_UINT32);
+               // //    Check the pointer AND potentially the buffer handles within the mesh struct.
+                if (rc->mesh == nullptr ||
+                  rc->mesh->vertexBuffer == VK_NULL_HANDLE ||
+                rc->mesh->indexBuffer == VK_NULL_HANDLE ||
+                rc->mesh->indices.empty()) // Also check if there are indices to draw
+                {
+                  // No valid mesh data to render.
+                    // Optional: Log a warning if this state is unexpected for a visible component.
+                    // printf("Warning: Skipping entity (Idx:%d): RenderComponent has null or invalid mesh data.\n", rc->owner.indexInInfo);
+                    continue; // Skip to the next component
+                }
+                Game::TransformComponent* tc = FindComponentInArray(&storage->transformComponents, rc->owner);
+                if (!tc) {
+                    // Has mesh data but no position/orientation/scale. Cannot place it in the world.
+                    // Optional: Log a warning.
+                    // printf("Warning: Skipping entity (Idx:%d): RenderComponent has mesh but no TransformComponent.\n", rc->owner.indexInInfo);
+                    continue; // Skip to the next component
+                }
 
-                // Draw the mesh
-                vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(entity->mesh->indices.size()), 1, 0, 0, 0);
+                    rc->transformComponentAvailable = true;
+
+                if (entity) {
+
+                    // VkDescriptorSet& set = entity->material->descriptorSets[engine->renderManager.vulkanData.vkCurrentFrame];
+                    VkDescriptorSet& set = rc->material->descriptorSets[engine->renderManager.vulkanData.vkCurrentFrame];
+
+                    vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, engine->renderManager.vulkanData.vkGraphicsPipeline);
+                    vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, engine->renderManager.vulkanData.vkPipelineLayout, 0, 1, &set, 0, nullptr);
+
+
+                    // Push constants for the transform
+                    /* ModelPushConstant pushConstant = {};
+                     pushConstant.model_1 = TRS((V3(0.0f, 1.0f, -1.0f)), AxisAngle(V3(0.0f, 0.2f, 0.20f), 0.0f), V3(1.0f, 1.0f, 1.0f));*/
+
+                    vkCmdPushConstants(commandBuffer, engine->renderManager.vulkanData.vkPipelineLayout, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(Game::ModelPushConstant), &entity->pushConstantData);
+
+                    // Bind the vertex and index buffers
+                    VkBuffer vertexBuffers[] = { rc->mesh->vertexBuffer };
+                    VkDeviceSize offsets[] = { 0 };
+                    vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
+
+                    vkCmdBindIndexBuffer(commandBuffer, rc->mesh->indexBuffer, 0, VK_INDEX_TYPE_UINT32);
+
+                    // Draw the mesh
+                    vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(rc->mesh->indices.size()), 1, 0, 0, 0);
+
+
+                }
+
+
+
             }
+
+
         }
     }
 }

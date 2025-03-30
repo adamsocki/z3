@@ -6,12 +6,13 @@
 #include "imgui.h"
 #include <imgui_internal.h>
 #include "../entities/Entity.h"
+// #include "../../tools/mesh"
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <__filesystem/path.h>
 
 namespace Zayn {
-    
+
     bool EditTransformMatrix(const char* label, mat4 matrix) {
 
         glm::vec3 position( matrix.m30, matrix.m31, matrix.m32);
@@ -40,7 +41,7 @@ namespace Zayn {
 
         // vec3 eulerAngles = EulerAngles(tc->rotation); // Need EulerAngles function for your quaternion
         // eulerAngles = Degrees(eulerAngles);          // Need Degrees function for your vec3
-        ImGui::DragFloat3("Rotation (Euler Deg)", &tc->rotation.x, 0.1f, -1.0f, 1.0f);
+        ImGui::DragFloat3("Rotation (Euler Deg)", &tc->rotation_euler_degrees.x, 0.1f);
             // tc->rotation = QuatFromEuler(Radians(eulerAngles)); // Need Radians and QuatFromEuler for your types
 
         // Edit scale directly
@@ -61,6 +62,156 @@ namespace Zayn {
         // // Alternatively, edit quaternion directly if preferred
         //
         // ImGui::DragFloat3("Scale", glm::value_ptr(tc->scale), 0.05f);
+    }
+
+    void RenderRenderComponentUI(Game::RenderComponent* rc, const std::vector<std::string>& meshNames, const std::vector<std::string>& materialNames, Engine* engine) {
+        if (!rc) return; // Should not happen if called correctly, but good practice
+
+        ImGui::PushID(rc);
+
+        // --- Mesh Selection Dropdown ---
+        int currentMeshItemIndex = 0; // Default to "[None]" or the first item
+        const std::string& currentMeshName = rc->meshName; // Assuming meshName exists
+
+        bool found = false;
+        for (int i = 0; i < meshNames.size(); ++i) {
+            if (meshNames[i] == currentMeshName) {
+                currentMeshItemIndex = i;
+                found = true;
+                break;
+            }
+        }
+
+        std::string previewName = "[None]"; // Default preview
+        if (!currentMeshName.empty() && !found) {
+
+            previewName = currentMeshName + " (Missing!)";
+            // You might want to visually indicate the error more strongly
+            // ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.0f, 0.0f, 1.0f)); // Red text
+        } else if (found && currentMeshItemIndex != 0) { // Check index if "[None]" is element 0
+            previewName = meshNames[currentMeshItemIndex];
+        }
+
+        std::vector<const char*> cMeshNames;
+        cMeshNames.reserve(meshNames.size());
+        for (const std::string& name : meshNames) {
+            cMeshNames.push_back(name.c_str());
+        }
+
+        if (ImGui::BeginCombo("Mesh", previewName.c_str())) // Use BeginCombo/EndCombo for more control
+        {
+            for (int i = 0; i < cMeshNames.size(); ++i) {
+                // Prevent selectable with truly empty label derived from "" in meshNames
+                if (cMeshNames[i] == nullptr || cMeshNames[i][0] == '\0') {
+                    // Optionally display placeholder or just skip
+                    // ImGui::TextDisabled("[Empty Name Entry]");
+                    continue;
+                }
+
+                const bool isSelected = (currentMeshItemIndex == i);
+
+                // Selectable ID is generated from cMeshNames[i] + PushID(rc) scope
+                if (ImGui::Selectable(cMeshNames[i], isSelected)) {
+                    currentMeshItemIndex = i; // Index reflects position in the loops here
+
+                    // Update component based on selection from meshNames vector
+                    if (meshNames[i] == "[None]") {
+                        rc->meshName = "";
+                        SetRenderComponentMesh(rc, nullptr); // Set pointer to null
+                        printf("Selected mesh: [None]\n");
+                    } else {
+                        rc->meshName = meshNames[i];
+                        // Get the pointer using the *selected* name
+                        Game::Mesh* meshPtr = GetMeshPointerByName(engine, rc->meshName);
+                        SetRenderComponentMesh(rc, meshPtr); // Update the component's mesh pointer
+                        if(meshPtr) {
+                            printf("Selected mesh: %s (Ptr: %p)\n", rc->meshName.c_str(), (void*)meshPtr);
+                        } else {
+                            printf("Selected mesh: %s (FAILED TO GET POINTER)\n", rc->meshName.c_str());
+                        }
+                    }
+                }
+
+                if (isSelected) {
+                    ImGui::SetItemDefaultFocus();
+                }
+            }
+            ImGui::EndCombo();
+        }
+
+
+        // --- Mesh Selection Dropdown ---
+        int currentMaterialItemIndex = 0; // Default to "[None]" or the first item
+        const std::string& currentMaterialName = rc->materialName;
+
+        bool foundMaterial = false;
+        for (int i = 0; i < materialNames.size(); ++i) {
+            if (materialNames[i] == currentMaterialName) {
+                currentMaterialItemIndex = i;
+                foundMaterial = true;
+                break;
+            }
+        }
+
+        std::string previewNameMaterial = "[None]"; // Default preview
+        if (!currentMaterialName.empty() && !found) {
+
+            previewNameMaterial = currentMaterialName + " (Missing!)";
+            // You might want to visually indicate the error more strongly
+            // ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.0f, 0.0f, 1.0f)); // Red text
+        } else if (found && currentMaterialItemIndex != 0) { // Check index if "[None]" is element 0
+            previewNameMaterial = materialNames[currentMaterialItemIndex];
+        }
+
+        std::vector<const char*> cMaterialNames;
+        cMaterialNames.reserve(materialNames.size());
+        for (const std::string& name : materialNames) {
+            cMaterialNames.push_back(name.c_str());
+        }
+
+        if (ImGui::BeginCombo("Material", previewNameMaterial.c_str())) // Use BeginCombo/EndCombo for more control
+        {
+            for (int i = 0; i < cMaterialNames.size(); ++i) {
+                // Prevent selectable with truly empty label derived from "" in meshNames
+                if (cMaterialNames[i] == nullptr || cMaterialNames[i][0] == '\0') {
+                    // Optionally display placeholder or just skip
+                    // ImGui::TextDisabled("[Empty Name Entry]");
+                    continue;
+                }
+
+                const bool isSelected = (currentMaterialItemIndex == i);
+
+                // Selectable ID is generated from cMeshNames[i] + PushID(rc) scope
+                if (ImGui::Selectable(cMaterialNames[i], isSelected)) {
+                    currentMaterialItemIndex = i; // Index reflects position in the loops here
+
+                    // Update component based on selection from meshNames vector
+                    if (materialNames[i] == "[None]") {
+                        rc->materialName = "";
+                        SetRenderComponentMaterial(rc, nullptr); // Set pointer to null
+                        printf("Selected material: [None]\n");
+                    } else {
+                        rc->materialName = materialNames[i];
+                        // Get the pointer using the *selected* name
+                        Game::Material* materialPtr = GetMaterialPointerByName(engine, rc->materialName);
+                        SetRenderComponentMaterial(rc, materialPtr); // Update the component's mesh pointer
+                        if(materialPtr) {
+                            printf("Selected material: %s (Ptr: %p)\n", rc->materialName.c_str(), (void*)materialPtr);
+                        } else {
+                            printf("Selected material: %s (FAILED TO GET POINTER)\n", rc->materialName.c_str());
+                        }
+                    }
+                }
+
+                if (isSelected) {
+                    ImGui::SetItemDefaultFocus();
+                }
+            }
+            ImGui::EndCombo();
+        }
+
+        ImGui::PopID();
+
     }
 
     void RenderInspectorWindow(LevelEditor* levelEditor, EntityFactory* entityFactory, Engine* engine)
@@ -108,15 +259,25 @@ namespace Zayn {
         ComponentStorage* storage = &engine->componentFactory.componentStorage;
 
         Game::TransformComponent* tc = FindComponentInArray(&storage->transformComponents, selectedHandle);
+        Game::RenderComponent* rc = FindComponentInArray(&storage->renderComponents, selectedHandle);
         bool showTransform = (tc != nullptr);
+        bool showRender = (rc != nullptr);
         if (ImGui::CollapsingHeader("Transform", &showTransform, ImGuiTreeNodeFlags_DefaultOpen)) {
            RenderTransformComponentUI(tc);
+        }
+        if (ImGui::CollapsingHeader("Render", &showRender, ImGuiTreeNodeFlags_DefaultOpen)) {
+            RenderRenderComponentUI(rc, engine->meshFactory.availableMeshNames, engine->materialFactory.availableMaterialNames,  engine);
         }
         // Handle component removal (if header checkbox is unchecked)
         if (tc && !showTransform) {
             // TODO: Implement component removal
             // RemoveTransformComponent(storage, selectedHandle); // Need function to remove & potentially compact array/update indices
             printf("TODO: Remove Transform Component\n");
+        }
+        if (tc && !showRender) {
+            // TODO: Implement component removal
+            // RemoveRenderComponent(storage, selectedHandle); // Need function to remove & potentially compact array/update indices
+            printf("TODO: Remove Render Component\n");
         }
 
         ImGui::Separator();
@@ -135,7 +296,7 @@ namespace Zayn {
 
                 switch(type) {
                     case ComponentType::TransformComponent_Type: alreadyHasThisType = (tc != nullptr); break;
-                    // case ComponentType::RENDER:    alreadyHas = (rc != nullptr); break;
+                    case ComponentType::RenderComponent_Type:    alreadyHasThisType = (rc != nullptr); break;
                     // case ComponentType::COLLISION: alreadyHas = (cc != nullptr); break;
                     // ... other types
                     case ComponentType::ComponentType_Count:
@@ -147,7 +308,7 @@ namespace Zayn {
                         // Add the selected component
                         switch(type) {
                             case ComponentType::TransformComponent_Type: AddComponent(&storage->transformComponents, selectedHandle); break;
-                            // case ComponentType::RENDER:    AddComponent(&storage->renderComponents, selectedHandle);    break;
+                            case ComponentType::RenderComponent_Type:    AddComponent(&storage->renderComponents, selectedHandle);    break;
                             // case ComponentType::COLLISION: AddComponent(&storage->collisionComponents, selectedHandle); break;
 
                             // ... other types

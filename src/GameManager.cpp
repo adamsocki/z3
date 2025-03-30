@@ -16,6 +16,11 @@ namespace Zayn {
         texture1.path = "viking_room.png";
         texture1.name = "hi";
         MakeTexture(engine, &texture1);
+
+        TextureCreateInfo cementTexture_1;
+        cementTexture_1.path = "cementTexture_1.png";
+        cementTexture_1.name = "cementTexture_1";
+        MakeTexture(engine, &cementTexture_1);
     }
 
     void MakeMaterials(Engine* engine)
@@ -27,14 +32,31 @@ namespace Zayn {
         material1.name = "mat1";
         // @TODO: We need to set the proper descriptor set here.
         MakeMaterial(engine, &material1);
+
+        MaterialCreateInfo cementMat_1;
+        cementMat_1.type = Game::MATERIAL_PBR;
+        cementMat_1.texture = &engine->textureFactory.textures[1];
+        cementMat_1.name = "cementMat_1";
+        // @TODO: We need to set the proper descriptor set here.
+        MakeMaterial(engine, &cementMat_1);
     }
 
     void MakeMeshes(Engine* engine)
     {
         MeshCreateInfo mesh1;
         mesh1.path = "viking_room.obj";
-        mesh1.name = "V1";
+        mesh1.name = "Viking_Room";
         MakeMesh(engine, &mesh1);
+
+        MeshCreateInfo mesh2;
+        mesh2.path = "grand_piano.obj";
+        mesh2.name = "Grand_Piano";
+        MakeMesh(engine, &mesh2);
+
+        MeshCreateInfo mesh3;
+        mesh3.path = "floor.obj";
+        mesh3.name = "FloorCement";
+        MakeMesh(engine, &mesh3);
     }
 
     void MakeEntities(Engine* engine)
@@ -101,6 +123,7 @@ namespace Zayn {
 
 
         // Game::UpdateTransformPushConstants();
+
 
         Game::UpdateTransformPushConstants(engine);
 

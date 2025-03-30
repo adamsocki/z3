@@ -15,6 +15,7 @@ namespace Game {
     enum EntityType {
         EntityType_Player,
         EntityType_Floor,
+        EntityType_Piano,
         EntityType_Count
     };
 

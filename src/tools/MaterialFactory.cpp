@@ -91,7 +91,11 @@ namespace Zayn {
             AllocateMaterialDescriptorSet(engine, &material, i);
         }
 
-        PushBack(&engine->materialFactory.materials, material);
+        uint32_t materialIndex = PushBack(&engine->materialFactory.materials, material);
+        Game::Material* pointerToStoredMaterial = &engine->materialFactory.materials[materialIndex];
+
+        engine->materialFactory.materialNamePointerMap[material.name] = pointerToStoredMaterial;
+        engine->materialFactory.availableMaterialNames.push_back(material.name);
     }
 
     void InitMaterialFactory(Engine* engine)
@@ -99,6 +103,22 @@ namespace Zayn {
         engine->materialFactory.materials = MakeDynamicArray<Game::Material>(&engine->permanentMemory, 100);
     }
 
+    Game::Material * GetMaterialPointerByName(Engine *engine, const std::string &name) {
+
+        if (!engine || name.empty()) {
+            return nullptr;
+        }
+
+        auto it = engine->materialFactory.materialNamePointerMap.find(name);
+        if (it != engine->materialFactory.materialNamePointerMap.end()) {
+            // Found it, return the stored pointer
+            return it->second;
+        } else {
+            // Name not found in the map
+            // printf("Warning: GetMeshPointerByName - Mesh '%s' not found in map.\n", name.c_str());
+            return nullptr;
+        }
+    }
 
 
 } // Zayn

@@ -9,6 +9,7 @@
 #include "../DynamicArray.h"
 
 #include "../game/components/TransformComponent.h"
+#include "../game/components/RenderComponent.h"
 
 // namespace Game {
 //     struct Entity;
@@ -20,6 +21,7 @@ namespace Zayn {
 
     enum ComponentType {
         TransformComponent_Type,
+        RenderComponent_Type,
 
 
         ComponentType_Count
@@ -28,7 +30,7 @@ namespace Zayn {
     inline const char* GetComponentTypeName(ComponentType type) {
         switch (type) {
             case ComponentType::TransformComponent_Type:  return "Transform";
-            // case ComponentType::RENDER:     return "Render";
+            case ComponentType::RenderComponent_Type:     return "Render";
             // --- Add cases for your other component types ---
             // case ComponentType::COLLISION: return "Collision";
             // case ComponentType::SCRIPT:    return "Script";
@@ -43,6 +45,7 @@ namespace Zayn {
 
     struct ComponentStorage {
         DynamicArray<Game::TransformComponent> transformComponents;
+        DynamicArray<Game::RenderComponent> renderComponents;
     };
 
     struct ComponentFactory {
@@ -70,6 +73,8 @@ namespace Zayn {
         T newComp = {};
         newComp.owner = entityHandle;
         uint32 index = PushBack(componentArray, newComp);
+
+
         return &(*componentArray)[index];
     }
 

@@ -14,7 +14,8 @@ namespace Zayn {
 
         // InitComponentStorage(&factory->componentStorage);
 
-        factory->componentStorage.transformComponents = MakeDynamicArray<Game::TransformComponent>(arena, 128);
+        factory->componentStorage.transformComponents = MakeDynamicArray<Game::TransformComponent>(arena, 1280);
+        factory->componentStorage.renderComponents = MakeDynamicArray<Game::RenderComponent>(arena, 1280);
 
     }
 } // Zayn

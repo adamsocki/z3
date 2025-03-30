@@ -78,16 +78,16 @@ namespace Zayn {
         array->chunkCount++;
     }
 
-    ////inline void* DynamicArrayGetData(DynamicArray_Untyped const* array, int32 elementSize, int32 index) {
-    ////
-    ////    s32 dynamicIndex = index / array->elementsPerChunk;
-    ////    ArrayChunk* chunk = array->headChunk;
-    ////    for (int32 i = 0; i < dynamicIndex; i++) {
-    ////        chunk = chunk->nextChunk;
-    ////    }
-    ////
-    ////    return ((uint8*)chunk->data + (elementSize * (index % array->elementsPerChunk)));
-    ////}
+    inline void* DynamicArrayGetData(DynamicArray_Untyped const* array, int32 elementSize, int32 index) {
+
+        s32 dynamicIndex = index / array->elementsPerChunk;
+        ArrayChunk* chunk = array->headChunk;
+        for (int32 i = 0; i < dynamicIndex; i++) {
+            chunk = chunk->nextChunk;
+        }
+
+        return ((uint8*)chunk->data + (elementSize * (index % array->elementsPerChunk)));
+    }
 
     template <typename T>
     void DynamicArrayEnsureCapacity(DynamicArray<T>* array, uint32 capacity)

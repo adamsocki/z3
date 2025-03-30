@@ -25,10 +25,16 @@ namespace Zayn {
 
     struct MaterialFactory {
         DynamicArray<Game::Material> materials;
+
+        std::unordered_map<std::string, Game::Material*> materialNamePointerMap;
+        std::vector<std::string> availableMaterialNames;
+
     };
 
     void MakeMaterial(Engine* engine, MaterialCreateInfo* info);
     void InitMaterialFactory(Engine* engine);
+
+    Game::Material* GetMaterialPointerByName(Engine* engine, const std::string& name);
 
 } // Zayn
 

@@ -119,8 +119,8 @@ namespace Zayn {
                 };
                 // Manually create position/rotation/scale JSON arrays
                 componentData["position"] = {tc.position.x, tc.position.y, tc.position.z};
-                // componentData["rotation"] = {tc.rotation.x, tc.rotation.y, tc.rotation.z, tc.rotation.w};
-                componentData["rotation"] = {tc.rotation.x, tc.rotation.y, tc.rotation.z};
+                componentData["rotation_euler_degrees"] = {tc.rotation_euler_degrees.x, tc.rotation_euler_degrees.y, tc.rotation_euler_degrees.z};
+                // componentData["rotation"] = {tc.rotation.x, tc.rotation.y, tc.rotation.z};
                 componentData["scale"] = {tc.scale.x, tc.scale.y, tc.scale.z};
                 transformComponentsJson.push_back(componentData);
             }
@@ -130,25 +130,27 @@ namespace Zayn {
         }
 
         // - Render Components -
-        // nlohmann::json renderComponentsJson = nlohmann::json::array();
-        // for (u32 i = 0; i < storage->renderComponents.count; ++i) {
-        //     const Game::RenderComponent& rc = storage->renderComponents[i];
-        //     if (IsHandleInLevel(levelData.levelEntityHandles, rc.owner)) {
-        //         nlohmann::json componentData;
-        //         componentData["owner_handle"] = {
-        //             {"indexInInfo", rc.owner.indexInInfo},
-        //             {"generation", rc.owner.generation},
-        //             {"type", static_cast<int>(rc.owner.type)}
-        //         };
-        //         componentData["meshName"] = rc.mesh ? rc.mesh->name : "";
-        //         componentData["materialName"] = rc.material ? rc.material->name : "";
-        //         componentData["isVisible"] = rc.isVisible;
-        //         renderComponentsJson.push_back(componentData);
-        //     }
-        // }
-        // if (!renderComponentsJson.empty()) {
-        //     componentsJson["render"] = renderComponentsJson;
-        // }
+        nlohmann::json renderComponentsJson = nlohmann::json::array();
+        for (u32 i = 0; i < storage->renderComponents.count; ++i) {
+            const Game::RenderComponent& rc = storage->renderComponents[i];
+            if (IsHandleInLevel(levelData.levelEntityHandles, rc.owner)) {
+                nlohmann::json componentData;
+                componentData["owner_handle"] = {
+                    {"indexInInfo", rc.owner.indexInInfo},
+                    {"generation", rc.owner.generation},
+                    {"type", static_cast<int>(rc.owner.type)}
+                };
+                componentData["meshName"] = rc.meshName;
+
+                // componentData["meshName"] = rc.mesh ? rc.mesh->name : "";
+                // componentData["materialName"] = rc.material ? rc.material->name : "";
+                // componentData["isVisible"] = rc.isVisible;
+                renderComponentsJson.push_back(componentData);
+            }
+        }
+        if (!renderComponentsJson.empty()) {
+            componentsJson["render"] = renderComponentsJson;
+        }
 
         // TODO: Add loops to manually save other component types...
 
@@ -325,11 +327,10 @@ namespace Zayn {
                             tc.position.y = compJson["position"][1].get<float>();
                             tc.position.z = compJson["position"][2].get<float>();
                         }
-                         if (compJson.at("rotation").is_array() && compJson.at("rotation").size() == 3) {
-                            tc.rotation.x = compJson["rotation"][0].get<float>();
-                            tc.rotation.y = compJson["rotation"][1].get<float>();
-                            tc.rotation.z = compJson["rotation"][2].get<float>();
-                            // tc.rotation.w = compJson["rotation"][3].get<float>();
+                         if (compJson.at("rotation_euler_degrees").is_array() && compJson.at("rotation_euler_degrees").size() == 3) {
+                            tc.rotation_euler_degrees.x = compJson["rotation_euler_degrees"][0].get<float>();
+                            tc.rotation_euler_degrees.y = compJson["rotation_euler_degrees"][1].get<float>();
+                            tc.rotation_euler_degrees.z = compJson["rotation_euler_degrees"][2].get<float>();
                         }
                          if (compJson.at("scale").is_array() && compJson.at("scale").size() == 3) {
                              tc.scale.x = compJson["scale"][0].get<float>();
@@ -348,30 +349,45 @@ namespace Zayn {
             }
 
             // - Render Components -
-            // if (componentsJson.contains("render") && componentsJson["render"].is_array()) {
-            //      printf("  Loading render components...\n");
-            //     for (const auto& compJson : componentsJson["render"]) {
-            //         try {
-            //             RenderComponent rc = {};
-            //             rc.owner.indexInInfo = compJson.at("owner_handle").at("indexInInfo").get<int32>();
-            //             rc.owner.generation = compJson.at("owner_handle").at("generation").get<int32>();
-            //             rc.owner.type = static_cast<Game::EntityType>(compJson.at("owner_handle").at("type").get<int>());
-            //             rc.isVisible = compJson.value("isVisible", true);
-            //             std::string meshName = compJson.value("meshName", "");
-            //             std::string materialName = compJson.value("materialName", "");
-            //
-            //             RenderComponent* addedComp = AddComponent(&storage->renderComponents, rc.owner);
-            //             if(addedComp) {
-            //                  *addedComp = rc; // Copy base data
-            //                  // TODO: Resolve mesh/material pointers using factories/managers and names
-            //                  // addedComp->mesh = MeshFactory::GetMesh(..., meshName);
-            //                  // addedComp->material = MaterialFactory::GetMaterial(..., materialName);
-            //             }
-            //         } catch (const std::exception& e) {
-            //             printf("  Error loading render component: %s\n Json: %s\n", e.what(), compJson.dump().c_str());
-            //         }
-            //     }
-            // }
+            if (componentsJson.contains("render") && componentsJson["render"].is_array()) {
+                 printf("  Loading render components...\n");
+                for (const auto& compJson : componentsJson["render"]) {
+                    try {
+                        Game::RenderComponent rc = {};
+                        rc.owner.indexInInfo = compJson.at("owner_handle").at("indexInInfo").get<int32>();
+                        rc.owner.generation = compJson.at("owner_handle").at("generation").get<int32>();
+                        rc.owner.type = static_cast<Game::EntityType>(compJson.at("owner_handle").at("type").get<int>());
+                        // rc.isVisible = compJson.value("isVisible", true);
+                        std::string meshNameFromJson = compJson.value("meshName", "");
+                        // std::string materialName = compJson.value("materialName", "");
+
+                        Game::RenderComponent* addedComp = AddComponent(&storage->renderComponents, rc.owner);
+                        if(addedComp) {
+                             *addedComp = rc; // Copy base data
+                            addedComp->meshName = meshNameFromJson;
+                            addedComp->mesh = nullptr;
+
+                            if (!addedComp->meshName.empty()) {
+                                addedComp->mesh = GetMeshPointerByName(engine, addedComp->meshName);
+
+                                if (addedComp->mesh == nullptr) {
+                                    // Warning: Mesh name was specified, but couldn't find/load the mesh pointer.
+                                    // This might be okay if the mesh is optional or loaded later,
+                                    // or it might indicate an error (e.g., mesh file missing).
+                                    printf("  Warning: Could not find loaded mesh pointer for name '%s' during component load.\n",
+                                           addedComp->meshName.c_str());
+                                }
+                            }
+
+                             // TODO: Resolve mesh/material pointers using factories/managers and names
+                             // addedComp->mesh = MeshFactory::GetMesh(..., meshName);
+                             // addedComp->material = MaterialFactory::GetMaterial(..., materialName);
+                        }
+                    } catch (const std::exception& e) {
+                        printf("  Error loading render component: %s\n Json: %s\n", e.what(), compJson.dump().c_str());
+                    }
+                }
+            }
 
             // TODO: Add loading blocks to manually parse other component types...
 

@@ -21,6 +21,8 @@ namespace Game {
         std::string name;
         glm::mat4 transform;
 
+        EntityType type;
+
         Zayn::EntityHandle handle;
 
         ModelPushConstant pushConstantData;

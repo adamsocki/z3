@@ -55,6 +55,8 @@ add_library(imgui STATIC
         src/game/components/TransformComponent.cpp
         src/game/components/TransformComponent.h
         src/game/editor/SerializationHelper.h
+        src/game/components/RenderComponent.cpp
+        src/game/components/RenderComponent.h
 )
 
 target_include_directories(imgui PUBLIC
@@ -79,10 +81,6 @@ add_executable(Z3 src/main.cpp
         src/InputManager.cpp
         src/RenderManager.cpp
         src/DynamicArray.cpp
-        src/MaterialManager.cpp
-        src/MaterialManager.h
-        src/TextureManager.cpp
-        src/TextureManager.h
         src/GameManager.cpp
         src/GameManager.h
         src/game/GameObject.cpp
@@ -93,8 +91,6 @@ add_executable(Z3 src/main.cpp
         src/game/Texture.h
         src/game/Mesh.cpp
         src/game/Mesh.h
-        src/tools/GameObjectFactory.cpp
-        src/tools/GameObjectFactory.h
         src/tools/MaterialFactory.cpp
         src/tools/MaterialFactory.h
         src/tools/TextureFactory.cpp
@@ -121,6 +117,8 @@ add_executable(Z3 src/main.cpp
         src/game/entities/FloorEntity.h
         src/tools/ComponentFactory.cpp
         src/tools/ComponentFactory.h
+        src/game/entities/GrandPianoEntity.cpp
+        src/game/entities/GrandPianoEntity.h
 
 
 )

@@ -21,10 +21,15 @@ namespace Zayn {
     };
     struct MeshFactory {
         DynamicArray<Game::Mesh> meshes;
+        std::unordered_map<std::string, Game::Mesh*> meshNamePointerMap;
+
+        std::vector<std::string> availableMeshNames;
     };
 
     void MakeMesh(Engine* engine, MeshCreateInfo* meshCreateInfo);
     void InitMeshFactory(Engine* engine);
+
+    Game::Mesh* GetMeshPointerByName(Engine* engine, const std::string& name);
 
 } // Zayn
 

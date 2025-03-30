@@ -100,7 +100,26 @@ namespace Zayn {
         entity->name = "default";
 
         entity->material = &engine->materialFactory.materials[0];
-        entity->mesh = &engine->meshFactory.meshes[0];
+
+
+
+        //
+        // if (entityCreator.selectedEntityType == Game::EntityType::EntityType_Piano) {
+        //     entity->mesh = &engine->meshFactory.meshes[1];
+        //
+        // }
+        // else if (entityCreator.selectedEntityType == Game::EntityType::EntityType_Floor) {
+        //     entity->mesh = &engine->meshFactory.meshes[0];
+        //
+        // }
+        // else {
+        //     entity->mesh = &engine->meshFactory.meshes[0];
+        //
+        // }
+
+
+        //entity->type =
+        //if (entity->entityType)
         // entity->type =
         // entity->pushConstantData.model_1 = TRS((V3(1.0f, 0.0f, 0.0f)), AxisAngle(V3(0.0f, 0.0f, 0.20f), 0.0f), V3(1.0f, 1.0f, 1.0f));
 

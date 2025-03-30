@@ -34,7 +34,7 @@ namespace Zayn {
     #ifdef WIN32
         return "../src/render/models/" + filename;
     #elif __APPLE__
-        return "/Users/socki/dev/zayn2/models/" + filename;
+        return "/Users/socki/dev/z3/src/render/models/" + filename;
     #endif
     }
 
@@ -137,13 +137,33 @@ namespace Zayn {
         RenderManager* renderManager = &engine->renderManager;
         Game::Mesh mesh ={};
         mesh.path = info->path;
-        mesh.name = "mesh";
+        mesh.name = info->name;
         LoadModel(GetModelPath(mesh.path), &mesh.vertices, &mesh.indices);
         CreateVertexBuffer(renderManager, mesh.vertices, &mesh.vertexBuffer, &mesh.vertexBufferMemory);
         CreateIndexBuffer(renderManager, mesh.indices, &mesh.indexBuffer, &mesh.indexBufferMemory);
 
-        PushBack(&engine->meshFactory.meshes, mesh);
+        uint32_t meshIndex = PushBack(&engine->meshFactory.meshes, mesh);
+        Game::Mesh* pointerToStoredMesh = &engine->meshFactory.meshes[meshIndex];
+        engine->meshFactory.meshNamePointerMap[mesh.name] = pointerToStoredMesh;
 
+        engine->meshFactory.availableMeshNames.push_back(mesh.name);
+
+    }
+
+    Game::Mesh* GetMeshPointerByName(Engine* engine, const std::string& name) {
+        if (!engine || name.empty()) {
+            return nullptr;
+        }
+
+        auto it = engine->meshFactory.meshNamePointerMap.find(name);
+        if (it != engine->meshFactory.meshNamePointerMap.end()) {
+            // Found it, return the stored pointer
+            return it->second;
+        } else {
+            // Name not found in the map
+            // printf("Warning: GetMeshPointerByName - Mesh '%s' not found in map.\n", name.c_str());
+            return nullptr;
+        }
     }
 
     

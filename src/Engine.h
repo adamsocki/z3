@@ -16,7 +16,6 @@
 
 #include "tools/TextureFactory.h"
 #include "tools/MaterialFactory.h"
-#include "tools/GameObjectFactory.h"
 #include "tools/MeshFactory.h"
 #include "tools/EntityFactory.h"
 #include "game/CameraManager.h"
