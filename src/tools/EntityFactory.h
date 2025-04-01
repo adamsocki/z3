@@ -10,6 +10,7 @@
 //#include "../game/entities/Entity.h"
 //#include "../game/entities/Entity.h"
 #include "../game/entities/EntityTypes.h"
+#include <functional>
 
 namespace Zayn {
     struct Engine;
@@ -24,6 +25,19 @@ namespace Zayn {
         int32 generation;
         int32 indexInInfo;
         Game::EntityType type;
+
+        bool operator<(const EntityHandle& other) const {
+            if (indexInInfo != other.indexInInfo) return indexInInfo < other.indexInInfo;
+            if (generation != other.generation) return generation < other.generation;
+            return type < other.type;
+        }
+
+        // For std::unordered_map
+        bool operator==(const EntityHandle& other) const {
+            return indexInInfo == other.indexInInfo &&
+                   generation == other.generation &&
+                   type == other.type;
+        }
     };
 
 
@@ -75,7 +89,23 @@ namespace Zayn {
     }
 
 
+
+
 } // Zayn
+
+namespace std {
+    template <>
+    struct hash<Zayn::EntityHandle> {
+        size_t operator()(const Zayn::EntityHandle& handle) const noexcept {
+            // Simple hash combining fields - adjust if needed for better distribution
+            size_t h1 = std::hash<int32>{}(handle.indexInInfo);
+            size_t h2 = std::hash<int32>{}(handle.generation);
+            size_t h3 = std::hash<int>{}(static_cast<int>(handle.type)); // Hash the underlying int
+            // Combine hashes (example using XOR and shifts)
+            return h1 ^ (h2 << 1) ^ (h3 << 2);
+        }
+    };
+}
 
 
 

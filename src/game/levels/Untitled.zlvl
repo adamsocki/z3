@@ -2,35 +2,30 @@
     "components": {
         "render": [
             {
-                "meshName": "Viking_Room",
+                "materialName": "grand_piano",
+                "meshName": "Grand_Piano",
+                "owner_handle": {
+                    "generation": 1,
+                    "indexInInfo": 0,
+                    "type": 2
+                }
+            },
+            {
+                "materialName": "cementMat_1",
+                "meshName": "FloorCement",
                 "owner_handle": {
                     "generation": 1,
                     "indexInInfo": 1,
-                    "type": 2
+                    "type": 1
                 }
             },
             {
-                "meshName": "Grand_Piano",
+                "materialName": "cementMat_1",
+                "meshName": "FloorCement",
                 "owner_handle": {
                     "generation": 1,
                     "indexInInfo": 2,
-                    "type": 2
-                }
-            },
-            {
-                "meshName": "Grand_Piano",
-                "owner_handle": {
-                    "generation": 1,
-                    "indexInInfo": 1,
-                    "type": 2
-                }
-            },
-            {
-                "meshName": "Grand_Piano",
-                "owner_handle": {
-                    "generation": 1,
-                    "indexInInfo": 2,
-                    "type": 2
+                    "type": 1
                 }
             }
         ],
@@ -38,45 +33,67 @@
             {
                 "owner_handle": {
                     "generation": 1,
-                    "indexInInfo": 1,
+                    "indexInInfo": 0,
                     "type": 2
                 },
                 "position": [
                     0.0,
-                    -0.30000001192092896,
-                    0.0
+                    0.8999999761581421,
+                    0.5
                 ],
                 "rotation_euler_degrees": [
-                    0.0,
+                    90.0,
                     0.0,
                     0.0
                 ],
                 "scale": [
+                    5.0,
+                    5.0,
+                    5.0
+                ]
+            },
+            {
+                "owner_handle": {
+                    "generation": 1,
+                    "indexInInfo": 1,
+                    "type": 1
+                },
+                "position": [
+                    0.0,
+                    0.699999988079071,
+                    0.0
+                ],
+                "rotation_euler_degrees": [
+                    90.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    3.0,
                     1.0,
-                    1.0,
-                    1.0
+                    3.0
                 ]
             },
             {
                 "owner_handle": {
                     "generation": 1,
                     "indexInInfo": 2,
-                    "type": 2
+                    "type": 1
                 },
                 "position": [
-                    0.0,
-                    0.8999999761581421,
-                    2.0999999046325684
-                ],
-                "rotation_euler_degrees": [
-                    0.0,
-                    0.0,
+                    32.20000076293945,
+                    0.699999988079071,
                     0.0
                 ],
+                "rotation_euler_degrees": [
+                    90.0,
+                    0.0,
+                    270.0
+                ],
                 "scale": [
+                    3.0,
                     1.0,
-                    1.0,
-                    1.0
+                    3.0
                 ]
             }
         ]
@@ -85,29 +102,29 @@
         {
             "handle": {
                 "generation": 1,
-                "indexInInfo": 1,
+                "indexInInfo": 0,
                 "type": 2
             },
             "id": 0,
-            "name": "defaultasdf"
+            "name": "GrandPiano1"
         },
         {
             "handle": {
                 "generation": 1,
-                "indexInInfo": 2,
-                "type": 2
+                "indexInInfo": 1,
+                "type": 1
             },
             "id": 1,
-            "name": "defaultasdf"
+            "name": "Floor"
         },
         {
             "handle": {
                 "generation": 1,
                 "indexInInfo": 2,
-                "type": 2
+                "type": 1
             },
             "id": 2,
-            "name": "defaultasdf"
+            "name": "Floor2"
         }
     ],
     "name": "Untitled",

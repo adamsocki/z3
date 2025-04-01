@@ -57,6 +57,8 @@ add_library(imgui STATIC
         src/game/editor/SerializationHelper.h
         src/game/components/RenderComponent.cpp
         src/game/components/RenderComponent.h
+        src/game/components/CollisionComponent.cpp
+        src/game/components/CollisionComponent.h
 )
 
 target_include_directories(imgui PUBLIC
