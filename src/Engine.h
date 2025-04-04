@@ -8,10 +8,13 @@
 #define IMGUI 1
 
 
+#include "PhysicsTest.h"
+
 #include "MemoryManager.h"
 #include "WindowManager.h"
 #include "TimeManager.h"
 #include "InputManager.h"
+#include "PhysicsManager.h"
 #include "RenderManager.h"
 
 #include "tools/TextureFactory.h"
@@ -21,6 +24,7 @@
 #include "game/CameraManager.h"
 #include "game/editor/LevelEditor.h"
 #include "tools/ComponentFactory.h"
+#include "tools/PhysicsFactory.h"
 
 #define MAX_FRAMES_IN_FLIGHT 2
 
@@ -38,6 +42,7 @@ namespace Zayn {
         TimeManager timeManager;
         InputManager inputManager;
         RenderManager renderManager;
+        PhysicsManager physicsManager;
 
 
         TextureFactory textureFactory;
@@ -45,12 +50,17 @@ namespace Zayn {
         MeshFactory meshFactory;
         EntityFactory entityFactory;
         ComponentFactory componentFactory;
+        PhysicsFactory physicsFactory;
 
         Game::CameraManager cameraManager;
         EntityHandle HTEST;
 
         LevelEditor levelEditor;
         bool inLevelEditor = false;
+        
+        // Physics test
+        PhysicsTest physicsTest;
+        
         //        GameObjectFactory gameObjectFactory;
 
     };

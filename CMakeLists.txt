@@ -54,6 +54,8 @@ add_library(imgui STATIC
         src/game/components/Component.h
         src/game/components/TransformComponent.cpp
         src/game/components/TransformComponent.h
+        src/game/components/PhysicsComponent.cpp
+        src/game/components/PhysicsComponent.h
         src/game/editor/SerializationHelper.h
         src/game/components/RenderComponent.cpp
         src/game/components/RenderComponent.h
@@ -121,7 +123,12 @@ add_executable(Z3 src/main.cpp
         src/tools/ComponentFactory.h
         src/game/entities/GrandPianoEntity.cpp
         src/game/entities/GrandPianoEntity.h
-
+        src/tools/PhysicsFactory.cpp
+        src/tools/PhysicsFactory.h
+        src/PhysicsTest.cpp
+        src/PhysicsTest.h
+        src/PhysicsManager.cpp
+        src/PhysicsManager.h
 
 )
 

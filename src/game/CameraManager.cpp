@@ -204,5 +204,70 @@ namespace Game {
         }
 
     }
+    
+    vec2 WorldToScreen(CameraManager* cam, vec3 worldPos) {
+        printf("WorldToScreen called with position (%.2f, %.2f, %.2f)\n", worldPos.x, worldPos.y, worldPos.z);
+        
+        // Print view-projection matrix for debugging
+        printf("ViewProjection Matrix:\n");
+        printf("%.2f %.2f %.2f %.2f\n", cam->viewProjection.m00, cam->viewProjection.m01, cam->viewProjection.m02, cam->viewProjection.m03);
+        printf("%.2f %.2f %.2f %.2f\n", cam->viewProjection.m10, cam->viewProjection.m11, cam->viewProjection.m12, cam->viewProjection.m13);
+        printf("%.2f %.2f %.2f %.2f\n", cam->viewProjection.m20, cam->viewProjection.m21, cam->viewProjection.m22, cam->viewProjection.m23);
+        printf("%.2f %.2f %.2f %.2f\n", cam->viewProjection.m30, cam->viewProjection.m31, cam->viewProjection.m32, cam->viewProjection.m33);
+        
+        // Get current window size
+        int width = 1920;  // Default
+        int height = 1080; // Default
+        
+        // For immediate visibility, let's use a simple approach that directly maps world to screen
+        // This is a temporary solution for debugging
+        
+        // The proper approach is to use the viewProjection matrix, but let's try a simpler approach first
+        // This assumes the camera looks along the -Z axis (like in OpenGL)
+        
+        // Simple conversion - not mathematically correct but works as a temporary test
+        float screenX = (width / 2.0f) + (worldPos.x * 100.0f); // Scale by 100 for better visibility
+        float screenY = (height / 2.0f) - (worldPos.y * 100.0f); // Flip Y and scale
+        
+        printf("Simplified screen position: (%.2f, %.2f)\n", screenX, screenY);
+        
+        return V2(screenX, screenY);
+        
+        /*
+        // Create a position in clip space by multiplying by view-projection matrix
+        vec4 clipPos = cam->viewProjection * V4(worldPos.x, worldPos.y, worldPos.z, 1.0f);
+        
+        // Check if the point is behind the camera
+        if (clipPos.w <= 0.0f) {
+            return V2(-1.0f, -1.0f); // Return off-screen position
+        }
+        
+        // Perform perspective division to get normalized device coordinates (NDC)
+        vec3 ndcPos = V3(clipPos.x / clipPos.w, clipPos.y / clipPos.w, clipPos.z / clipPos.w);
+        
+        // Convert from NDC space [-1, 1] to screen space [0, width/height]
+        // Assuming window dimensions are available in the CameraManager
+        int width, height;
+        
+        // Get window size from aspect ratio - estimate
+        // In a real implementation, you'd get this from the window manager
+        width = 1920;  // Default width, should use actual window width
+        height = static_cast<int>(width / cam->aspect);
+        
+        // Map from [-1, 1] to [0, width/height] and flip Y (screen Y is down)
+        float screenX = (ndcPos.x + 1.0f) * 0.5f * static_cast<float>(width);
+        float screenY = (1.0f - ndcPos.y) * 0.5f * static_cast<float>(height); // Flip Y
+        
+        return V2(screenX, screenY);
+        */
+    }
+    
+    vec3 ScreenToWorldRay(CameraManager* cam, vec2 screenPos) {
+        // This function converts a 2D screen position to a 3D ray from camera
+        // In a full implementation, you'd use this for picking/selection
+        
+        // For now, return a simplified implementation
+        return Normalize(cam->front);
+    }
 
 } // Game

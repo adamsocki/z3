@@ -211,8 +211,54 @@ namespace Zayn {
                 ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
                 ImGui::Text("Frame Time: %.3f ms", 1000.0f / ImGui::GetIO().Framerate);
             }
+            
+            if (ImGui::CollapsingHeader("Physics Debug")) {
+                // Toggle for physics visualization
+                ImGui::Checkbox("Show Colliders", &engine->physicsManager.showColliders);
+                ImGui::Checkbox("Show Velocities", &engine->physicsManager.showVelocities);
+                
+                if (engine->physicsManager.showColliders) {
+                    ImGui::Indent();
+                    ImGui::Text("Collision Statistics:");
+                    ImGui::Text("Active Colliders: %d", engine->componentFactory.componentStorage.collisionComponents.count);
+                    ImGui::Text("Collision Results: %d", engine->physicsFactory.collisionResults.count);
+                    
+                    // Display last frame's collisions
+                    if (ImGui::TreeNode("Collision Results")) {
+                        for (uint32 i = 0; i < engine->physicsFactory.collisionResults.count; i++) {
+                            CollisionResult* result = &engine->physicsFactory.collisionResults[i];
+                            if (result->isValid) {
+                                char label[64];
+                                snprintf(label, sizeof(label), "Collision %d", i);
+                                if (ImGui::TreeNode(label)) {
+                                    ImGui::Text("Entity A: %d, Entity B: %d", result->entityA, result->entityB);
+                                    ImGui::Text("Penetration: %.3f", result->penetrationDepth);
+                                    ImGui::Text("Point: (%.2f, %.2f, %.2f)", 
+                                               result->collisionPoint.x, 
+                                               result->collisionPoint.y, 
+                                               result->collisionPoint.z);
+                                    ImGui::Text("Normal: (%.2f, %.2f, %.2f)", 
+                                               result->collisionNormal.x, 
+                                               result->collisionNormal.y, 
+                                               result->collisionNormal.z);
+                                    ImGui::TreePop();
+                                }
+                            }
+                        }
+                        ImGui::TreePop();
+                    }
+                    ImGui::Unindent();
+                }
+            }
 
             ImGui::End();
+        }
+        
+        // Draw debug visualization directly here
+        // This ensures it happens at the right time in the ImGui render cycle
+        if (engine->physicsManager.showColliders || engine->physicsManager.showVelocities) {
+            printf("Drawing physics debug from ImGui update\n");
+            RenderPhysicsDebugUI(engine);
         }
 
         // Always render (even if nothing was drawn)

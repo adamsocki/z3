@@ -5,4 +5,12 @@
 #include "Component.h"
 
 namespace Game {
+
+    void InitComponent(Component* component) {
+
+    }
+
+    void UpdateComponent(Component* component) {
+
+    }
 } // Game

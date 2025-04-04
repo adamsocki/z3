@@ -81,6 +81,12 @@ namespace Game {
     void InitCameraManager(CameraManager* cam, GLFWwindow* glfWwindow, Zayn::InputManager* inputManager);
     void UpdateCameraManager(Zayn::WindowManager* windowManager, CameraManager* cam, Zayn::InputManager* inputManager, Zayn::TimeManager* timeManager);
     void SetCursorMode(GLFWwindow* glfwWindow, Zayn::InputManager* inputManager, CameraManager* cam, CursorMode newMode);
+    
+    // Helper function to convert 3D world position to 2D screen coordinates
+    vec2 WorldToScreen(CameraManager* cam, vec3 worldPos);
+    
+    // Helper function to convert 2D screen coordinates to 3D world ray
+    vec3 ScreenToWorldRay(CameraManager* cam, vec2 screenPos);
 } // Game
 
 #endif //Z3_CAMERAMANAGER_H

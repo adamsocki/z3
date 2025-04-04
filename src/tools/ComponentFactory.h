@@ -10,6 +10,9 @@
 
 #include "../game/components/TransformComponent.h"
 #include "../game/components/RenderComponent.h"
+#include "../game/components/CollisionComponent.h"
+#include "../game/components/PhysicsComponent.h"
+#include "../game/components/PlayerController.h"
 
 // namespace Game {
 //     struct Entity;
@@ -22,7 +25,9 @@ namespace Zayn {
     enum ComponentType {
         TransformComponent_Type,
         RenderComponent_Type,
-
+        CollisionComponent_Type,
+        PhysicsComponent_Type,
+        PlayerController_Type,
 
         ComponentType_Count
     };
@@ -31,8 +36,10 @@ namespace Zayn {
         switch (type) {
             case ComponentType::TransformComponent_Type:  return "Transform";
             case ComponentType::RenderComponent_Type:     return "Render";
+            case ComponentType::CollisionComponent_Type:  return "Collision";
+            case ComponentType::PhysicsComponent_Type:    return "Physics";
+            case ComponentType::PlayerController_Type:    return "PlayerController";
             // --- Add cases for your other component types ---
-            // case ComponentType::COLLISION: return "Collision";
             // case ComponentType::SCRIPT:    return "Script";
             // --- End of custom cases ---
 
@@ -46,6 +53,9 @@ namespace Zayn {
     struct ComponentStorage {
         DynamicArray<Game::TransformComponent> transformComponents;
         DynamicArray<Game::RenderComponent> renderComponents;
+        DynamicArray<Game::CollisionComponent> collisionComponents;
+        DynamicArray<Game::PhysicsComponent> physicsComponents;
+        DynamicArray<Game::PlayerController> playerControllers;
     };
 
     struct ComponentFactory {

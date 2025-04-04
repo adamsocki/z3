@@ -10,6 +10,7 @@
 #include "GameManager.h"
 #include "tools/MaterialFactory.h"
 #include "tools/MeshFactory.h"
+#include "PhysicsManager.h"
 
 
 namespace Zayn {
@@ -22,7 +23,10 @@ namespace Zayn {
         InitTimeManager(engine);
         InitInputManager(engine);
 
+        InitPhysicsManager();
+
         InitComponentFactory(&engine->componentFactory, &engine->permanentMemory);
+        InitPhysicsFactory(&engine->physicsFactory, &engine->permanentMemory);
 
         InitTextureFactory(engine);
         InitMaterialFactory(engine);
@@ -55,7 +59,11 @@ namespace Zayn {
 
         // START OF GAME Frame
         UpdateGameManager(engine);
-
+        
+        // Update physics system
+        UpdatePhysicsFactory(engine, engine->timeManager.time.deltaTime);
+        
+        // Update rendering
         UpdateRenderManager(engine, engine->HTEST, &engine->renderManager, &engine->windowManager, &engine->cameraManager, &engine->inputManager);
 
 

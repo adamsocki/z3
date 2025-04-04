@@ -10,6 +10,11 @@
 #include  "../CameraManager.h"
 #include "imgui.h"
 
+// Forward declaration only - no include
+namespace Zayn {
+    struct Engine;
+}
+
 #include "../../DynamicArray.h"
 #include "../../math/math.h"
 

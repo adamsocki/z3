@@ -1973,9 +1973,7 @@ void Zayn::UpdateRenderManager(Zayn::Engine* engine, Zayn::EntityHandle handle, 
 {
     if (BeginFrameRender(renderManager, windowManager))
     {
-#if IMGUI
-        UpdateMyImgui(engine, &engine->levelEditor, cameraManager, renderManager, windowManager, inputManager);
-#endif
+
         UpdateUniformBuffer(renderManager->vulkanData.vkCurrentFrame, renderManager, cameraManager);
         BeginSwapChainRenderPass(renderManager, renderManager->vulkanData.vkCommandBuffers[renderManager->vulkanData.vkCurrentFrame]);
 
@@ -1985,6 +1983,10 @@ void Zayn::UpdateRenderManager(Zayn::Engine* engine, Zayn::EntityHandle handle, 
         else {
             RenderEntities(engine, renderManager->vulkanData.vkCommandBuffers[renderManager->vulkanData.vkCurrentFrame]);
         }
+
+#if IMGUI
+        UpdateMyImgui(engine, &engine->levelEditor, cameraManager, renderManager, windowManager, inputManager);
+#endif
 
 
     }

@@ -109,6 +109,7 @@ namespace Zayn {
             {
                 Vertex vertex{};
 
+                // Load the vertex position directly (without coordinate system change)
                 vertex.pos = {
                         attrib.vertices[3 * index.vertex_index + 0],
                         attrib.vertices[3 * index.vertex_index + 1],
@@ -119,6 +120,9 @@ namespace Zayn {
                         1.0f - attrib.texcoords[2 * index.texcoord_index + 1] };
 
                 vertex.color = { 0.3f, 1.0f, 0.6f };
+                
+                // Set default normal (pointing up in Y direction)
+                vertex.normal = { 0.0f, 1.0f, 0.0f };
 
                 if (uniqueVertices.count(vertex) == 0)
                 {

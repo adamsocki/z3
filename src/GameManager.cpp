@@ -24,7 +24,7 @@ namespace Zayn {
 
 
         TextureCreateInfo grandPianoTexture_1;
-        grandPianoTexture_1.path = "grand_piano_texture .png";
+        grandPianoTexture_1.path = "grand_piano_texture.png";
         grandPianoTexture_1.name = "grand_piano_texture";
         MakeTexture(engine, &grandPianoTexture_1);
     }
@@ -106,14 +106,26 @@ namespace Zayn {
 
 
 
-    void GameInputUpdate(Zayn::InputManager* inputManager,Zayn::RenderManager* renderManager)
+    void GameInputUpdate(Engine* engine)
     {
-
+        Zayn::InputManager* inputManager = &engine->inputManager;
+        Zayn::RenderManager* renderManager = &engine->renderManager;
 
 #ifdef DEBUG
         if (InputPressed(inputManager->keyboard, Zayn::Input_F1))
         {
             ToggleImGuiVisibility(renderManager);
+        }
+        
+        // Toggle between level editor and physics test with F2
+        if (InputHeld(inputManager->keyboard, Zayn::Input_F2))
+        {
+            engine->inLevelEditor = !engine->inLevelEditor;
+            
+            // If switching to physics test, initialize it
+            if (!engine->inLevelEditor) {
+                InitPhysicsTest(engine, &engine->physicsTest);
+            }
         }
 #endif
     }
@@ -125,6 +137,14 @@ namespace Zayn {
        MakeMeshes(engine);
 
        MakeEntities(engine);
+
+
+
+
+        // Initialize physics test if enabled
+        // if (engine->inLevelEditor == false) {
+        //     InitPhysicsTest(engine, &engine->physicsTest);
+        // }
 
         // TODO: Put somewhere Better
         // MakeLevel(1);
@@ -145,12 +165,22 @@ namespace Zayn {
 
     void UpdateGameManager(Engine* engine)
     {
-        Zayn::RenderManager* renderManager = &engine->renderManager;
-        Zayn::InputManager* inputManager   = &engine->inputManager;
-        GameInputUpdate(inputManager, renderManager);
+        // UPDATE GAME LOGIC
+        // Process input first
+        GameInputUpdate(engine);
+
+
 
         UpdateEntities(engine);
 
+        // UpdatePhysics();
+
+
+        
+        // Update physics test if not in level editor
+        // if (engine->inLevelEditor == false) {
+        //     UpdatePhysicsTest(engine, &engine->physicsTest);
+        // }
     }
 
 

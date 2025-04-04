@@ -7,8 +7,6 @@
 
 #include "Component.h"
 #include "../../math/math.h"
-// #include "../../tools/ComponentFactory.h"
-// #include "../../Engine.h"
 
 namespace Game {
 

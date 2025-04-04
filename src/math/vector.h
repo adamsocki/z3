@@ -82,10 +82,10 @@ union vec4i {
     }
 };
 
-#define UP V3(0, 1, 0)
-#define UP_V V3(0, -1, 0)
-#define LEFT V3(1, 0, 0)
-#define FORWARD V3(0, 0, 1)
+#define UP V3(0, 0, 1)      // Z-up coordinate system
+#define UP_V V3(0, 0, -1)    // Z-down coordinate system
+#define LEFT V3(1, 0, 0)      // X-axis is still left
+#define FORWARD V3(0, 1, 0)   // Y-axis is now forward
 
 #define XZ(a) V2(a.x, a.z)
 

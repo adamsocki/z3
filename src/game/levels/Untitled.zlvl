@@ -18,15 +18,6 @@
                     "indexInInfo": 1,
                     "type": 1
                 }
-            },
-            {
-                "materialName": "cementMat_1",
-                "meshName": "FloorCement",
-                "owner_handle": {
-                    "generation": 1,
-                    "indexInInfo": 2,
-                    "type": 1
-                }
             }
         ],
         "transform": [
@@ -38,8 +29,8 @@
                 },
                 "position": [
                     0.0,
-                    0.8999999761581421,
-                    0.5
+                    0.0,
+                    1.2999999523162842
                 ],
                 "rotation_euler_degrees": [
                     90.0,
@@ -47,9 +38,9 @@
                     0.0
                 ],
                 "scale": [
-                    5.0,
-                    5.0,
-                    5.0
+                    1.0,
+                    1.0,
+                    1.0
                 ]
             },
             {
@@ -60,7 +51,7 @@
                 },
                 "position": [
                     0.0,
-                    0.699999988079071,
+                    0.0,
                     0.0
                 ],
                 "rotation_euler_degrees": [
@@ -69,31 +60,9 @@
                     0.0
                 ],
                 "scale": [
-                    3.0,
                     1.0,
-                    3.0
-                ]
-            },
-            {
-                "owner_handle": {
-                    "generation": 1,
-                    "indexInInfo": 2,
-                    "type": 1
-                },
-                "position": [
-                    32.20000076293945,
-                    0.699999988079071,
-                    0.0
-                ],
-                "rotation_euler_degrees": [
-                    90.0,
-                    0.0,
-                    270.0
-                ],
-                "scale": [
-                    3.0,
                     1.0,
-                    3.0
+                    1.0
                 ]
             }
         ]
@@ -106,7 +75,7 @@
                 "type": 2
             },
             "id": 0,
-            "name": "GrandPiano1"
+            "name": "GP1"
         },
         {
             "handle": {
@@ -115,16 +84,7 @@
                 "type": 1
             },
             "id": 1,
-            "name": "Floor"
-        },
-        {
-            "handle": {
-                "generation": 1,
-                "indexInInfo": 2,
-                "type": 1
-            },
-            "id": 2,
-            "name": "Floor2"
+            "name": "floor1"
         }
     ],
     "name": "Untitled",
