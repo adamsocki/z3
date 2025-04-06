@@ -26,19 +26,20 @@ int main() {
 
     std::cout << "Hello, World!" << std::endl;
 
-    int i = 1;
-    while (true)
+    // Main render loop
+    while (!glfwWindowShouldClose(engine.windowManager.glfwWindow))
     {
-        i++;
-
+        // Update all engine systems
         Zayn::UpdateEngine(&engine);
-
     }
+    
+    // Cleanup
+    Zayn::ShutdownEngine(&engine);
 
+    // Terminate GLFW
+    glfwTerminate();
+    
     return 0;
-
-
-
 
 
 }

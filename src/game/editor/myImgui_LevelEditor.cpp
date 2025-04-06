@@ -37,7 +37,7 @@ namespace Zayn {
     void RenderCollisionComponentUI(Game::CollisionComponent* cc) {
         if (!cc) return;
         
-        const char* colliderTypeNames[] = { "Sphere", "Box", "Plane" };
+        const char* colliderTypeNames[] = {"Box" };
         int currentType = static_cast<int>(cc->type);
         
         if (ImGui::Combo("Collider Type", &currentType, colliderTypeNames, IM_ARRAYSIZE(colliderTypeNames))) {
@@ -45,62 +45,64 @@ namespace Zayn {
         }
         
         // Show properties based on collider type
-        if (cc->type == Game::COLLIDER_SPHERE) {
-            ImGui::DragFloat("Radius", &cc->radius, 0.05f, 0.01f, 100.0f);
-        }
-        else if (cc->type == Game::COLLIDER_BOX) {
+        // if (cc->type == Game::COLLIDER_SPHERE) {
+        //     ImGui::DragFloat("Radius", &cc->radius, 0.05f, 0.01f, 100.0f);
+        // }
+        if (cc->type == Game::COLLIDER_BOX) {
             ImGui::DragFloat3("Size (Half-Extents)", &cc->size.x, 0.05f, 0.01f, 100.0f);
         }
-        else if (cc->type == Game::COLLIDER_PLANE) {
-            ImGui::DragFloat3("Normal", &cc->normal.x, 0.05f, -1.0f, 1.0f);
-            cc->normal = Normalize(cc->normal); // Keep normal normalized
-            ImGui::DragFloat("Offset", &cc->offset, 0.05f);
-        }
+        // else if (cc->type == Game::COLLIDER_PLANE) {
+        //     ImGui::DragFloat3("Normal", &cc->normal.x, 0.05f, -1.0f, 1.0f);
+        //     cc->normal = Normalize(cc->normal); // Keep normal normalized
+        //     ImGui::DragFloat("Offset", &cc->offset, 0.05f);
+        // }
         
         // Collision flags
         ImGui::Separator();
         ImGui::Checkbox("Is Trigger", &cc->isTrigger);
         
         // Collision layers (simplified, could be expanded)
-        ImGui::DragInt("Collision Layer", &cc->collisionLayer, 1.0f, 0, 32);
-        ImGui::DragInt("Collision Mask", &cc->collisionMask, 1.0f, -1, 32);
+        // ImGui::DragInt("Collision Layer", &cc->collisionLayer, 1.0f, 0, 32);
+        // ImGui::DragInt("Collision Mask", &cc->collisionMask, 1.0f, -1, 32);
     }
 
     void RenderPhysicsComponentUI(Game::PhysicsComponent* pc) {
         if (!pc) return;
-        
+
         // Basic physics properties
         ImGui::Checkbox("Is Static", &pc->isStatic);
-        ImGui::Checkbox("Is Kinematic", &pc->isKinematic);
-        
+        // ImGui::Checkbox("Is Kinematic", &pc->isKinematic);
+
         if (!pc->isStatic) {
             ImGui::Separator();
-            
+
             // Mass and forces
-            ImGui::DragFloat("Mass", &pc->mass, 0.1f, 0.1f, 1000.0f);
+            // ImGui::DragFloat("Mass", &pc->mass, 0.1f, 0.1f, 1000.0f);
             ImGui::Checkbox("Use Gravity", &pc->useGravity);
-            
+
             // Velocity and forces
             ImGui::DragFloat3("Velocity", &pc->velocity.x, 0.1f);
             ImGui::DragFloat3("Acceleration", &pc->acceleration.x, 0.1f);
-            
+
             // Physics material properties
-            ImGui::Separator();
-            ImGui::Text("Material Properties:");
-            ImGui::DragFloat("Bounciness", &pc->bounceiness, 0.01f, 0.0f, 1.0f);
-            ImGui::DragFloat("Friction", &pc->friction, 0.01f, 0.0f, 1.0f);
-            
+            // ImGui::Separator();
+            // ImGui::Text("Material Properties:");
+            // ImGui::DragFloat("Bounciness", &pc->bounceiness, 0.01f, 0.0f, 1.0f);
+            // ImGui::DragFloat("Friction", &pc->friction, 0.01f, 0.0f, 1.0f);
+
             // Grounded state (read-only)
             ImGui::Separator();
-            ImGui::Text("State:");
-            ImGui::BeginDisabled();
-            ImGui::Checkbox("Is Grounded", &pc->isGrounded);
-            ImGui::EndDisabled();
-            ImGui::DragFloat("Grounded Threshold", &pc->groundedThreshold, 0.01f, 0.01f, 1.0f);
+            // ImGui::Text("State:");
+            // ImGui::BeginDisabled();
+            // ImGui::Checkbox("Is Grounded", &pc->isGrounded);
+            // ImGui::EndDisabled();
+            // ImGui::DragFloat("Grounded Threshold", &pc->groundedThreshold, 0.01f, 0.01f, 1.0f);
         }
     }
     void RenderPlayerControlComponentUI(Game::PlayerController* pControl) {
     }
+
+
     void RenderTransformComponentUI(Game::TransformComponent* tc) {
         if (!tc) return;
         ImGui::DragFloat3("Position", &tc->position.x, 0.1f); // Adjust if value_ptr needed for your vec3
@@ -328,12 +330,12 @@ namespace Zayn {
         Game::RenderComponent* rc = FindComponentInArray(&storage->renderComponents, selectedHandle);
         Game::CollisionComponent* cc = FindComponentInArray(&storage->collisionComponents, selectedHandle);
         Game::PhysicsComponent* pc = FindComponentInArray(&storage->physicsComponents, selectedHandle);
-        Game::PlayerController* pControl = FindComponentInArray(&storage->playerControllers, selectedHandle);
+        // Game::PlayerController* pControl = FindComponentInArray(&storage->playerControllers, selectedHandle);
         bool showTransform = (tc != nullptr);
         bool showRender = (rc != nullptr);
         bool showCollision = (cc != nullptr);
         bool showPhysics = (pc != nullptr);
-        bool showPlayerControl = (pControl != nullptr);
+        // bool showPlayerControl = (pControl != nullptr);
         if (ImGui::CollapsingHeader("Transform", &showTransform, ImGuiTreeNodeFlags_DefaultOpen)) {
            RenderTransformComponentUI(tc);
         }
@@ -346,9 +348,9 @@ namespace Zayn {
         if (ImGui::CollapsingHeader("Physics", &showPhysics, ImGuiTreeNodeFlags_DefaultOpen)) {
             RenderPhysicsComponentUI(pc);
         }
-        if (ImGui::CollapsingHeader("Player Controller", &showPlayerControl, ImGuiTreeNodeFlags_DefaultOpen)) {
-            RenderPlayerControlComponentUI(pControl);
-        }
+        // if (ImGui::CollapsingHeader("Player Controller", &showPlayerControl, ImGuiTreeNodeFlags_DefaultOpen)) {
+            // RenderPlayerControlComponentUI(pControl);
+        // }
 
 
 
@@ -387,7 +389,7 @@ namespace Zayn {
                     case ComponentType::RenderComponent_Type:    alreadyHasThisType = (rc != nullptr); break;
                     case ComponentType::CollisionComponent_Type:    alreadyHasThisType = (cc != nullptr); break;
                     case ComponentType::PhysicsComponent_Type:    alreadyHasThisType = (pc != nullptr); break;
-                    case ComponentType::PlayerController_Type:    alreadyHasThisType = (pControl != nullptr); break;
+                    // case ComponentType::PlayerController_Type:    alreadyHasThisType = (pControl != nullptr); break;
                     // case ComponentType::COLLISION: alreadyHas = (cc != nullptr); break;
                     // ... other types
                     case ComponentType::ComponentType_Count:
@@ -402,7 +404,7 @@ namespace Zayn {
                             case ComponentType::RenderComponent_Type:    AddComponent(&storage->renderComponents, selectedHandle);    break;
                             case ComponentType::CollisionComponent_Type:    AddComponent(&storage->collisionComponents, selectedHandle);    break;
                             case ComponentType::PhysicsComponent_Type:    AddComponent(&storage->physicsComponents, selectedHandle);    break;
-                            case ComponentType::PlayerController_Type:    AddComponent(&storage->playerControllers, selectedHandle);    break;
+                            // case ComponentType::PlayerController_Type:    AddComponent(&storage->playerControllers, selectedHandle);    break;
                             // case ComponentType::COLLISION: AddComponent(&storage->collisionComponents, selectedHandle); break;
 
                             // ... other types

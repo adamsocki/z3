@@ -11,8 +11,6 @@
 #include "game/editor/myImgui_LevelEditor.h"
 
 namespace Zayn {
-
-
     void ToggleImGuiVisibility(RenderManager *renderManager) {
         // Toggle the visibility flag
         renderManager->myImgui.visible = !renderManager->myImgui.visible;
@@ -91,7 +89,7 @@ namespace Zayn {
                                    &renderManager->myImgui.imGuiRenderPass) !=
                 VK_SUCCESS) {
                 throw std::runtime_error("Could not create Dear ImGui's render pass");
-            }
+                }
         }
 
         // 2: initialize imgui library
@@ -107,8 +105,8 @@ namespace Zayn {
         io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
         io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;  // Enable Gamepad Controls
 
-//        io.WantCaptureMouse = true;
-//        io.WantCaptureKeyboard = true;
+        //        io.WantCaptureMouse = true;
+        //        io.WantCaptureKeyboard = true;
 
 
         // this initializes imgui for SDL
@@ -149,8 +147,8 @@ namespace Zayn {
         if (renderManager->myImgui.visible) {
             // Demo window
             ImGui::ShowDemoWindow();
-//            RenderLevelEditorUI(levelEditor);
-//            RenderEnhancedToolbar(levelEditor);
+            //            RenderLevelEditorUI(levelEditor);
+            //            RenderEnhancedToolbar(levelEditor);
 
             MyRenderLevelEditorWindow(levelEditor, entityFactory, engine);
 
@@ -211,97 +209,71 @@ namespace Zayn {
                 ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
                 ImGui::Text("Frame Time: %.3f ms", 1000.0f / ImGui::GetIO().Framerate);
             }
-            
+
             if (ImGui::CollapsingHeader("Physics Debug")) {
-                // Toggle for physics visualization
-                ImGui::Checkbox("Show Colliders", &engine->physicsManager.showColliders);
-                ImGui::Checkbox("Show Velocities", &engine->physicsManager.showVelocities);
-                
-                if (engine->physicsManager.showColliders) {
-                    ImGui::Indent();
-                    ImGui::Text("Collision Statistics:");
-                    ImGui::Text("Active Colliders: %d", engine->componentFactory.componentStorage.collisionComponents.count);
-                    ImGui::Text("Collision Results: %d", engine->physicsFactory.collisionResults.count);
-                    
-                    // Display last frame's collisions
-                    if (ImGui::TreeNode("Collision Results")) {
-                        for (uint32 i = 0; i < engine->physicsFactory.collisionResults.count; i++) {
-                            CollisionResult* result = &engine->physicsFactory.collisionResults[i];
-                            if (result->isValid) {
-                                char label[64];
-                                snprintf(label, sizeof(label), "Collision %d", i);
-                                if (ImGui::TreeNode(label)) {
-                                    ImGui::Text("Entity A: %d, Entity B: %d", result->entityA, result->entityB);
-                                    ImGui::Text("Penetration: %.3f", result->penetrationDepth);
-                                    ImGui::Text("Point: (%.2f, %.2f, %.2f)", 
-                                               result->collisionPoint.x, 
-                                               result->collisionPoint.y, 
-                                               result->collisionPoint.z);
-                                    ImGui::Text("Normal: (%.2f, %.2f, %.2f)", 
-                                               result->collisionNormal.x, 
-                                               result->collisionNormal.y, 
-                                               result->collisionNormal.z);
-                                    ImGui::TreePop();
-                                }
-                            }
-                        }
-                        ImGui::TreePop();
-                    }
-                    ImGui::Unindent();
+                // Add 3D collider toggle to ImGui
+                ImGui::Checkbox("Use 3D Collision Visualization", &engine->physicsManager.use3DColliders);
+                if (ImGui::IsItemHovered()) {
+                    ImGui::SetTooltip("Enable/disable 3D visualization of colliders");
                 }
+                
+                // Add color editor for the colliders
+                ImGui::ColorEdit4("Box Collider Color", (float*)&engine->physicsManager.colliderColorBox, 
+                                 ImGuiColorEditFlags_AlphaBar);
+                
+                // Display collision stats
+                ImGui::Text("Active Colliders: %d", engine->componentFactory.componentStorage.collisionComponents.count);
             }
 
             ImGui::End();
-        }
-        
-        // Draw debug visualization directly here
-        // This ensures it happens at the right time in the ImGui render cycle
-        if (engine->physicsManager.showColliders || engine->physicsManager.showVelocities) {
-            printf("Drawing physics debug from ImGui update\n");
-            RenderPhysicsDebugUI(engine);
         }
 
         // Always render (even if nothing was drawn)
         ImGui::Render();
 
-        // Always record command buffer and process render pass
-        VkCommandBufferBeginInfo info = {};
-        info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-        info.flags |= VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
-        VkResult err = vkBeginCommandBuffer(
-                renderManager->myImgui.imGuiCommandBuffers[renderManager->vulkanData.vkCurrentFrame],
-                &info);
+        // Only record the command buffer if ImGui is visible
+        if (renderManager->myImgui.visible) {
+            // Record command buffer and process render pass
+            VkCommandBufferBeginInfo info = {};
+            info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+            info.flags |= VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+            VkResult err = vkBeginCommandBuffer(
+                    renderManager->myImgui.imGuiCommandBuffers[renderManager->vulkanData.vkCurrentFrame],
+                    &info);
 
-        // Render pass always processes, even for empty ImGui
-        VkClearValue clearValue = {};
-        clearValue.color = {{0.0f, 0.0f, 0.0f, 1.0f}};
-        ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-        memcpy(&clearValue.color.float32[0], &clear_color, 4 * sizeof(float));
+            // Render pass always processes, even for empty ImGui
+            VkClearValue clearValue = {};
+            clearValue.color = {{0.0f, 0.0f, 0.0f, 1.0f}};
+            ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+            memcpy(&clearValue.color.float32[0], &clear_color, 4 * sizeof(float));
 
-        VkRenderPassBeginInfo renderPassInfo = {};
-        renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-        renderPassInfo.renderPass = renderManager->myImgui.imGuiRenderPass;
-        renderPassInfo.framebuffer = renderManager->myImgui.imGuiFrameBuffers[renderManager->vulkanData.vkCurrentImageIndex];
-        renderPassInfo.renderArea.extent.width = renderManager->vulkanData.vkSwapChainExtent.width;
-        renderPassInfo.renderArea.extent.height = renderManager->vulkanData.vkSwapChainExtent.height;
-        renderPassInfo.clearValueCount = 1;
-        renderPassInfo.pClearValues = &clearValue;
+            VkRenderPassBeginInfo renderPassInfo = {};
+            renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+            renderPassInfo.renderPass = renderManager->myImgui.imGuiRenderPass;
+            renderPassInfo.framebuffer = renderManager->myImgui.imGuiFrameBuffers[renderManager->vulkanData.vkCurrentImageIndex];
+            renderPassInfo.renderArea.extent.width = renderManager->vulkanData.vkSwapChainExtent.width;
+            renderPassInfo.renderArea.extent.height = renderManager->vulkanData.vkSwapChainExtent.height;
+            renderPassInfo.clearValueCount = 1;
+            renderPassInfo.pClearValues = &clearValue;
 
-        vkCmdBeginRenderPass(
-                renderManager->myImgui.imGuiCommandBuffers[renderManager->vulkanData.vkCurrentFrame],
-                &renderPassInfo,
-                VK_SUBPASS_CONTENTS_INLINE);
+            vkCmdBeginRenderPass(
+                    renderManager->myImgui.imGuiCommandBuffers[renderManager->vulkanData.vkCurrentFrame],
+                    &renderPassInfo,
+                    VK_SUBPASS_CONTENTS_INLINE);
 
-        // Always render ImGui draw data
-        ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(),
-                                        renderManager->myImgui.imGuiCommandBuffers[renderManager->vulkanData.vkCurrentFrame]);
+            // Always render ImGui draw data
+            ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(),
+                                            renderManager->myImgui.imGuiCommandBuffers[renderManager->vulkanData.vkCurrentFrame]);
 
-        // Always end the render pass and command buffer
-        vkCmdEndRenderPass(
-                renderManager->myImgui.imGuiCommandBuffers[renderManager->vulkanData.vkCurrentFrame]);
+            // Always end the render pass and command buffer
+            vkCmdEndRenderPass(
+                    renderManager->myImgui.imGuiCommandBuffers[renderManager->vulkanData.vkCurrentFrame]);
 
-        err = vkEndCommandBuffer(
-                renderManager->myImgui.imGuiCommandBuffers[renderManager->vulkanData.vkCurrentFrame]);
+            err = vkEndCommandBuffer(
+                    renderManager->myImgui.imGuiCommandBuffers[renderManager->vulkanData.vkCurrentFrame]);
+            if (err != VK_SUCCESS) {
+                printf("Error recording ImGui command buffer: %d\n", err);
+            }
+        }
     }
-} // Zayn
-
+}// Zayn

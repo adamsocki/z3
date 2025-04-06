@@ -129,6 +129,8 @@ add_executable(Z3 src/main.cpp
         src/PhysicsTest.h
         src/PhysicsManager.cpp
         src/PhysicsManager.h
+        src/CollisionManager.cpp
+        src/CollisionManager.h
 
 )
 

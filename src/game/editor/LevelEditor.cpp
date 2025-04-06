@@ -153,8 +153,89 @@ namespace Zayn {
             componentsJson["render"] = renderComponentsJson;
         }
 
-        // TODO: Add loops to manually save other component types...
+        // - Collision Components -
+        nlohmann::json collisionComponentsJson = nlohmann::json::array();
+        for (u32 i = 0; i < storage->collisionComponents.count; ++i) {
+            const Game::CollisionComponent& cc = storage->collisionComponents[i];
+            if (IsHandleInLevel(levelData.levelEntityHandles, cc.owner)) {
+                nlohmann::json componentData;
+                componentData["owner_handle"] = {
+                    {"indexInInfo", cc.owner.indexInInfo},
+                    {"generation", cc.owner.generation},
+                    {"type", static_cast<int>(cc.owner.type)}
+                };
+                componentData["type"] = static_cast<int>(cc.type);
+                // componentData["radius"] = cc.radius;
+                componentData["size"] = {cc.size.x, cc.size.y, cc.size.z};
+                // componentData["normal"] = {cc.normal.x, cc.normal.y, cc.normal.z};
+                // componentData["offset"] = cc.offset;
+                componentData["isTrigger"] = cc.isTrigger;
+                // componentData["collisionLayer"] = cc.collisionLayer;
+                // componentData["collisionMask"] = cc.collisionMask;
+                
+                collisionComponentsJson.push_back(componentData);
+            }
+        }
+        if (!collisionComponentsJson.empty()) {
+            componentsJson["collision"] = collisionComponentsJson;
+        }
 
+        // - Physics Components -
+        nlohmann::json physicsComponentsJson = nlohmann::json::array();
+        for (u32 i = 0; i < storage->physicsComponents.count; ++i) {
+            const Game::PhysicsComponent& pc = storage->physicsComponents[i];
+            if (IsHandleInLevel(levelData.levelEntityHandles, pc.owner)) {
+                nlohmann::json componentData;
+                componentData["owner_handle"] = {
+                    {"indexInInfo", pc.owner.indexInInfo},
+                    {"generation", pc.owner.generation},
+                    {"type", static_cast<int>(pc.owner.type)}
+                };
+                componentData["velocity"] = {pc.velocity.x, pc.velocity.y, pc.velocity.z};
+                componentData["acceleration"] = {pc.acceleration.x, pc.acceleration.y, pc.acceleration.z};
+                // componentData["mass"] = pc.mass;
+                // componentData["bounceiness"] = pc.bounceiness;
+                // componentData["friction"] = pc.friction;
+                componentData["useGravity"] = pc.useGravity;
+                // componentData["isStatic"] = pc.isStatic;
+                // componentData["isKinematic"] = pc.isKinematic;
+                // componentData["isGrounded"] = pc.isGrounded;
+                // componentData["groundedThreshold"] = pc.groundedThreshold;
+                
+                physicsComponentsJson.push_back(componentData);
+            }
+        }
+        if (!physicsComponentsJson.empty()) {
+            componentsJson["physics"] = physicsComponentsJson;
+        }
+/*
+        // - Player Controller Components -
+        nlohmann::json playerControllerComponentsJson = nlohmann::json::array();
+        for (u32 i = 0; i < storage->playerControllers.count; ++i) {
+            const Game::PlayerController& pc = storage->playerControllers[i];
+            if (IsHandleInLevel(levelData.levelEntityHandles, pc.owner)) {
+                nlohmann::json componentData;
+                componentData["owner_handle"] = {
+                    {"indexInInfo", pc.owner.indexInInfo},
+                    {"generation", pc.owner.generation},
+                    {"type", static_cast<int>(pc.owner.type)}
+                };
+                componentData["moveSpeed"] = pc.moveSpeed;
+                componentData["jumpForce"] = pc.jumpForce;
+                componentData["airControl"] = pc.airControl;
+                componentData["moveInput"] = {pc.moveInput.x, pc.moveInput.y};
+                componentData["jumpRequested"] = pc.jumpRequested;
+                componentData["canJump"] = pc.canJump;
+                componentData["jumpCooldown"] = pc.jumpCooldown;
+                componentData["jumpCooldownTimer"] = pc.jumpCooldownTimer;
+                
+                playerControllerComponentsJson.push_back(componentData);
+            }
+        }
+        if (!playerControllerComponentsJson.empty()) {
+            componentsJson["playerController"] = playerControllerComponentsJson;
+        }
+*/
         levelJson["components"] = componentsJson;
 
         // --- Write JSON to file ---
@@ -204,16 +285,39 @@ namespace Zayn {
                 storage->transformComponents.count--;
             } else { i++; }
         }
-    }
-         // Render
-        // for (u32 i = 0; i < storage->renderComponents.count; ) {
-        //     if (AreHandlesEqual(storage->renderComponents[i].owner, handle)) {
-        //         storage->renderComponents[i] = storage->renderComponents[storage->renderComponents.count - 1];
-        //         storage->renderComponents.count--;
+        
+        // Render
+        for (u32 i = 0; i < storage->renderComponents.count; ) {
+            if (AreHandlesEqual(storage->renderComponents[i].owner, handle)) {
+                storage->renderComponents[i] = storage->renderComponents[storage->renderComponents.count - 1];
+                storage->renderComponents.count--;
+            } else { i++; }
+        }
+        
+        // Collision
+        // for (u32 i = 0; i < storage->collisionComponents.count; ) {
+        //     if (AreHandlesEqual(storage->collisionComponents[i].owner, handle)) {
+        //         storage->collisionComponents[i] = storage->collisionComponents[storage->collisionComponents.count - 1];
+        //         storage->collisionComponents.count--;
         //     } else { i++; }
         // }
-        // TODO: Add loops for other component types...
-    // }
+        //
+        // // Physics
+        // for (u32 i = 0; i < storage->physicsComponents.count; ) {
+        //     if (AreHandlesEqual(storage->physicsComponents[i].owner, handle)) {
+        //         storage->physicsComponents[i] = storage->physicsComponents[storage->physicsComponents.count - 1];
+        //         storage->physicsComponents.count--;
+        //     } else { i++; }
+        // }
+        //
+        // // PlayerController
+        // for (u32 i = 0; i < storage->playerControllers.count; ) {
+        //     if (AreHandlesEqual(storage->playerControllers[i].owner, handle)) {
+        //         storage->playerControllers[i] = storage->playerControllers[storage->playerControllers.count - 1];
+        //         storage->playerControllers.count--;
+        //     } else { i++; }
+        // }
+    }
 
     // Deletes entity from factory and removes its components
     void DestroyEntityAndComponents(Zayn::EntityFactory* factory, Zayn::ComponentStorage* storage, Zayn::EntityHandle handle) {
@@ -432,8 +536,231 @@ namespace Zayn {
                 }
             }
         }
-            // TODO: Add loading blocks to manually parse other component types...
+            // - Collision Components -
+            if (componentsJson.contains("collision") && componentsJson["collision"].is_array()) {
+                printf("  Loading collision components...\n");
+                for (const auto& compJson : componentsJson["collision"]) {
+                    try {
+                        // Parse OLD owner handle
+                        Zayn::EntityHandle oldOwnerHandle = {};
+                        oldOwnerHandle.indexInInfo = compJson.at("owner_handle").at("indexInInfo").get<int32>();
+                        oldOwnerHandle.generation = compJson.at("owner_handle").at("generation").get<int32>();
+                        oldOwnerHandle.type = static_cast<Game::EntityType>(compJson.at("owner_handle").at("type").get<int>());
 
+                        // Find the NEW owner handle using the map
+                        auto mapIt = oldToNewHandleMap.find(oldOwnerHandle);
+                        if (mapIt != oldToNewHandleMap.end()) {
+                            Zayn::EntityHandle newOwnerHandle = mapIt->second;
+
+                            Game::CollisionComponent* addedComp = AddComponent(&storage->collisionComponents, newOwnerHandle);
+                            if (addedComp) {
+                                addedComp->owner = newOwnerHandle;
+                                
+                                // Load collision type
+                                if (compJson.contains("type")) {
+                                    addedComp->type = static_cast<Game::ColliderType>(compJson["type"].get<int>());
+                                }
+                                
+                                // Load radius for sphere collider
+                                // if (compJson.contains("radius")) {
+                                //     addedComp->radius = compJson["radius"].get<float>();
+                                // }
+                                
+                                // Load size for box collider
+                                if (compJson.at("size").is_array() && compJson.at("size").size() == 3) {
+                                    addedComp->size.x = compJson["size"][0].get<float>();
+                                    addedComp->size.y = compJson["size"][1].get<float>();
+                                    addedComp->size.z = compJson["size"][2].get<float>();
+                                }
+                                
+                                // Load normal for plane collider
+                                // if (compJson.at("normal").is_array() && compJson.at("normal").size() == 3) {
+                                //     addedComp->normal.x = compJson["normal"][0].get<float>();
+                                //     addedComp->normal.y = compJson["normal"][1].get<float>();
+                                //     addedComp->normal.z = compJson["normal"][2].get<float>();
+                                // }
+                                
+                                // Load offset for plane collider
+                                // if (compJson.contains("offset")) {
+                                //     addedComp->offset = compJson["offset"].get<float>();
+                                // }
+                                
+                                // Load flags
+                                if (compJson.contains("isTrigger")) {
+                                    addedComp->isTrigger = compJson["isTrigger"].get<bool>();
+                                }
+                                
+                                // if (compJson.contains("collisionLayer")) {
+                                //     addedComp->collisionLayer = compJson["collisionLayer"].get<int32>();
+                                // }
+                                
+                                // if (compJson.contains("collisionMask")) {
+                                //     addedComp->collisionMask = compJson["collisionMask"].get<int32>();
+                                // }
+                            } else {
+                                printf("  Error: AddComponent failed for CollisionComponent (Owner: Idx=%d, Gen=%d).\n", 
+                                       newOwnerHandle.indexInInfo, newOwnerHandle.generation);
+                            }
+                        } else {
+                            printf("  Error: Could not find new handle mapping for old collision owner handle (Idx=%d, Gen=%d). Skipping component.\n",
+                                   oldOwnerHandle.indexInInfo, oldOwnerHandle.generation);
+                        }
+                    } catch (const std::exception& e) {
+                        printf("  Error parsing collision component data: %s\n Json: %s\n", e.what(), compJson.dump().c_str());
+                    }
+                }
+            }
+            
+            // - Physics Components -
+            if (componentsJson.contains("physics") && componentsJson["physics"].is_array()) {
+                printf("  Loading physics components...\n");
+                for (const auto& compJson : componentsJson["physics"]) {
+                    try {
+                        // Parse OLD owner handle
+                        Zayn::EntityHandle oldOwnerHandle = {};
+                        oldOwnerHandle.indexInInfo = compJson.at("owner_handle").at("indexInInfo").get<int32>();
+                        oldOwnerHandle.generation = compJson.at("owner_handle").at("generation").get<int32>();
+                        oldOwnerHandle.type = static_cast<Game::EntityType>(compJson.at("owner_handle").at("type").get<int>());
+
+                        // Find the NEW owner handle using the map
+                        auto mapIt = oldToNewHandleMap.find(oldOwnerHandle);
+                        if (mapIt != oldToNewHandleMap.end()) {
+                            Zayn::EntityHandle newOwnerHandle = mapIt->second;
+
+                            Game::PhysicsComponent* addedComp = AddComponent(&storage->physicsComponents, newOwnerHandle);
+                            if (addedComp) {
+                                addedComp->owner = newOwnerHandle;
+                                
+                                // Load vectors
+                                if (compJson.at("velocity").is_array() && compJson.at("velocity").size() == 3) {
+                                    addedComp->velocity.x = compJson["velocity"][0].get<float>();
+                                    addedComp->velocity.y = compJson["velocity"][1].get<float>();
+                                    addedComp->velocity.z = compJson["velocity"][2].get<float>();
+                                }
+                                
+                                if (compJson.at("acceleration").is_array() && compJson.at("acceleration").size() == 3) {
+                                    addedComp->acceleration.x = compJson["acceleration"][0].get<float>();
+                                    addedComp->acceleration.y = compJson["acceleration"][1].get<float>();
+                                    addedComp->acceleration.z = compJson["acceleration"][2].get<float>();
+                                }
+                                
+                                // Load scalar properties
+                               /* if (compJson.contains("mass")) {
+                                    addedComp->mass = compJson["mass"].get<float>();
+                                }
+                                
+                                if (compJson.contains("bounceiness")) {
+                                    addedComp->bounceiness = compJson["bounceiness"].get<float>();
+                                }
+                                
+                                if (compJson.contains("friction")) {
+                                    addedComp->friction = compJson["friction"].get<float>();
+                                }
+                                */
+                                // Load boolean flags
+                                if (compJson.contains("useGravity")) {
+                                    addedComp->useGravity = compJson["useGravity"].get<bool>();
+                                }
+                                /*
+                                if (compJson.contains("isStatic")) {
+                                    addedComp->isStatic = compJson["isStatic"].get<bool>();
+                                }
+                                
+                                if (compJson.contains("isKinematic")) {
+                                    addedComp->isKinematic = compJson["isKinematic"].get<bool>();
+                                }
+                                
+                                if (compJson.contains("isGrounded")) {
+                                    addedComp->isGrounded = compJson["isGrounded"].get<bool>();
+                                }
+                                
+                                if (compJson.contains("groundedThreshold")) {
+                                    addedComp->groundedThreshold = compJson["groundedThreshold"].get<float>();
+                                }
+                                */
+                            } else {
+                                printf("  Error: AddComponent failed for PhysicsComponent (Owner: Idx=%d, Gen=%d).\n", 
+                                       newOwnerHandle.indexInInfo, newOwnerHandle.generation);
+                            }
+                        } else {
+                            printf("  Error: Could not find new handle mapping for old physics owner handle (Idx=%d, Gen=%d). Skipping component.\n",
+                                   oldOwnerHandle.indexInInfo, oldOwnerHandle.generation);
+                        }
+                    } catch (const std::exception& e) {
+                        printf("  Error parsing physics component data: %s\n Json: %s\n", e.what(), compJson.dump().c_str());
+                    }
+                }
+            }
+
+            /*
+            // - Player Controller Components -
+            if (componentsJson.contains("playerController") && componentsJson["playerController"].is_array()) {
+                printf("  Loading player controller components...\n");
+                for (const auto& compJson : componentsJson["playerController"]) {
+                    try {
+                        // Parse OLD owner handle
+                        Zayn::EntityHandle oldOwnerHandle = {};
+                        oldOwnerHandle.indexInInfo = compJson.at("owner_handle").at("indexInInfo").get<int32>();
+                        oldOwnerHandle.generation = compJson.at("owner_handle").at("generation").get<int32>();
+                        oldOwnerHandle.type = static_cast<Game::EntityType>(compJson.at("owner_handle").at("type").get<int>());
+
+                        // Find the NEW owner handle using the map
+                        auto mapIt = oldToNewHandleMap.find(oldOwnerHandle);
+                        if (mapIt != oldToNewHandleMap.end()) {
+                            Zayn::EntityHandle newOwnerHandle = mapIt->second;
+
+                            Game::PlayerController* addedComp = AddComponent(&storage->playerControllers, newOwnerHandle);
+                            if (addedComp) {
+                                addedComp->owner = newOwnerHandle;
+                                
+                                // Load movement settings
+                                if (compJson.contains("moveSpeed")) {
+                                    addedComp->moveSpeed = compJson["moveSpeed"].get<float>();
+                                }
+                                
+                                if (compJson.contains("jumpForce")) {
+                                    addedComp->jumpForce = compJson["jumpForce"].get<float>();
+                                }
+                                
+                                if (compJson.contains("airControl")) {
+                                    addedComp->airControl = compJson["airControl"].get<float>();
+                                }
+                                
+                                // Load input state
+                                if (compJson.at("moveInput").is_array() && compJson.at("moveInput").size() == 2) {
+                                    addedComp->moveInput.x = compJson["moveInput"][0].get<float>();
+                                    addedComp->moveInput.y = compJson["moveInput"][1].get<float>();
+                                }
+                                
+                                if (compJson.contains("jumpRequested")) {
+                                    addedComp->jumpRequested = compJson["jumpRequested"].get<bool>();
+                                }
+                                
+                                // Load jump state
+                                if (compJson.contains("canJump")) {
+                                    addedComp->canJump = compJson["canJump"].get<bool>();
+                                }
+                                
+                                if (compJson.contains("jumpCooldown")) {
+                                    addedComp->jumpCooldown = compJson["jumpCooldown"].get<float>();
+                                }
+                                
+                                if (compJson.contains("jumpCooldownTimer")) {
+                                    addedComp->jumpCooldownTimer = compJson["jumpCooldownTimer"].get<float>();
+                                }
+                            } else {
+                                printf("  Error: AddComponent failed for PlayerController (Owner: Idx=%d, Gen=%d).\n", 
+                                       newOwnerHandle.indexInInfo, newOwnerHandle.generation);
+                            }
+                        } else {
+                            printf("  Error: Could not find new handle mapping for old player controller owner handle (Idx=%d, Gen=%d). Skipping component.\n",
+                                   oldOwnerHandle.indexInInfo, oldOwnerHandle.generation);
+                        }
+                    } catch (const std::exception& e) {
+                        printf("  Error parsing player controller component data: %s\n Json: %s\n", e.what(), compJson.dump().c_str());
+                    }
+                }
+            }*/
         }
 
         printf("Resolving resource pointers (Meshes/Materials)...\n");

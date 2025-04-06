@@ -68,6 +68,7 @@ namespace Zayn {
 
     void InitEngine(Engine* engine);
     void UpdateEngine(Engine* engine);
+    void ShutdownEngine(Engine* engine);
 } // Zayn
 
 #endif //Z2_ENGINE_H

@@ -21,7 +21,7 @@ void InitPhysicsFactory(PhysicsFactory* physicsFactory, MemoryArena* arena) {
 }
 
 void UpdatePhysicsFactory(Engine* engine, float deltaTime) {
-    PhysicsFactory* physicsFactory = &engine->physicsFactory;
+    /*PhysicsFactory* physicsFactory = &engine->physicsFactory;
     
     // Accumulate time for fixed time step
     physicsFactory->accumulatedTime += deltaTime;
@@ -31,33 +31,36 @@ void UpdatePhysicsFactory(Engine* engine, float deltaTime) {
         StepPhysics(engine, physicsFactory->fixedTimeStep);
         physicsFactory->accumulatedTime -= physicsFactory->fixedTimeStep;
     }
+    */
 }
 
 void StepPhysics(Engine* engine, float timeStep) {
     // Clear previous collision results
-    DynamicArray<CollisionResult>* collisionResults = &engine->physicsFactory.collisionResults;
-    DynamicArrayClear(collisionResults);
+    // DynamicArray<CollisionResult>* collisionResults = &engine->physicsFactory.collisionResults;
+    // DynamicArrayClear(collisionResults);
     
     // Apply forces (gravity, etc)
-    ApplyGravity(engine, timeStep);
+    // ApplyGravity(engine, timeStep);
     
     // Update velocities based on forces
-    UpdateVelocities(engine, timeStep);
+    // UpdateVelocities(engine, timeStep);
     
-    // Detect collisions before moving objects
-    DetectCollisions(engine);
+    // Update positions based on velocities (do this BEFORE collision detection)
+    // This way objects move first, then detect collisions, and stop without resetting position
+    // UpdatePositions(engine, timeStep);
     
-    // Resolve detected collisions
-    ResolveCollisions(engine);
+    // Detect collisions after moving objects
+    // DetectCollisions(engine);
     
-    // Update positions based on velocities
-    UpdatePositions(engine, timeStep);
+    // Resolve detected collisions (just stop movement, don't adjust positions)
+    // ResolveCollisions(engine);
     
     // Check which objects are grounded
-    CheckGrounded(engine);
+    // CheckGrounded(engine);
 }
 
-void ApplyGravity(Engine* engine, float deltaTime) {
+// void ApplyGravity(Engine* engine, float deltaTime) {
+    /*
     PhysicsFactory* physicsFactory = &engine->physicsFactory;
     ComponentStorage* storage = &engine->componentFactory.componentStorage;
     
@@ -74,12 +77,21 @@ void ApplyGravity(Engine* engine, float deltaTime) {
             continue;
         }
         
+        // Skip objects that are grounded (for vertical gravity component only)
+        if (physics->isGrounded ) {
+            // Only cancel out vertical component of velocity for grounded objects
+            physics->velocity.z = 0.0f;
+            continue;
+        }
+        
         // Apply gravity as acceleration
         physics->acceleration = physics->acceleration + physicsFactory->gravity;
     }
-}
+    */
+// }
 
 void UpdateVelocities(Engine* engine, float deltaTime) {
+/*
     ComponentStorage* storage = &engine->componentFactory.componentStorage;
     
     // Get physics components array
@@ -101,10 +113,13 @@ void UpdateVelocities(Engine* engine, float deltaTime) {
         // Reset acceleration for next frame
         physics->acceleration = V3(0, 0, 0);
     }
+    */
 }
 
 void UpdatePositions(Engine* engine, float deltaTime) {
-    ComponentStorage* storage = &engine->componentFactory.componentStorage;
+
+
+    /*ComponentStorage* storage = &engine->componentFactory.componentStorage;
     
     // Get component arrays
     DynamicArray<Game::PhysicsComponent>* physicsComponents = 
@@ -134,20 +149,26 @@ void UpdatePositions(Engine* engine, float deltaTime) {
             // Update position (p = p0 + v*t)
             transform->position = transform->position + (physics->velocity * deltaTime);
             
-            // Update transform matrix
+            // Update transform matrix with proper rotation
             transform->transform = TRS(
                 transform->position,
                 FromEulerAngles(transform->rotation_euler_degrees),
                 transform->scale
             );
+            
+            // Make sure the rotation is applied consistently for collision detection
         }
     }
+    */
 }
 
 void DetectCollisions(Engine* engine) {
-    ComponentStorage* storage = &engine->componentFactory.componentStorage;
+    /*ComponentStorage* storage = &engine->componentFactory.componentStorage;
     PhysicsFactory* physicsFactory = &engine->physicsFactory;
     EntityFactory* entityFactory = &engine->entityFactory;
+    
+    // Log information for debugging
+    printf("DetectCollisions: Starting collision detection...\n");
     
     // Get component arrays
     DynamicArray<Game::CollisionComponent>* collisionComponents = 
@@ -268,8 +289,39 @@ void DetectCollisions(Engine* engine) {
                     penetrationDepth = colliderB->radius - Abs(distance);
                 }
             }
-            // Add Box vs Box if needed
-            
+            // Box vs Box collision
+            else if (colliderA->type == Game::COLLIDER_BOX && colliderB->type == Game::COLLIDER_BOX) {
+                // Use a distance-based early check first to avoid missing collisions
+                float distance = Distance(transformA->position, transformB->position);
+                float combinedSize = Length(colliderA->size) + Length(colliderB->size);
+                
+                printf("Box-Box check: distance=%.2f, combinedSize=%.2f\n", distance, combinedSize);
+                
+                // Force a collision if objects are anywhere near each other
+                // Using a very generous distance threshold to ensure we never miss collisions
+                if (distance < combinedSize * 1.5f) {
+                    printf("Box-Box: forcing collision due to close proximity\n");
+                    collision = true;
+                    collisionPoint = (transformA->position + transformB->position) * 0.5f;
+                    collisionNormal = Normalize(transformB->position - transformA->position);
+                    penetrationDepth = combinedSize * 0.5f - distance;
+                    // Mark that this collision was forced and should get special handling
+                    // result.forceCollision = true;
+                } else {
+                    // Regular AABB collision check
+                    collision = Game::BoxBoxCollision(
+                        transformA->position, colliderA->size, transformA->rotation_euler_degrees,
+                        transformB->position, colliderB->size, transformB->rotation_euler_degrees,
+                        &collisionPoint, &collisionNormal, &penetrationDepth);
+                    
+                    // Don't modify the object's position when it collides - this causes "teleportation"
+                    // Just set a flag to indicate we should stop moving
+                    if (collision) {
+                        printf("Regular BoxBoxCollision detected - will stop movement without position correction\n");
+                    }
+                }
+            }
+
             // If collision detected, store result
             if (collision) {
                 CollisionResult result;
@@ -284,10 +336,11 @@ void DetectCollisions(Engine* engine) {
                 PushBack(&physicsFactory->collisionResults, result);
             }
         }
-    }
+    }*/
 }
 
 void ResolveCollisions(Engine* engine) {
+    /*
     ComponentStorage* storage = &engine->componentFactory.componentStorage;
     PhysicsFactory* physicsFactory = &engine->physicsFactory;
     EntityFactory* entityFactory = &engine->entityFactory;
@@ -387,7 +440,7 @@ void ResolveCollisions(Engine* engine) {
                 continue;
             }
             
-            // Position correction to resolve penetration
+            // Position correction to resolve penetration - increase correction strength
             float totalInverseMass = 0.0f;
             
             if (!physicsA->isStatic) {
@@ -403,15 +456,27 @@ void ResolveCollisions(Engine* engine) {
                 continue;
             }
             
-            // Calculate correction vector
-            vec3 correction = result->collisionNormal * (result->penetrationDepth / totalInverseMass);
+            // Disable all position correction - objects should stop exactly where they are
             
-            // Apply position correction
-            if (!physicsA->isStatic) {
-                float correctionFactorA = (1.0f / physicsA->mass) / totalInverseMass;
-                transformA->position = transformA->position + correction * correctionFactorA;
+            // Only apply minimal position correction if needed to prevent visual artifacts
+            if (false) { // Completely disable all position correction
+                // Only apply minimal correction to prevent visual intersections
+                float correctionAmount = result->penetrationDepth * 0.1f; // Minimal correction
                 
-                // Update transform matrix
+                vec3 correction = result->collisionNormal * correctionAmount;
+                
+                // Apply position correction but only for forced collisions
+                if (!physicsA->isStatic) {
+                    transformA->position = transformA->position + correction * 0.5f;
+                }
+                
+                if (!physicsB->isStatic) {
+                    transformB->position = transformB->position - correction * 0.5f;
+                }
+            }
+            
+            // Always update transform matrices to ensure rendering matches physics state
+            if (!physicsA->isStatic) {
                 transformA->transform = TRS(
                     transformA->position,
                     FromEulerAngles(transformA->rotation_euler_degrees),
@@ -420,50 +485,75 @@ void ResolveCollisions(Engine* engine) {
             }
             
             if (!physicsB->isStatic) {
-                float correctionFactorB = (1.0f / physicsB->mass) / totalInverseMass;
-                transformB->position = transformB->position - correction * correctionFactorB;
-                
-                // Update transform matrix
                 transformB->transform = TRS(
                     transformB->position,
                     FromEulerAngles(transformB->rotation_euler_degrees),
                     transformB->scale
                 );
             }
+
+            if (physicsA && !physicsA->isStatic) {
+                physicsA->isGrounded = true;
+                physicsA->velocity = V3(0, 0, 0);
+            }
+            
+            if (physicsB && !physicsB->isStatic) {
+                physicsB->isGrounded = true;
+                physicsB->velocity = V3(0, 0, 0);
+            }
+            
+            // Skip any additional physics processing for this collision
+            continue;
             
             // Calculate relative velocity
-            vec3 relativeVelocity = physicsB->velocity - physicsA->velocity;
-            
-            // Calculate velocity along the normal
-            float velocityAlongNormal = Dot(relativeVelocity, result->collisionNormal);
-            
-            // Only resolve if objects are moving toward each other
-            if (velocityAlongNormal > 0) {
-                continue;
-            }
-            
-            // Calculate restitution (bounciness)
-            float restitution = Min(physicsA->bounceiness, physicsB->bounceiness);
-            
-            // Calculate impulse scalar
-            float j = -(1.0f + restitution) * velocityAlongNormal;
-            j /= totalInverseMass;
-            
-            // Apply impulse
-            vec3 impulse = result->collisionNormal * j;
-            
-            if (!physicsA->isStatic && !physicsA->isKinematic) {
-                physicsA->velocity = physicsA->velocity - impulse / physicsA->mass;
-            }
-            
-            if (!physicsB->isStatic && !physicsB->isKinematic) {
-                physicsB->velocity = physicsB->velocity + impulse / physicsB->mass;
-            }
+            // vec3 relativeVelocity = physicsB->velocity - physicsA->velocity;
+            //
+            // // Calculate velocity along the normal
+            // float velocityAlongNormal = Dot(relativeVelocity, result->collisionNormal);
+            //
+            // // Only resolve if objects are moving toward each other
+            // if (velocityAlongNormal > 0) {
+            //     continue;
+            // }
+            //
+            // // Disable restitution completely - no bouncing at all
+            // float restitution = 0.0f;
+            //
+            // // Calculate impulse scalar
+            // float j = -(1.0f + restitution) * velocityAlongNormal;
+            // j /= totalInverseMass;
+            //
+            // // Apply impulse
+            // vec3 impulse = result->collisionNormal * j;
+            //
+            // if (!physicsA->isStatic && !physicsA->isKinematic) {
+            //     physicsA->velocity = physicsA->velocity - impulse / physicsA->mass;
+            //
+            //     // Any collision will set the object as grounded and stop movement
+            //     physicsA->isGrounded = true;
+            //     physicsA->velocity = V3(0, 0, 0);
+            //
+            //     // We've already set velocity to zero and marked as grounded
+            //     // No additional friction needed
+            // }
+            //
+            // if (!physicsB->isStatic && !physicsB->isKinematic) {
+            //     physicsB->velocity = physicsB->velocity + impulse / physicsB->mass;
+            //
+            //     // Any collision will set the object as grounded and stop movement
+            //     physicsB->isGrounded = true;
+            //     physicsB->velocity = V3(0, 0, 0);
+            //
+            //     // We've already set velocity to zero and marked as grounded
+            //     // No additional friction needed
+            // }
         }
     }
+    */
 }
 
 void CheckGrounded(Engine* engine) {
+    /*
     ComponentStorage* storage = &engine->componentFactory.componentStorage;
     PhysicsFactory* physicsFactory = &engine->physicsFactory;
     EntityFactory* entityFactory = &engine->entityFactory;
@@ -475,6 +565,19 @@ void CheckGrounded(Engine* engine) {
         &storage->transformComponents;
     DynamicArray<Game::CollisionComponent>* collisionComponents = 
         &storage->collisionComponents;
+    
+    // Clear previous grounded states
+    for (uint32 i = 0; i < physicsComponents->count; i++) {
+        Game::PhysicsComponent* physics = &(*physicsComponents)[i];
+        
+        // Don't change static objects
+        if (physics->isStatic) {
+            continue;
+        }
+        
+        // Mark as not grounded by default
+        physics->isGrounded = false;
+    }
     
     // Check each physics component for ground contact
     for (uint32 i = 0; i < physicsComponents->count; i++) {
@@ -568,10 +671,12 @@ void CheckGrounded(Engine* engine) {
             }
         }
     }
+    */
 }
 
 // Helper function to add a physics component to an entity
 void AddPhysicsComponentToEntity(Engine* engine, EntityHandle entity) {
+
     ComponentStorage* storage = &engine->componentFactory.componentStorage;
     
     // Create new physics component
@@ -589,6 +694,7 @@ void AddPhysicsComponentToEntity(Engine* engine, EntityHandle entity) {
     if (entityObj) {
         // Could add component reference to entity if needed
     }
+
 }
 
 // Helper function to add a collision component to an entity
@@ -607,10 +713,10 @@ void AddCollisionComponentToEntity(Engine* engine, EntityHandle entity, Game::Co
     PushBack(&storage->collisionComponents, collision);
     
     // Update entity with component reference
-    Game::Entity* entityObj = static_cast<Game::Entity*>(GetEntity(&engine->entityFactory, entity));
-    if (entityObj) {
-        // Could add component reference to entity if needed
-    }
+    // Game::Entity* entityObj = static_cast<Game::Entity*>(GetEntity(&engine->entityFactory, entity));
+    // if (entityObj) {
+    //     // Could add component reference to entity if needed
+    // }
 }
 
 } // Zayn

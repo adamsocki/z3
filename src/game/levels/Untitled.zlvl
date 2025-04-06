@@ -1,5 +1,105 @@
 {
     "components": {
+        "collision": [
+            {
+                "collisionLayer": 1,
+                "collisionMask": -1,
+                "isTrigger": false,
+                "normal": [
+                    0.0,
+                    1.0,
+                    0.0
+                ],
+                "offset": 0.0,
+                "owner_handle": {
+                    "generation": 1,
+                    "indexInInfo": 0,
+                    "type": 2
+                },
+                "radius": 1.0,
+                "size": [
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "type": 1
+            },
+            {
+                "collisionLayer": 1,
+                "collisionMask": -1,
+                "isTrigger": false,
+                "normal": [
+                    0.0,
+                    1.0,
+                    0.0
+                ],
+                "offset": 0.0,
+                "owner_handle": {
+                    "generation": 1,
+                    "indexInInfo": 1,
+                    "type": 1
+                },
+                "radius": 1.0,
+                "size": [
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "type": 1
+            }
+        ],
+        "physics": [
+            {
+                "acceleration": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "bounceiness": 0.30000001192092896,
+                "friction": 0.30000001192092896,
+                "groundedThreshold": 0.10000000149011612,
+                "isGrounded": false,
+                "isKinematic": false,
+                "isStatic": false,
+                "mass": 1.0,
+                "owner_handle": {
+                    "generation": 1,
+                    "indexInInfo": 0,
+                    "type": 2
+                },
+                "useGravity": false,
+                "velocity": [
+                    0.0,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "acceleration": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "bounceiness": 0.30000001192092896,
+                "friction": 0.30000001192092896,
+                "groundedThreshold": 0.10000000149011612,
+                "isGrounded": true,
+                "isKinematic": false,
+                "isStatic": true,
+                "mass": 1.0,
+                "owner_handle": {
+                    "generation": 1,
+                    "indexInInfo": 1,
+                    "type": 1
+                },
+                "useGravity": false,
+                "velocity": [
+                    0.0,
+                    0.0,
+                    0.0
+                ]
+            }
+        ],
         "render": [
             {
                 "materialName": "grand_piano",
@@ -52,7 +152,7 @@
                 "position": [
                     0.0,
                     0.0,
-                    0.0
+                    -2.0999999046325684
                 ],
                 "rotation_euler_degrees": [
                     90.0,

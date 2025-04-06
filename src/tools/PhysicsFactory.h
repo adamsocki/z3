@@ -23,6 +23,7 @@ struct CollisionResult {
     vec3 collisionNormal;
     float penetrationDepth;
     bool isValid = false;
+    bool forceCollision = false; // Used to mark collisions that were forced by distance-based detection
 };
 
 struct PhysicsFactory {
@@ -49,9 +50,9 @@ void InitPhysicsFactory(PhysicsFactory* physicsFactory, MemoryArena* arena);
 void UpdatePhysicsFactory(Engine* engine, float deltaTime);
 
 // Core physics functions
-void StepPhysics(Engine* engine, float timeStep);
-void ApplyGravity(Engine* engine, float deltaTime);
-void UpdateVelocities(Engine* engine, float deltaTime);
+// void StepPhysics(Engine* engine, float timeStep);
+// void ApplyGravity(Engine* engine, float deltaTime);
+// void UpdateVelocities(Engine* engine, float deltaTime);
 void UpdatePositions(Engine* engine, float deltaTime);
 void DetectCollisions(Engine* engine);
 void ResolveCollisions(Engine* engine);

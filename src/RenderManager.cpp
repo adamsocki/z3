@@ -1504,7 +1504,7 @@ void  CreateGraphicsPipeline(Zayn::RenderManager* renderManager, VkPipeline* pip
 
 std::string GetShaderPath(const std::string& filename) {
 //#ifdef WINDOWS
-    return "../src/render/shaders/" + filename;
+    return "../src/render/shaders/compiled/" + filename;
     //return "/src/renderer/shaders/" + filename;
 //#else
     //return "/Users/socki/dev/zayn2/src/renderer/shaders/" + filename;
@@ -1611,7 +1611,7 @@ void Zayn::InitRenderManager(Zayn::RenderManager* renderManager, Zayn::WindowMan
 
     CreatePushConstant<Game::ModelPushConstant>(renderManager);
 
-    CreateGraphicsPipeline(renderManager, &renderManager->vulkanData.vkGraphicsPipeline, GetShaderPath("vkShader_3d_INIT_vert.spv"), GetShaderPath("vkShader_3d_INIT_frag.spv"), renderManager->vulkanData.vkPushConstantRanges, &renderManager->vulkanData.vkDescriptorSetLayout, &renderManager->vulkanData.vkPipelineLayout);
+    CreateGraphicsPipeline(renderManager, &renderManager->vulkanData.vkGraphicsPipeline, GetShaderPath("vkShader_3d_vert.spv"), GetShaderPath("vkShader_3d_frag.spv"), renderManager->vulkanData.vkPushConstantRanges, &renderManager->vulkanData.vkDescriptorSetLayout, &renderManager->vulkanData.vkPipelineLayout);
 
     CreateUniformBuffer(renderManager, renderManager->vulkanData.vkUniformBuffers, renderManager->vulkanData.vkUniformBuffersMemory, renderManager->vulkanData.vkUniformBuffersMapped);
 
@@ -1947,7 +1947,10 @@ void EndFrameRender(Zayn::RenderManager* renderManager, Zayn::WindowManager* win
     submitCommandBuffers.push_back(renderManager->vulkanData.vkCommandBuffers[renderManager->vulkanData.vkCurrentFrame]);
 
 #if IMGUI
-    submitCommandBuffers.push_back(renderManager->myImgui.imGuiCommandBuffers[renderManager->vulkanData.vkCurrentFrame]);
+    // Only include ImGui command buffer if ImGui's visible (command buffer was recorded)
+    if (renderManager->myImgui.visible) {
+        submitCommandBuffers.push_back(renderManager->myImgui.imGuiCommandBuffers[renderManager->vulkanData.vkCurrentFrame]);
+    }
 #endif
 
     if (vkEndCommandBuffer(submitCommandBuffers[0]) != VK_SUCCESS)
@@ -1982,6 +1985,11 @@ void Zayn::UpdateRenderManager(Zayn::Engine* engine, Zayn::EntityHandle handle, 
         }
         else {
             RenderEntities(engine, renderManager->vulkanData.vkCommandBuffers[renderManager->vulkanData.vkCurrentFrame]);
+        }
+        
+        // Render collision shapes in 3D if enabled
+        if (engine->physicsManager.use3DColliders) {
+            RenderColliders3D(engine, renderManager);
         }
 
 #if IMGUI

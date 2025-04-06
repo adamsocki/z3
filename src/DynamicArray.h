@@ -5,6 +5,8 @@
 #ifndef Z2_DYNAMICARRAY_H
 #define Z2_DYNAMICARRAY_H
 
+#include <cstddef>
+
 #include "data_types.h"
 #include "MemoryManager.h"
 
@@ -121,20 +123,20 @@ namespace Zayn {
         return array;
     };
 
-    ////template <typename T>
-    ////inline void DeallocateDynamicArray(DynamicArray<T>* array) {
-    ////    ArrayChunk* chunk = array->headChunk;
-    ////    ArrayChunk* nextChunk = chunk->nextChunk;
-    ////    while (chunk != NULL) {
-    ////        DeallocateMem(array->allocator, chunk);
-    ////
-    ////        chunk = nextChunk;
-    ////
-    ////        if (chunk) {
-    ////            nextChunk = nextChunk->nextChunk;
-    ////        }
-    ////    }
-    ////}
+    template <typename T>
+    inline void DeallocateDynamicArray(DynamicArray<T>* array) {
+        ArrayChunk* chunk = array->headChunk;
+        ArrayChunk* nextChunk = chunk->nextChunk;
+        while (chunk != NULL) {
+            DeallocateMem(array->allocator, chunk);
+
+            chunk = nextChunk;
+
+            if (chunk) {
+                nextChunk = nextChunk->nextChunk;
+            }
+        }
+    }
 
     template <typename T>
     inline uint32 PushBack(DynamicArray<T>* array, T elem)
