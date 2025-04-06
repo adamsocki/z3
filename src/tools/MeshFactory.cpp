@@ -34,7 +34,11 @@ namespace Zayn {
     #ifdef WIN32
         return "../src/render/models/" + filename;
     #elif __APPLE__
-        return "/Users/socki/dev/z3/src/render/models/" + filename;
+        // Use relative path instead of hardcoded absolute path
+        return "../src/render/models/" + filename;
+    #else
+        // Fallback for other platforms
+        return "../src/render/models/" + filename;
     #endif
     }
 

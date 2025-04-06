@@ -53,8 +53,8 @@ void UpdatePhysicsFactory(Engine* engine, float deltaTime);
 // void StepPhysics(Engine* engine, float timeStep);
 // void ApplyGravity(Engine* engine, float deltaTime);
 // void UpdateVelocities(Engine* engine, float deltaTime);
-void UpdatePositions(Engine* engine, float deltaTime);
-void DetectCollisions(Engine* engine);
+// void UpdatePositions(Engine* engine, float deltaTime);
+// void DetectCollisions(Engine* engine);
 void ResolveCollisions(Engine* engine);
 void CheckGrounded(Engine* engine);
 

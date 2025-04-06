@@ -90,7 +90,7 @@ void StepPhysics(Engine* engine, float timeStep) {
     */
 // }
 
-void UpdateVelocities(Engine* engine, float deltaTime) {
+// void UpdateVelocities(Engine* engine, float deltaTime) {
 /*
     ComponentStorage* storage = &engine->componentFactory.componentStorage;
     
@@ -114,9 +114,9 @@ void UpdateVelocities(Engine* engine, float deltaTime) {
         physics->acceleration = V3(0, 0, 0);
     }
     */
-}
+// }
 
-void UpdatePositions(Engine* engine, float deltaTime) {
+// void UpdatePositions(Engine* engine, float deltaTime) {
 
 
     /*ComponentStorage* storage = &engine->componentFactory.componentStorage;
@@ -160,9 +160,9 @@ void UpdatePositions(Engine* engine, float deltaTime) {
         }
     }
     */
-}
+// }
 
-void DetectCollisions(Engine* engine) {
+// void DetectCollisions(Engine* engine) {
     /*ComponentStorage* storage = &engine->componentFactory.componentStorage;
     PhysicsFactory* physicsFactory = &engine->physicsFactory;
     EntityFactory* entityFactory = &engine->entityFactory;
@@ -337,7 +337,7 @@ void DetectCollisions(Engine* engine) {
             }
         }
     }*/
-}
+// }
 
 void ResolveCollisions(Engine* engine) {
     /*

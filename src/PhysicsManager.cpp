@@ -80,7 +80,7 @@ void ApplyGravity(Zayn::Engine* engine) {
         }
     }
 
-    void UpdatePosition(Engine* engine, real32 deltaTime) {
+    void UpdatePositions(Engine* engine, real32 deltaTime) {
         Zayn::ComponentStorage* storage = &engine->componentFactory.componentStorage;
 
 
