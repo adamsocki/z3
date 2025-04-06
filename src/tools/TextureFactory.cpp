@@ -3,6 +3,7 @@
 //
 
 #include <stdexcept>
+#include <fstream>
 #include "TextureFactory.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include "../include/stb_image.h"
@@ -13,13 +14,38 @@ namespace Zayn {
 
     std::string GetTexturePath(const std::string& filename)
     {
-        return "../src/render/textures/" + filename;
-
-        //  #ifdef WINDOWS
-//        return "C:/dev_c/zayn/models/textures/" + filename;
-        //#else
-        //        return "/Users/socki/dev/zayn2/models/textures/" + filename;
-        //#endif
+        // First, try a relative path from the executable
+        std::string relativePath = "../src/render/textures/" + filename;
+        
+        // If the file exists at the relative path, use that
+        std::ifstream testFile(relativePath);
+        if (testFile.good()) {
+            testFile.close();
+            return relativePath;
+        }
+        
+        // If relative path doesn't work, try common absolute paths
+        #ifdef WIN32
+            // Try Windows-specific paths
+            std::string winPath = "C:/dev/z3/src/render/textures/" + filename;
+            testFile.open(winPath);
+            if (testFile.good()) {
+                testFile.close();
+                return winPath;
+            }
+        #elif __APPLE__
+            // Try Mac-specific paths
+            std::string macPath = "/Users/socki/dev/z3/src/render/textures/" + filename;
+            testFile.open(macPath);
+            if (testFile.good()) {
+                testFile.close();
+                return macPath;
+            }
+        #endif
+        
+        // If all else fails, return the relative path as a fallback
+        printf("Warning: Unable to find texture file: %s, falling back to relative path\n", filename.c_str());
+        return relativePath;
     }
 
     void CreateTextureSampler(RenderManager* renderManager, uint32_t& mipLevels, VkSampler* textureSampler)

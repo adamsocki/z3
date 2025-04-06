@@ -7,6 +7,7 @@
 
 #include <glm/gtx/hash.hpp>
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <string>
 
@@ -31,15 +32,38 @@ namespace std {
 namespace Zayn {
 
     std::string GetModelPath(const std::string& filename) {
+    // First, try a relative path from the executable
+    std::string relativePath = "../src/render/models/" + filename;
+    
+    // If the file exists at the relative path, use that
+    std::ifstream testFile(relativePath);
+    if (testFile.good()) {
+        testFile.close();
+        return relativePath;
+    }
+    
+    // If relative path doesn't work, try common absolute paths
     #ifdef WIN32
-        return "../src/render/models/" + filename;
+        // Try Windows-specific paths
+        std::string winPath = "C:/dev/z3/src/render/models/" + filename;
+        testFile.open(winPath);
+        if (testFile.good()) {
+            testFile.close();
+            return winPath;
+        }
     #elif __APPLE__
-        // Use relative path instead of hardcoded absolute path
-        return "../src/render/models/" + filename;
-    #else
-        // Fallback for other platforms
-        return "../src/render/models/" + filename;
+        // Try Mac-specific paths
+        std::string macPath = "/Users/socki/dev/z3/src/render/models/" + filename;
+        testFile.open(macPath);
+        if (testFile.good()) {
+            testFile.close();
+            return macPath;
+        }
     #endif
+    
+    // If all else fails, return the relative path as a fallback
+    printf("Warning: Unable to find model file: %s, falling back to relative path\n", filename.c_str());
+    return relativePath;
     }
 
     void CreateIndexBuffer(RenderManager* renderManager, std::vector<uint32_t> indices, VkBuffer* indexBuffer, VkDeviceMemory* indexBufferMemory)

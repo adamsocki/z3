@@ -27,24 +27,51 @@ namespace Zayn {
     //     return false;
     // }
 
-    std::vector<std::string> GetLevelFiles(const std::string& folderPath) {
+    std::vector<std::string> GetLevelFiles(const std::string& initialFolderPath) {
         std::vector<std::string> levelFiles;
-
-        try {
-            for (const auto& entry : std::filesystem::directory_iterator(folderPath)) {
-                if (entry.is_regular_file()) {
-                    std::string path = entry.path().string();
-                    // Check if file has the .zlvl extension
-                    if (path.size() >= 5 && path.substr(path.size() - 5) == ".zlvl") {
-                        levelFiles.push_back(path);
+        std::vector<std::string> foldersToTry;
+        
+        // Add the initial folder path
+        foldersToTry.push_back(initialFolderPath);
+        
+        // Add platform-specific paths as fallbacks
+        #ifdef WIN32
+            foldersToTry.push_back("C:/dev/z3/src/game/levels/");
+        #elif __APPLE__
+            foldersToTry.push_back("/Users/socki/dev/z3/src/game/levels/");
+        #endif
+        
+        // Try each folder path until we find some level files
+        for (const auto& folderPath : foldersToTry) {
+            try {
+                printf("Trying to load levels from: %s\n", folderPath.c_str());
+                if (!std::filesystem::exists(folderPath)) {
+                    printf("  Directory does not exist, trying next path\n");
+                    continue;
+                }
+                
+                for (const auto& entry : std::filesystem::directory_iterator(folderPath)) {
+                    if (entry.is_regular_file()) {
+                        std::string path = entry.path().string();
+                        // Check if file has the .zlvl extension
+                        if (path.size() >= 5 && path.substr(path.size() - 5) == ".zlvl") {
+                            levelFiles.push_back(path);
+                        }
                     }
                 }
+                
+                // If we found level files, return them
+                if (!levelFiles.empty()) {
+                    printf("  Found %zu level files\n", levelFiles.size());
+                    return levelFiles;
+                }
+            } catch (const std::exception& e) {
+                // Handle exceptions (e.g., directory doesn't exist)
+                printf("  Error reading directory: %s\n", e.what());
             }
-        } catch (const std::exception& e) {
-            // Handle exceptions (e.g., directory doesn't exist)
-            printf("Error reading directory: %s\n", e.what());
         }
-
+        
+        printf("Warning: No level files found in any directory\n");
         return levelFiles;
     }
 
@@ -240,31 +267,62 @@ namespace Zayn {
 
         // --- Write JSON to file ---
         try {
-            std::string pathPrefix = "../src/game/levels/";
-            std::string fullPath = pathPrefix + levelData.name;
-            if (fullPath.rfind(".zlvl") != fullPath.size() - 5) {
-                fullPath += ".zlvl";
+            std::vector<std::string> pathsToTry;
+            
+            // Try relative path first
+            pathsToTry.push_back("../src/game/levels/");
+            
+            // Add platform-specific fallbacks
+            #ifdef WIN32
+                pathsToTry.push_back("C:/dev/z3/src/game/levels/");
+            #elif __APPLE__
+                pathsToTry.push_back("/Users/socki/dev/z3/src/game/levels/");
+            #endif
+            
+            bool saveSuccess = false;
+            
+            for (const auto& pathPrefix : pathsToTry) {
+                std::string fullPath = pathPrefix + levelData.name;
+                if (fullPath.rfind(".zlvl") != fullPath.size() - 5) {
+                    fullPath += ".zlvl";
+                }
+                
+                printf("Attempting to save to: %s\n", fullPath.c_str());
+                
+                std::filesystem::path dirPath = std::filesystem::path(fullPath).parent_path();
+                try {
+                    if (!std::filesystem::exists(dirPath)) {
+                        printf("  Directory doesn't exist, attempting to create: %s\n", dirPath.string().c_str());
+                        std::filesystem::create_directories(dirPath);
+                    }
+                    
+                    std::ofstream file(fullPath);
+                    if (!file.is_open()) {
+                        printf("  Error: Failed to open file for writing: %s\n", fullPath.c_str());
+                        continue; // Try next path
+                    }
+                    
+                    file << levelJson.dump(4);
+                    file.close();
+                    
+                    printf("  Level saved successfully to: %s\n", fullPath.c_str());
+                    // if (levelData.fileName) free((void*)levelData.fileName);
+                    // levelData.fileName = strdup(fullPath.c_str());
+                    saveSuccess = true;
+                    break; // Success, so exit the loop
+                }
+                catch (const std::exception& pathEx) {
+                    printf("  Error with path %s: %s\n", fullPath.c_str(), pathEx.what());
+                    // Continue to next path
+                }
             }
-
-            std::filesystem::path dirPath = std::filesystem::path(fullPath).parent_path();
-             if (!std::filesystem::exists(dirPath)) {
-                 std::filesystem::create_directories(dirPath);
-             }
-
-            std::ofstream file(fullPath);
-            if (!file.is_open()) {
-                printf("Error: Failed to open file for writing: %s\n", fullPath.c_str());
+            
+            if (!saveSuccess) {
+                printf("Failed to save level to any location\n");
                 return false;
             }
-            file << levelJson.dump(4);
-            file.close();
-
-            printf("Level saved successfully to: %s\n", fullPath.c_str());
-            // Consider managing fileName memory better if needed
-            // if (levelData.fileName) free((void*)levelData.fileName);
-            // levelData.fileName = strdup(fullPath.c_str());
+            
             return true;
-
         } catch (const std::exception& e) {
             printf("Error saving level: %s\n", e.what());
             return false;
